@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pradeep Furniture</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- 🔝 NAVBAR -->
+<header class="navbar">
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo">
+  <img src="images/logo.png" alt="logo">
+  
+</a>
+
+  <!-- LINKS -->
+  <nav>
+    <ul class="nav-links">
+
+      <li><a href="index.html">Home</a></li>
+
+      <!-- DROPDOWN -->
+      <li class="dropdown">
+        <a href="#">Furniture Categories ▾</a>
+
+        <ul class="menu level-1">
+
+          <li>
+            <a href="#">Living Room ▸</a>
+
+            <ul class="menu level-2">
+              <li>
+                <a href="#">Sofas ▸</a>
+
+                <ul class="menu level-3">
+                  <li>
+                    <a href="#">Leather Sofa ▸</a>
+
+                    <ul class="menu level-4">
+                      <li><a href="#">2 Seater</a></li>
+                      <li><a href="#">3 Seater</a></li>
+                      <li><a href="#">L Shape</a></li>
+                    </ul>
+
+                  </li>
+                  <li><a href="#">Fabric Sofa</a></li>
+                </ul>
+
+              </li>
+              <li><a href="#">Center Table</a></li>
+            </ul>
+
+          </li>
+
+          <li><a href="#">Bedroom</a></li>
+
+        </ul>
+      </li>
+
+      <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+      <li><a href="track.html">Track Order</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+
+    </ul>
+  </nav>
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+    <span id="user-name" style="margin-left:10px;"></span>
+
+    <a href="wishlist.html">
+  <i class="fa-regular fa-heart"></i>
+</a>
+<div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
+    <div class="cart-icon">
+      <a href="cart.html">
+  <i class="fa-solid fa-cart-shopping"></i>
+</a>
+      <span id="cart-count">0</span>
+    </div>
+
+    <a href="login.html">
+  <button class="auth-btn">
+    Login <span>/</span> Signup
+  </button>
+</a>
+
+  </div>
+
+</header>
+
+<!-- 🎯 HERO -->
+<div class="hero" id="hero">
+
+<div class="progress"></div>
+
+<div class="arrow left" onclick="prevSlide()">❮</div>
+<div class="arrow right" onclick="nextSlide()">❯</div>
+
+<div class="slide">
+  <div class="text">
+
+
+
+  <h2 class="main-title">Royal Blue Velvet Sofa</h2>
+
+  <ul>
+    <li>Azure Velvet Luxe</li>
+    <li>Exposed Walnut Framework</li>
+    <li>Ergonomic Curved Silhouette:</li>
+          <li>Integrated Living Aesthetic</li>
+                <li>Zero-Sag Seating</li>
+  </ul>
+
+</div>
+  <img src="images/slide1.jpg">
+</div>
+
+<div class="slide">
+  <div class="text">
+    <h2>Sculpted Dining Set</h2>
+    <ul>
+      <li>Artisanal "X-Flow" Base</li>
+      <li>Fusion of Concrete & Walnut</li>
+      <li>Breathable Cane-Weave Chairs</li>
+            <li>Seamless Joinery</li>
+                  <li>Bespoke Library Integration</li>
+    </ul>
+  </div>
+  <img src="images/slide2.jpg">
+</div>
+
+<div class="slide">
+  <div class="text">
+    <h2>The Aero-Grip Bespoke Bed</h2>
+    <ul>
+      <li>Fluid Sculpted Frame</li>
+      <li>Artisanal Grain Matching</li>
+      <li>Floating Aesthetic</li>
+       <li>Integrated Bedside Harmony</li>
+        <li>Sustainable Luxury Fabric</li>
+    </ul>
+  </div>
+  <img src="images/slide3.jpg">
+</div>
+
+<div class="dots" id="dots"></div>
+
+</div>
+
+<!-- DOTS -->
+<div class="dots">
+  <span class="active"></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- 🛍 PRODUCTS -->
+<div class="section-title">
+  <h2>Featured Collections</h2>
+  <p>Discover our most popular furniture pieces</p>
+</div>
+
+<section class="products">
+
+  <!-- CARD 1 -->
+  
+<div class="product-card">
+
+  <div class="card-img">
+    <img src="images/sofa.jpg" class="product-img">
+    <i class="fa-regular fa-heart wishlist"
+       onclick="toggleWishlist(this, 'Modern Sofa', 40000, 'images/sofa.jpg')"></i>
+  </div>
+
+  <div class="card-content">
+    <h3>Modern Sofa</h3>
+    <p class="price">₹40,000</p>
+
+    <div class="card-buttons">
+      <button class="add">Add to Cart</button>
+
+      <!-- 🔥 CUSTOMIZE BUTTON -->
+      <button class="custom"
+        onclick="goToCustom('Modern Sofa', 40000, 'images/sofa.jpg')">
+        Customize
+      </button>
+    </div>
+  </div>
+
+</div>
+
+  <!-- CARD 2 -->
+<div class="product-card">
+
+  <div class="card-img">
+    <img src="images/sofa.jpg" class="product-img">
+    <i class="fa-regular fa-heart wishlist"
+       onclick="toggleWishlist(this, 'Modern Sofa', 40000, 'images/sofa.jpg')"></i>
+  </div>
+
+  <div class="card-content">
+    <h3>Modern Sofa</h3>
+    <p class="price">₹40,000</p>
+
+    <div class="card-buttons">
+      <button class="add">Add to Cart</button>
+
+      <!-- 🔥 CUSTOMIZE BUTTON -->
+      <button class="custom"
+        onclick="goToCustom('Modern Sofa', 40000, 'images/sofa.jpg')">
+        Customize
+      </button>
+    </div>
+  </div>
+
+</div>
+<!--card 3 -->
+<div class="product-card">
+
+  <div class="card-img">
+    <img src="images/sofa.jpg" class="product-img">
+    <i class="fa-regular fa-heart wishlist"
+       onclick="toggleWishlist(this, 'Modern Sofa', 40000, 'images/sofa.jpg')"></i>
+  </div>
+
+  <div class="card-content">
+    <h3>Modern Sofa</h3>
+    <p class="price">₹40,000</p>
+
+    <div class="card-buttons">
+      <button class="add">Add to Cart</button>
+
+      <!-- 🔥 CUSTOMIZE BUTTON -->
+      <button class="custom"
+        onclick="goToCustom('Modern Sofa', 40000, 'images/sofa.jpg')">
+        Customize
+      </button>
+    </div>
+  </div>
+
+</div>
+<!--card 4 -->
+<div class="product-card">
+
+  <div class="card-img">
+    <img src="images/sofa.jpg" class="product-img">
+    <i class="fa-regular fa-heart wishlist"
+       onclick="toggleWishlist(this, 'Modern Sofa', 40000, 'images/sofa.jpg')"></i>
+  </div>
+
+  <div class="card-content">
+    <h3>Modern Sofa</h3>
+    <p class="price">₹40,000</p>
+
+    <div class="card-buttons">
+      <button class="add">Add to Cart</button>
+
+      <!-- 🔥 CUSTOMIZE BUTTON -->
+      <button class="custom"
+        onclick="goToCustom('Modern Sofa', 40000, 'images/sofa.jpg')">
+        Customize
+      </button>
+    </div>
+  </div>
+
+</div>
+<!--card 5 -->
+<div class="product-card">
+
+  <div class="card-img">
+    <img src="images/sofa.jpg" class="product-img">
+    <i class="fa-regular fa-heart wishlist"
+       onclick="toggleWishlist(this, 'Modern Sofa', 40000, 'images/sofa.jpg')"></i>
+  </div>
+
+  <div class="card-content">
+    <h3>Modern Sofa</h3>
+    <p class="price">₹40,000</p>
+
+    <div class="card-buttons">
+      <button class="add">Add to Cart</button>
+
+      <!-- 🔥 CUSTOMIZE BUTTON -->
+      <button class="custom"
+        onclick="goToCustom('Modern Sofa', 40000, 'images/sofa.jpg')">
+        Customize
+      </button>
+    </div>
+  </div>
+
+</div>
+
+</section>
+
+<!-- PRODUCT DOTS -->
+
+
+<!-- ✅ JAVASCRIPT (CART SYSTEM) -->
+
+
+<script>
+const slides = document.querySelectorAll(".slide");
+const dotsContainer = document.getElementById("dots");
+const progress = document.querySelector(".progress");
+
+let index = 0;
+let duration = 4000;
+
+let startTime;
+let remaining = duration;
+let timer;
+
+/* CREATE DOTS */
+slides.forEach((s, i) => {
+  let d = document.createElement("div");
+  d.className = "dot";
+  if(i === 0) d.classList.add("active");
+  d.onclick = () => goTo(i);
+  dotsContainer.appendChild(d);
+});
+
+/* POSITION */
+slides.forEach((s, i) => {
+  s.style.transform = `translateX(${i * 100}%)`;
+});
+
+/* UPDATE */
+function update() {
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${(i - index) * 100}%)`;
+
+    let text = s.querySelector(".text");
+    text.classList.remove("animate");
+    void text.offsetWidth;
+
+    if (i === index) {
+      text.classList.add("animate");
+      s.classList.add("active");
+    } else {
+      s.classList.remove("active");
+    }
+  });
+
+  document.querySelectorAll(".dot").forEach((d, i) => {
+    d.classList.toggle("active", i === index);
+  });
+  
+}
+
+/* PROGRESS START */
+function startProgress() {
+  progress.style.transition = "none";
+  progress.style.width = "0%";
+
+  setTimeout(() => {
+    progress.style.transition = `width ${remaining}ms linear`;
+    progress.style.width = "100%";
+  }, 50);
+}
+
+/* NEXT */
+function nextSlide() {
+  index = (index + 1) % slides.length;
+  update();
+  startTimer();
+}
+
+/* PREV */
+function prevSlide() {
+  index = (index - 1 + slides.length) % slides.length;
+  update();
+  startTimer();
+}
+
+/* DOT */
+function goTo(i) {
+  index = i;
+  update();
+  startTimer();
+}
+
+/* START */
+function startTimer() {
+  clearTimeout(timer);
+
+  remaining = duration;
+  startTime = Date.now();
+
+  startProgress();
+
+  timer = setTimeout(nextSlide, remaining);
+}
+
+/* PAUSE */
+function pauseTimer() {
+  clearTimeout(timer);
+
+  let elapsed = Date.now() - startTime;
+  remaining -= elapsed;
+
+  // freeze progress
+  let computedWidth = getComputedStyle(progress).width;
+  progress.style.transition = "none";
+  progress.style.width = computedWidth;
+}
+
+/* RESUME */
+function resumeTimer() {
+  startTime = Date.now();
+
+  progress.style.transition = `width ${remaining}ms linear`;
+  progress.style.width = "100%";
+
+  timer = setTimeout(nextSlide, remaining);
+}
+
+/* INIT */
+update();
+startTimer();
+
+/* HOVER EVENTS */
+const hero = document.getElementById("hero");
+
+hero.addEventListener("mouseenter", pauseTimer);
+hero.addEventListener("mouseleave", resumeTimer);
+
+
+</script>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+/* UPDATE COUNT */
+function updateCartCount(){
+  let total = 0;
+  cart.forEach(item => {
+    total += item.qty || 1;
+  });
+
+  const count = document.getElementById("cart-count");
+  if(count){
+    count.innerText = total;
+  }
+}
+
+/* ADD TO CART */
+function addToCart(name, price, image){
+  let existing = cart.find(item => item.name === name);
+
+  if(existing){
+    existing.qty += 1;
+  } else {
+    cart.push({name, price, qty:1});
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+}
+
+updateCartCount();
+
+/* CONNECT BUTTONS */
+document.querySelectorAll(".add-to-cart").forEach((btn, i)=>{
+  btn.addEventListener("click", ()=>{
+    
+    if(i === 0){
+      addToCart("Wooden Bed", 25000);
+    } else if(i === 1){
+      addToCart("Modern Sofa", 40000);
+    }
+    cart.push({name, price, qty:1});
+  });
+});
+</script>
+<script>
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+/* TOGGLE WISHLIST */
+function toggleWishlist(el, name, price, image){
+
+  let index = wishlist.findIndex(item => item.name === name);
+
+  if(index !== -1){
+    // REMOVE
+    wishlist.splice(index,1);
+    el.innerText = "♡";
+  } else {
+    // ADD
+    wishlist.push({name, price, image});
+    el.innerText = "❤️";
+  }
+
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+}
+</script>
+<script>
+function goToCustom(name, price, image){
+  localStorage.setItem("customProduct", JSON.stringify({
+    name, price, image
+  }));
+
+  window.location.href = "custom-order.html";
+}
+</script>
+</body>
+</html>

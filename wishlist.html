@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="wishlist.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<header class="navbar">
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo">
+  <img src="images/logo.png" alt="logo">
+  
+</a>
+
+  <!-- LINKS -->
+  <nav>
+    <ul class="nav-links">
+
+      <li><a href="index.html">Home</a></li>
+
+      <!-- DROPDOWN -->
+      <li class="dropdown">
+        <a href="#">Furniture Categories ▾</a>
+
+        <ul class="menu level-1">
+
+          <li>
+            <a href="#">Living Room ▸</a>
+
+            <ul class="menu level-2">
+              <li>
+                <a href="#">Sofas ▸</a>
+
+                <ul class="menu level-3">
+                  <li>
+                    <a href="#">Leather Sofa ▸</a>
+
+                    <ul class="menu level-4">
+                      <li><a href="#">2 Seater</a></li>
+                      <li><a href="#">3 Seater</a></li>
+                      <li><a href="#">L Shape</a></li>
+                    </ul>
+
+                  </li>
+                  <li><a href="#">Fabric Sofa</a></li>
+                </ul>
+
+              </li>
+              <li><a href="#">Center Table</a></li>
+            </ul>
+
+          </li>
+
+          <li><a href="#">Bedroom</a></li>
+
+        </ul>
+      </li>
+
+      <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+      <li><a href="track.html">Track Order</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+
+    </ul>
+  </nav>
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+    <span id="user-name" style="margin-left:10px;"></span>
+
+    <i class="fa-regular fa-heart"></i>
+<div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
+    <div class="cart-icon">
+      <a href="cart.html">
+  <i class="fa-solid fa-cart-shopping"></i>
+</a>
+      <span id="cart-count">0</span>
+    </div>
+
+    <a href="login.html">
+  <button class="auth-btn">
+    Login <span>/</span> Signup
+  </button>
+</a>
+
+  </div>
+
+</header>
+<h2>My Wishlist</h2>
+<div id="wishlist-container"></div>
+
+<script>
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function renderWishlist(){
+  let container = document.getElementById("wishlist-container");
+  container.innerHTML = "";
+
+  wishlist.forEach((item,i)=>{
+    container.innerHTML += `
+      <div>
+        <img src="${item.image}" width="100">
+        <h3>${item.name}</h3>
+        <p>₹${item.price}</p>
+
+        <button onclick="addToCart(${i})">Add to Cart</button>
+        <button onclick="removeItem(${i})">Remove</button>
+      </div>
+    `;
+  });
+}
+
+function removeItem(i){
+  wishlist.splice(i,1);
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  renderWishlist();
+}
+
+function addToCart(i){
+  let item = wishlist[i];
+  let existing = cart.find(p => p.name === item.name);
+
+  if(existing){
+    existing.qty++;
+  } else {
+    cart.push({...item, qty:1});
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+renderWishlist();
+</script>
+<script>
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+function toggleWishlist(el, name, price, image){
+
+  let index = wishlist.findIndex(item => item.name === name);
+
+  if(index !== -1){
+    wishlist.splice(index,1);
+    el.classList.remove("fa-solid");
+    el.classList.add("fa-regular");
+  } else {
+    wishlist.push({name, price, image});
+    el.classList.remove("fa-regular");
+    el.classList.add("fa-solid");
+  }
+
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cart</title>
+<link rel="stylesheet" href="cart.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+<header class="navbar">
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo">
+  <img src="images/logo.png" alt="logo">
+  
+</a>
+
+  <!-- LINKS -->
+  <nav>
+    <ul class="nav-links">
+
+      <li><a href="index.html">Home</a></li>
+
+      <!-- DROPDOWN -->
+      <li class="dropdown">
+        <a href="#">Furniture Categories ▾</a>
+
+        <ul class="menu level-1">
+
+          <li>
+            <a href="#">Living Room ▸</a>
+
+            <ul class="menu level-2">
+              <li>
+                <a href="#">Sofas ▸</a>
+
+                <ul class="menu level-3">
+                  <li>
+                    <a href="#">Leather Sofa ▸</a>
+
+                    <ul class="menu level-4">
+                      <li><a href="#">2 Seater</a></li>
+                      <li><a href="#">3 Seater</a></li>
+                      <li><a href="#">L Shape</a></li>
+                    </ul>
+
+                  </li>
+                  <li><a href="#">Fabric Sofa</a></li>
+                </ul>
+
+              </li>
+              <li><a href="#">Center Table</a></li>
+            </ul>
+
+          </li>
+
+          <li><a href="#">Bedroom</a></li>
+
+        </ul>
+      </li>
+
+      <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+      <li><a href="track.html">Track Order</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+
+    </ul>
+  </nav>
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+    <span id="user-name" style="margin-left:10px;"></span>
+
+    <i class="fa-regular fa-heart"></i>
+<div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
+    <div class="cart-icon">
+      <a href="cart.html">
+  <i class="fa-solid fa-cart-shopping"></i>
+</a>
+      <span id="cart-count">0</span>
+    </div>
+
+    <a href="login.html">
+  <button class="auth-btn">
+    Login <span>/</span> Signup
+  </button>
+</a>
+
+  </div>
+</header>
+
+<div class="cart-page">
+
+  <h2>Your Shopping Cart</h2>
+
+  <div class="cart-container">
+
+    <!-- LEFT -->
+    <div class="cart-items" id="cart-items">
+
+      <div class="cart-item">
+        <img src="https://via.placeholder.com/100">
+
+        <div class="details">
+          <h4>Product Name</h4>
+          <p>Custom Details</p>
+        </div>
+
+        <div class="qty">
+          <button onclick="decreaseQty(this)">-</button>
+          <span>1</span>
+          <button onclick="increaseQty(this)">+</button>
+        </div>
+
+        <div class="price">₹12000</div>
+
+        <button class="remove" onclick="removeItem(this)">Remove</button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="summary">
+
+      <h3>Order Summary</h3>
+
+      <p>Subtotal: ₹<span id="subtotal">0</span></p>
+      <p>Shipping: ₹<span id="shipping">100</span></p>
+      <h4>Total: ₹<span id="total">0</span></h4>
+
+      <button class="checkout">Proceed to Checkout</button>
+
+    </div>
+
+  </div>
+
+</div>
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function renderCart(){
+  const container = document.getElementById("cart-items");
+  container.innerHTML = "";
+
+  cart.forEach((item, index)=>{
+    container.innerHTML += `
+      <div class="cart-item">
+        <img src="https://via.placeholder.com/100">
+
+        <div class="details">
+          <h4>${item.name}</h4>
+          <p>Custom Product</p>
+        </div>
+
+        <div class="qty">
+          <button onclick="changeQty(${index}, -1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty(${index}, 1)">+</button>
+        </div>
+
+        <div class="price">₹${item.price}</div>
+
+        <button class="remove" onclick="removeItem(${index})">Remove</button>
+      </div>
+    `;
+  });
+
+  updateTotal();
+}
+
+function changeQty(index, change){
+  cart[index].qty += change;
+
+  if(cart[index].qty <= 0){
+    cart.splice(index,1);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+function updateTotal(){
+  let total = 0;
+
+  cart.forEach(item=>{
+    total += item.price * item.qty;
+  });
+
+  document.getElementById("subtotal").innerText = total;
+  document.getElementById("total").innerText = total + 100;
+}
+
+renderCart();
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Track Order</title>
+<link rel="stylesheet" href="track.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+<header class="navbar">
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo">
+  <img src="images/logo.png" alt="logo">
+  
+</a>
+
+  <!-- LINKS -->
+  <nav>
+    <ul class="nav-links">
+
+      <li><a href="index.html">Home</a></li>
+
+      <!-- DROPDOWN -->
+      <li class="dropdown">
+        <a href="#">Furniture Categories ▾</a>
+
+        <ul class="menu level-1">
+
+          <li>
+            <a href="#">Living Room ▸</a>
+
+            <ul class="menu level-2">
+              <li>
+                <a href="#">Sofas ▸</a>
+
+                <ul class="menu level-3">
+                  <li>
+                    <a href="#">Leather Sofa ▸</a>
+
+                    <ul class="menu level-4">
+                      <li><a href="#">2 Seater</a></li>
+                      <li><a href="#">3 Seater</a></li>
+                      <li><a href="#">L Shape</a></li>
+                    </ul>
+
+                  </li>
+                  <li><a href="#">Fabric Sofa</a></li>
+                </ul>
+
+              </li>
+              <li><a href="#">Center Table</a></li>
+            </ul>
+
+          </li>
+
+          <li><a href="#">Bedroom</a></li>
+
+        </ul>
+      </li>
+
+      <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+      <li><a href="track.html">Track Order</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+
+    </ul>
+  </nav>
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+    <span id="user-name" style="margin-left:10px;"></span>
+
+    <i class="fa-regular fa-heart"></i>
+<div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
+    <div class="cart-icon">
+      <a href="cart.html">
+  <i class="fa-solid fa-cart-shopping"></i>
+</a>
+      <span id="cart-count">0</span>
+    </div>
+
+    <a href="login.html">
+  <button class="auth-btn">
+    Login <span>/</span> Signup
+  </button>
+</a>
+
+  </div>
+</header>
+<div class="track-wrapper">
+
+  <h1 class="title">Track Your Order</h1>
+  <p class="subtitle">
+    Enter your mobile number and order ID to track your custom furniture order
+  </p>
+
+  <div class="track-card">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <h3>Enter your mobile number & Order ID</h3>
+
+      <div class="input-box">
+        <span>+91</span>
+        <input type="text" id="mobile" placeholder="Enter mobile number">
+      </div>
+
+      <div class="input-box">
+        <input type="text" id="orderId" placeholder="Enter order ID">
+        <i class="fa fa-search"></i>
+      </div>
+
+      <div class="captcha">
+
+<span id="captchaText">S28H1</span>
+
+  <!-- ✅ USER INPUT -->
+  <input type="text" id="captchaInput" placeholder="Enter captcha">
+
+  <button onclick="refreshCaptcha()">Refresh</button>
+
+</div>
+
+      <button class="track-btn" onclick="trackOrder()">
+        Track Order →
+      </button>
+
+      <!-- STATUS (HIDDEN INITIALLY) -->
+      <div class="status" id="statusBox" style="display:none;">
+
+        <div class="step">Request Accepted</div>
+        <div class="step">Manufacturing</div>
+        <div class="step">Polishing</div>
+        <div class="step">Out for Delivery</div>
+        <div class="step">Delivered</div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+
+      <h3>Here is the design you requested</h3>
+
+      <div class="preview" id="previewBox" style="display:none;">
+        <img id="orderImg" src="" alt="">
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* FAKE DATABASE */
+const orders = {
+  "ORD123": {
+    status: 2,
+    img: "images/bed.jpg"
+  },
+  "ORD456": {
+    status: 4,
+    img: "images/sofa.jpg"
+  }
+};
+
+/* TRACK FUNCTION */
+function trackOrder(){
+
+  const mobile = document.getElementById("mobile").value;
+  const orderId = document.getElementById("orderId").value.toUpperCase();
+  const captcha = document.getElementById("captchaText").innerText;
+
+  const statusBox = document.getElementById("statusBox");
+  const previewBox = document.getElementById("previewBox");
+  const orderImg = document.getElementById("orderImg");
+
+  if(mobile === "" || orderId === ""){
+    alert("⚠️ Please fill all details");
+    return;
+  }
+
+  if(!orders[orderId]){
+    alert("❌ Order not found");
+    return;
+  }
+
+  /* SHOW UI */
+  statusBox.style.display = "block";
+  previewBox.style.display = "block";
+
+  /* SET IMAGE */
+  orderImg.src = orders[orderId].img;
+
+  /* SET STATUS */
+  const steps = document.querySelectorAll(".step");
+
+  steps.forEach((step, i)=>{
+    if(i <= orders[orderId].status){
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  });
+
+}
+
+/* CAPTCHA REFRESH */
+function refreshCaptcha(){
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let cap = "";
+
+  for(let i=0;i<5;i++){
+    cap += chars[Math.floor(Math.random()*chars.length)] + " ";
+  }
+
+  document.getElementById("captchaText").innerText = cap.trim();
+}
+
+</script>
+
+
+</body>
+</html>
