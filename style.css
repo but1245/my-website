@@ -144,7 +144,7 @@ body {
 .hero {
   position: relative;
   width: 99%;
-  height: 500px;
+  height: 461px;
   margin: 2px auto;
   border-radius: 20px;
   overflow: hidden;
@@ -395,4 +395,66 @@ body {
     gap: 10px;
     text-align: center;
   }
+}
+.offer-bar{
+  width: 100%;
+  background: linear-gradient(45deg,#c49b63,#a67c52);
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.offer-bar{
+  animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown{
+  from{transform: translateY(-100%);}
+  to{transform: translateY(0);}
+}
+.offer-bar{
+  width: 100%;
+  background: linear-gradient(45deg,#c49b63,#a67c52);
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+}
+.offer-bar{
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(45deg,#c49b63,#a67c52);
+  color: #fff;
+  padding: 10px 0;
+}
+
+/* MARQUEE WRAPPER */
+.marquee{
+  display: flex;
+  white-space: nowrap;
+}
+
+/* TEXT */
+.marquee span{
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollText 25s linear infinite;
+}
+
+/* ANIMATION */
+@keyframes scrollText{
+  0%{
+    transform: translateX(0);
+  }
+  100%{
+    transform: translateX(-100%);
+  }
+}
+.offer-bar:hover .marquee span{
+  animation-play-state: paused;
+}
+.offer-bar{
+  cursor: pointer;
 }
