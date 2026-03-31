@@ -153,7 +153,7 @@
     /* ================= CART COUNT ================= */
     function updateCartCount() {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      let total = cart.reduce((sum, item) => sum + item.qty, 0);
+      let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
 
       let countEl = document.getElementById("cart-count");
       if (countEl) {
@@ -161,47 +161,55 @@
       }
     }
 
-    /* ================= RENDER ================= */
-    function renderCoupons() {
+    /* ================= RENDER CART (🔥 FIX) ================= */
+    function renderCart() {
 
-      let list = document.getElementById("couponList");
-      list.innerHTML = "";
+      const container = document.getElementById("cart-items");
+      container.innerHTML = "";
 
-      coupons.forEach(c => {
+      if (cart.length === 0) {
+        container.innerHTML = "<p class='empty'>Cart is empty 😢</p>";
+        updateTotal();
+        return;
+      }
 
-        let desc = c.type === "flat"
-          ? `Flat ₹${c.value} OFF`
-          : `${c.value}% OFF`;
+      cart.forEach((item, index) => {
 
-        // 🔥 MIN ORDER TEXT
-        let minText = c.min ? `<small>Min Order ₹${c.min}</small>` : "";
+        container.innerHTML += `
+      <div class="cart-item">
+        <img src="${item.image}">
 
-        list.innerHTML += `
-      <div class="coupon-item">
-        <div>
-          <strong>${c.code}</strong><br>
-          <small>${desc}</small><br>
-          ${minText}
+        <div class="details">
+          <h4>${item.name}</h4>
+          <p>₹${item.price}</p>
         </div>
 
-        <button onclick="applyFromPopup('${c.code}')">
-          Apply
+        <div class="qty">
+          <button onclick="changeQty(${index}, -1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty(${index}, 1)">+</button>
+        </div>
+
+        <div class="price">₹${item.price * item.qty}</div>
+
+        <button class="remove" onclick="removeItem(${index})">
+          Remove
         </button>
       </div>
     `;
       });
+
+      updateTotal();
     }
-
-    updateTotal();
-    updateCartCount();
-
 
     /* ================= QTY ================= */
     window.changeQty = function (index, change) {
       cart[index].qty += change;
+
       if (cart[index].qty <= 0) {
         cart.splice(index, 1);
       }
+
       localStorage.setItem("cart", JSON.stringify(cart));
       renderCart();
     }
@@ -229,6 +237,7 @@
       document.getElementById("total").innerText = total;
       document.getElementById("discount").innerText = discountValue;
       document.getElementById("shipping").innerText = shipping;
+
       let savingsBox = document.getElementById("savingsBox");
 
       if (discountValue > 0) {
@@ -239,7 +248,7 @@
       }
     }
 
-    /* ================= APPLY COUPON ================= */
+    /* ================= COUPON ================= */
     window.applyCoupon = function () {
 
       let code = document.getElementById("couponInput").value.trim().toUpperCase();
@@ -258,14 +267,15 @@
         return;
       }
 
+      if (found.min && subtotal < found.min) {
+        alert(`Minimum order ₹${found.min} required ❌`);
+        return;
+      }
+
       if (found.type === "flat") {
         discountValue = found.value;
       } else {
         discountValue = Math.round(subtotal * (found.value / 100));
-      }
-      if (found.min && subtotal < found.min) {
-        alert(`Minimum order ₹${found.min} required ❌`);
-        return;
       }
 
       badge.innerHTML = `
@@ -279,7 +289,7 @@
       updateTotal();
     }
 
-    /* ================= REMOVE ================= */
+    /* ================= REMOVE COUPON ================= */
     window.removeCoupon = function () {
       discountValue = 0;
       document.getElementById("couponInput").value = "";
@@ -309,41 +319,41 @@
       }, 300);
     }
 
+    /* ================= RENDER COUPONS ================= */
+    function renderCoupons() {
+
+      let list = document.getElementById("couponList");
+      list.innerHTML = "";
+
+      coupons.forEach(c => {
+
+        let desc = c.type === "flat"
+          ? `Flat ₹${c.value} OFF`
+          : `${c.value}% OFF`;
+
+        let minText = c.min ? `<small>Min Order ₹${c.min}</small>` : "";
+
+        list.innerHTML += `
+      <div class="coupon-item">
+        <div>
+          <strong>${c.code}</strong><br>
+          <small>${desc}</small><br>
+          ${minText}
+        </div>
+
+        <button onclick="applyFromPopup('${c.code}')">Apply</button>
+      </div>
+    `;
+      });
+    }
+
     /* ================= APPLY FROM POPUP ================= */
     window.applyFromPopup = function (code) {
-
-      // 🔥 input me value daal
       document.getElementById("couponInput").value = code;
-
-      // 🔥 coupon apply
-      window.applyCoupon();
-
-      // 🔥 popup close
-      window.closeCouponPopup();
+      applyCoupon();
+      closeCouponPopup();
     }
 
-
-    /* ================= POPUP ================= */
-    window.openCouponPopup = function () {
-      let popup = document.getElementById("couponPopup");
-      popup.style.display = "flex";
-
-      setTimeout(() => {
-        popup.classList.add("show");
-      }, 10);
-
-      renderCoupons();
-    }
-
-    window.closeCouponPopup = function () {
-      let popup = document.getElementById("couponPopup");
-
-      popup.classList.remove("show");
-
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 300);
-    }
     /* ================= INIT ================= */
     renderCart();
     updateCartCount();
