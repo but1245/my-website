@@ -396,51 +396,39 @@ body {
     text-align: center;
   }
 }
-.offer-bar{
-  width: 100%;
-  background: linear-gradient(45deg,#c49b63,#a67c52);
-  color: #fff;
-  text-align: center;
-  padding: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-.offer-bar{
-  animation: slideDown 0.5s ease;
-}
+/* ================= OFFER BAR ================= */
 
-@keyframes slideDown{
-  from{transform: translateY(-100%);}
-  to{transform: translateY(0);}
-}
-.offer-bar{
-  width: 100%;
-  background: linear-gradient(45deg,#c49b63,#a67c52);
-  color: #fff;
-  text-align: center;
-  padding: 10px;
-  font-size: 14px;
-}
 .offer-bar{
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(45deg,#c49b63,#a67c52);
-  color: #fff;
-  padding: 10px 0;
+  background: #f8f5f0;
+  background: linear-gradient(90deg, #f3b244, #f3efe8);
+  border-bottom: 1px solid #e5e0d8;
+  padding: 8px 0;
 }
 
-/* MARQUEE WRAPPER */
+/* LINK */
+.offer-link{
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+/* MARQUEE */
 .marquee{
   display: flex;
   white-space: nowrap;
+  overflow: hidden;
 }
 
 /* TEXT */
 .marquee span{
   display: inline-block;
   padding-left: 100%;
-  animation: scrollText 25s linear infinite;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  animation: scrollText 39s linear infinite;
 }
 
 /* ANIMATION */
@@ -452,9 +440,28 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/* HOVER PAUSE */
 .offer-bar:hover .marquee span{
   animation-play-state: paused;
 }
-.offer-bar{
+
+/* TEXT HOVER */
+.offer-link:hover{
+  color: #c49b63;
   cursor: pointer;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+  .marquee span{
+    font-size: 12px;
+  }
+}
+
+@media(max-width:480px){
+  .marquee span{
+    font-size: 11px;
+  }
 }
