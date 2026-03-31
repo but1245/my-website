@@ -409,6 +409,28 @@ if(data){
   uploadBox.style.display = "none";
 }
   </script>
+  <script>
+const applyBtn = document.getElementById("applyCoupon");
+const input = document.getElementById("couponInput");
+const msg = document.getElementById("couponMsg");
+
+applyBtn.addEventListener("click", () => {
+
+  let code = input.value.trim().toUpperCase();
+
+  if(code === "PF20"){
+    msg.innerText = "✅ Coupon Applied! 20% Discount";
+    msg.style.color = "green";
+
+    localStorage.setItem("discount", "20");
+  }
+  else{
+    msg.innerText = "❌ Invalid Coupon Code";
+    msg.style.color = "red";
+  }
+
+});
+</script>
 </body>
 
 </html>

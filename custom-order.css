@@ -549,3 +549,30 @@ textarea{
 .btn:hover{
   transform:scale(1.03);
 }
+.coupon-box{
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+#couponInput{
+  flex: 1;
+}
+
+#applyCoupon{
+  padding: 8px 15px;
+  border: none;
+  background: #c49b63;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#applyCoupon:hover{
+  background: #a67c52;
+}
+
+#couponMsg{
+  font-size: 13px;
+  margin-top: 5px;
+}
