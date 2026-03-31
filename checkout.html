@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+
+  <link rel="stylesheet" href="checkout.css">
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png">
+    </a>
+  </header>
+
+  <div class="checkout-page">
+
+    <h2>🚚 Checkout</h2>
+
+    <div class="checkout-container">
+
+      <!-- LEFT: ADDRESS -->
+      <div class="address-box">
+
+        <h3>Shipping Address</h3>
+
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="number" id="phone" placeholder="Mobile Number">
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="text" id="state" placeholder="State">
+        <input type="text" id="city" placeholder="City">
+        <input type="number" id="pincode" placeholder="Pincode">
+
+        <textarea id="address" placeholder="Full Address"></textarea>
+
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div class="summary">
+
+        <h3>Order Summary</h3>
+
+        <p>Subtotal <span>₹<span id="subtotal">0</span></span></p>
+        <p>Shipping <span>₹100</span></p>
+        <p>GST <span>₹<span id="gst">0</span></span></p>
+
+        <hr>
+
+        <h4>Total <span>₹<span id="total">0</span></span></h4>
+
+        <button class="place-order" onclick="placeOrder()">
+          Place Order
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module">
+
+    import { coupons } from "./database.js";
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let discountValue = 0;
+
+    /* ================= TOTAL ================= */
+    function updateTotal() {
+
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        subtotal += item.price * item.qty;
+      });
+
+      let shipping = 100;
+      let gst = Math.round(subtotal * 0.18);
+
+      let total = subtotal + shipping + gst - discountValue;
+
+      document.getElementById("subtotal").innerText = subtotal;
+      document.getElementById("gst").innerText = gst;
+      document.getElementById("total").innerText = total;
+
+      let shipEl = document.getElementById("shipping");
+      if (shipEl) {
+        shipEl.innerText = shipping;
+      }
+    }
+
+    /* ================= APPLY COUPON ================= */
+    window.applyCoupon = function () {
+
+      let code = document.getElementById("couponInput").value.trim().toUpperCase();
+
+      let found = coupons.find(c => c.code === code);
+
+      if (found) {
+
+        let subtotal = 0;
+
+        cart.forEach(item => {
+          subtotal += item.price * item.qty;
+        });
+
+        if (found.type === "flat") {
+          discountValue = found.value;
+        }
+
+        if (found.type === "percent") {
+          discountValue = Math.round(subtotal * (found.value / 100));
+        }
+
+        alert("Coupon Applied ✅");
+
+      } else {
+        discountValue = 0;
+        alert("Invalid Coupon ❌");
+      }
+
+      updateTotal();
+    };
+
+    /* ================= INIT ================= */
+    updateTotal();
+
+  </script>
+
+</body>
+
+</html>

@@ -1,436 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Custom Order</title>
+<meta charset="UTF-8">
+<title>Custom Order</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="custom-order.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="custom-order.css">
 
 </head>
 
 <body>
 
-  <div class="wrapper">
+<div class="wrapper">
 
-    <!-- HEADER -->
-    <div class="header">
-      <h1>Tell Us Your Requirements</h1>
-      <p>Get a free quote & design consultation with 100% satisfaction guarantee.</p>
-    </div>
-
-    <!-- FORM -->
-    <div class="card">
-
-      <!-- CUSTOMER -->
-      <div class="section-title">Customer Details</div>
-
-      <div class="grid">
-        <input class="input name-only" placeholder="Full Name">
-        <input class="input" type="number" placeholder="Mobile Number">
-        <input type="email" id="email" class="input" placeholder="Email Address">
-        <span id="emailError" style="color:red; font-size:12px; display:none;">
-          Please enter a valid email (example@gmail.com)
-        </span>
-        <input class="input" placeholder="City / Location">
-        <input class="input full" placeholder="Full Address">
-      </div>
-
-      <!-- FURNITURE -->
-      <div class="section-title">Furniture Details</div>
-
-      <div class="grid">
-        <select class="input">
-          <option disabled selected>Select Furniture Type</option>
-
-          <!-- Bedroom -->
-          <optgroup label="Bedroom">
-            <option>Bed</option>
-            <option>Wardrobe</option>
-            <option>Dressing Table</option>
-            <option>Bedside Table</option>
-          </optgroup>
-
-          <!-- Living Room -->
-          <optgroup label="Living Room">
-            <option>Sofa</option>
-            <option>Sectional Sofa</option>
-            <option>Coffee Table</option>
-            <option>TV Unit</option>
-            <option>Bookshelf</option>
-          </optgroup>
-
-          <!-- Dining -->
-          <optgroup label="Dining">
-            <option>Dining Table</option>
-            <option>Dining Chair</option>
-            <option>Bar Unit</option>
-          </optgroup>
-
-          <!-- Office -->
-          <optgroup label="Office">
-            <option>Office Table</option>
-            <option>Office Chair</option>
-            <option>Workstation</option>
-          </optgroup>
-
-          <!-- Others -->
-          <optgroup label="Others">
-            <option>Shoe Rack</option>
-            <option>Cabinet</option>
-            <option>Storage Unit</option>
-            <option value="custom">Custom Furniture</option>
-          </optgroup>
-        </select>
-
-        <!-- ✅ YAHAN ADD KAR -->
-        <input type="text" id="customBox" class="input full" placeholder="Enter Custom Furniture" style="display:none;">
-
-        </select>
-
-        <div class="size">
-          <input class="input" type="number" placeholder="Length">
-          <input class="input" type="number" placeholder="Width">
-          <input class="input" type="number" placeholder="Height">
-          <div class="unit-dropdown">
-
-            <div class="unit-selected" id="unitSelected">
-              Select Size Unit
-            </div>
-
-            <div class="unit-options" id="unitOptions">
-              <div data-value="mm">Millimeter (mm)</div>
-              <div data-value="cm">Centimeter (cm)</div>
-              <div data-value="inch">Inches (in)</div>
-              <div data-value="ft">Feet (ft)</div>
-              <div data-value="m">Meter (m)</div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:10px;">Material Preference</div>
-
-      <div class="material">
-
-        <button type="button">Sheesham Wood</button>
-        <button type="button">Teak Wood</button>
-        <button type="button">Mango Wood</button>
-        <button type="button">MDF</button>
-
-        <button type="button" id="otherBtn">Other</button>
-
-      </div>
-
-      <!-- 🔥 Hidden Input -->
-      <input type="text" id="otherInput" class="input full" placeholder="Enter Material" style="display:none;">
-
-      <!-- CUSTOM -->
-      <div class="section-title">Customization Options</div>
-
-      <div class="grid">
-
-
-        <div class="custom-row">
-
-          <!-- LEFT (FIELDS) -->
-          <div class="custom-left customization-section" id="customSection">
-            <input class="input" placeholder="Color / Finish">
-            <input class="input" placeholder="Design Style">
-          </div>
-
-          <!-- RIGHT (TOGGLE) -->
-          <div class="custom-right">
-            <div class="toggle">
-              <div class="toggle-btn active" data-value="yes">Yes</div>
-              <div class="toggle-btn" data-value="no">No</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div style="margin-top:10px;">Extra Notes</div>
-
-      <textarea placeholder="Provide details..."></textarea>
-      <div class="reference">
-        <h3>Reference Product</h3>
-        <img id="ref-img" src="" width="200">
-        <p id="ref-name"></p>
-      </div>
-      <div class="upload-box" id="uploadBox">
-        <input type="file" id="fileInput" hidden>
-
-        <p id="uploadText">
-          Drag & Drop or <span>Click Here</span> to Upload
-        </p>
-      </div>
-      <div class="coupon-box">
-
-  <input type="text" id="couponInput" class="input" placeholder="Enter Coupon Code">
-
-  <button type="button" id="applyCoupon">Apply</button>
-
-  <p id="couponMsg"></p>
-
-</div>
-      <button class="btn" id="submitBtn">Submit Custom Request →</button>
-
-    </div>
-    
-<input class="input name-only" placeholder="Full Name">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Tell Us Your Requirements</h1>
+    <p>Get a free quote & design consultation with 100% satisfaction guarantee.</p>
   </div>
 
-  <script>
-    const dropdown = document.querySelector(".unit-dropdown");
-    const selected = dropdown.querySelector(".unit-selected");
-    const options = dropdown.querySelectorAll(".unit-options div");
+  <div class="card">
 
-    selected.onclick = () => {
-      dropdown.classList.toggle("active");
+    <!-- CUSTOMER -->
+    <div class="section-title">Customer Details</div>
+
+    <div class="grid">
+      <input class="input name-only" placeholder="Full Name">
+      <input class="input" type="tel" placeholder="Mobile Number">
+      <input type="email" id="email" class="input" placeholder="Email Address">
+      <span id="emailError" style="color:red; font-size:12px; display:none;">
+        Please enter a valid email (example@gmail.com)
+      </span>
+      <input class="input" placeholder="City / Location">
+      <input class="input full" placeholder="Full Address">
+    </div>
+
+    <!-- FURNITURE -->
+    <div class="section-title">Furniture Details</div>
+
+    <div class="grid">
+      <select class="input" id="furnitureSelect">
+        <option disabled selected>Select Furniture Type</option>
+
+        <optgroup label="Bedroom">
+          <option>Bed</option>
+          <option>Wardrobe</option>
+          <option>Dressing Table</option>
+          <option>Bedside Table</option>
+        </optgroup>
+
+        <optgroup label="Living Room">
+          <option>Sofa</option>
+          <option>Sectional Sofa</option>
+          <option>Coffee Table</option>
+          <option>TV Unit</option>
+          <option>Bookshelf</option>
+        </optgroup>
+
+        <optgroup label="Dining">
+          <option>Dining Table</option>
+          <option>Dining Chair</option>
+          <option>Bar Unit</option>
+        </optgroup>
+
+        <optgroup label="Office">
+          <option>Office Table</option>
+          <option>Office Chair</option>
+          <option>Workstation</option>
+        </optgroup>
+
+        <optgroup label="Others">
+          <option>Shoe Rack</option>
+          <option>Cabinet</option>
+          <option>Storage Unit</option>
+          <option value="custom">Custom Furniture</option>
+        </optgroup>
+      </select>
+
+      <input type="text" id="customBox" class="input full" placeholder="Enter Custom Furniture" style="display:none;">
+
+      <div class="size">
+        <input class="input" type="number" placeholder="Length">
+        <input class="input" type="number" placeholder="Width">
+        <input class="input" type="number" placeholder="Height">
+
+        <div class="unit-dropdown">
+          <div class="unit-selected" id="unitSelected">Select Size Unit</div>
+          <div class="unit-options" id="unitOptions">
+            <div>Millimeter (mm)</div>
+            <div>Centimeter (cm)</div>
+            <div>Inches (in)</div>
+            <div>Feet (ft)</div>
+            <div>Meter (m)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATERIAL -->
+    <div style="margin-top:10px;">Material Preference</div>
+
+    <div class="material">
+      <button type="button">Sheesham Wood</button>
+      <button type="button">Teak Wood</button>
+      <button type="button">Mango Wood</button>
+      <button type="button">MDF</button>
+      <button type="button" id="otherBtn">Other</button>
+    </div>
+
+    <input type="text" id="otherInput" class="input full" placeholder="Enter Material" style="display:none;">
+
+    <!-- CUSTOM -->
+    <div class="section-title">Customization Options</div>
+
+    <div class="custom-row">
+      <div class="custom-left" id="customSection">
+        <input class="input" placeholder="Color / Finish">
+        <input class="input" placeholder="Design Style">
+      </div>
+
+      <div class="toggle">
+        <div class="toggle-btn active" data-value="yes">Yes</div>
+        <div class="toggle-btn" data-value="no">No</div>
+      </div>
+    </div>
+
+    <textarea placeholder="Provide details..."></textarea>
+
+    <!-- UPLOAD -->
+    <div class="upload-box" id="uploadBox">
+      <input type="file" id="fileInput" hidden>
+      <p id="uploadText">Drag & Drop or <span>Click Here</span> to Upload</p>
+    </div>
+
+    <!-- COUPON -->
+    <div class="coupon-box">
+      <input type="text" id="couponInput" class="input" placeholder="Enter Coupon Code">
+      <button type="button" id="applyCoupon">Apply</button>
+      <p id="couponMsg"></p>
+    </div>
+
+    <button class="btn" id="submitBtn">Submit Custom Request →</button>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ===== UNIT DROPDOWN ===== */
+  const unitSelected = document.getElementById("unitSelected");
+  const unitOptions = document.getElementById("unitOptions");
+
+  unitSelected.onclick = () => {
+    unitOptions.style.display = unitOptions.style.display === "block" ? "none" : "block";
+  };
+
+  unitOptions.querySelectorAll("div").forEach(opt => {
+    opt.onclick = () => {
+      unitSelected.innerText = opt.innerText;
+      unitOptions.style.display = "none";
     };
+  });
 
-    options.forEach(opt => {
-      opt.onclick = () => {
-        selected.innerText = opt.innerText;
-        dropdown.classList.remove("active");
-      };
-    });
-
-    /* CLICK OUTSIDE CLOSE */
-    document.addEventListener("click", (e) => {
-      if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove("active");
-      }
-    });
-  </script>
-  <script>
-    const furnitureSelect = document.querySelector("select.input");
-    const customBox = document.getElementById("customBox");
-
-    furnitureSelect.addEventListener("change", () => {
-
-      if (furnitureSelect.value === "custom") {
-        customBox.style.display = "block";   // show
-      } else {
-        customBox.style.display = "none";    // hide
-      }
-
-    });
-  </script>
-  <script>
-    const materialBtns = document.querySelectorAll(".material button");
-    const otherBtn = document.getElementById("otherBtn");
-    const otherInput = document.getElementById("otherInput");
-
-    materialBtns.forEach(btn => {
-
-      btn.addEventListener("click", () => {
-
-        /* remove active from all */
-        materialBtns.forEach(b => b.classList.remove("active"));
-
-        /* add active */
-        btn.classList.add("active");
-
-        /* show/hide input */
-        if (btn === otherBtn) {
-          otherInput.style.display = "block";
-        } else {
-          otherInput.style.display = "none";
-        }
-
-      });
-
-    });
-  </script>
-  <script>
-    const toggleBtns = document.querySelectorAll(".toggle-btn");
-    const section = document.getElementById("customSection");
-
-    toggleBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-
-        // active switch
-        toggleBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        // 🔥 MAIN LOGIC
-        if (btn.dataset.value === "no") {
-          section.classList.add("disabled");
-        } else {
-          section.classList.remove("disabled");
-        }
-
-      });
-    });
-  </script>
-  <script>
-    const nameInputs = document.querySelectorAll(".name-only");
-
-    nameInputs.forEach(input => {
-      input.addEventListener("input", () => {
-
-        // allow only letters + space
-        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
-
-      });
-    });
-  </script>
-  <script>
-    const emailInput = document.getElementById("email");
-    const emailError = document.getElementById("emailError");
-
-    emailInput.addEventListener("input", () => {
-
-      let value = emailInput.value;
-
-      // basic email pattern
-      let pattern = /^[^\s@]+@[^\s@]+\.(com)$/;
-
-      if (pattern.test(value)) {
-        emailError.style.display = "none"; // ✔️ correct
-      } else {
-        emailError.style.display = "block"; // ❌ error
-      }
-
-    });
-  </script>
-  <script>
-    const selected = document.getElementById("unitSelected");
-    const optionsBox = document.getElementById("unitOptions");
-    const options = optionsBox.querySelectorAll("div");
-
-    // open/close
-    selected.onclick = () => {
-      optionsBox.style.display =
-        optionsBox.style.display === "block" ? "none" : "block";
-    };
-
-    // select
-    options.forEach(opt => {
-      opt.onclick = () => {
-        selected.innerText = opt.innerText;
-        optionsBox.style.display = "none";
-      };
-    });
-
-    // click outside close
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".unit-dropdown")) {
-        optionsBox.style.display = "none";
-      }
-    });
-  </script>
-  <script>
-    const uploadBox = document.getElementById("uploadBox");
-    const fileInput = document.getElementById("fileInput");
-    const uploadText = document.getElementById("uploadText");
-
-    /* CLICK → OPEN FILE */
-    uploadBox.addEventListener("click", () => {
-      fileInput.click();
-    });
-
-    /* FILE SELECT */
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files[0];
-      if (file) {
-        uploadText.innerText = "Uploaded: " + file.name;
-      }
-    });
-
-    /* DRAG OVER */
-    uploadBox.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadBox.classList.add("drag");
-    });
-
-    /* DRAG LEAVE */
-    uploadBox.addEventListener("dragleave", () => {
-      uploadBox.classList.remove("drag");
-    });
-
-    /* DROP */
-    uploadBox.addEventListener("drop", (e) => {
-      e.preventDefault();
-      uploadBox.classList.remove("drag");
-
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        uploadText.innerText = "Uploaded: " + file.name;
-      }
-    });
-  </script>
-  <script>
-    const submitBtn = document.getElementById("submitBtn");
-
-    submitBtn.addEventListener("click", () => {
-
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-      if (isLoggedIn === "true") {
-        alert("✅ Request Submitted Successfully!");
-
-        // yahan future me form submit hoga
-      } else {
-        alert("⚠️ Please login first to submit your request");
-
-        // login page open
-        window.location.href = "login.html";
-      }
-
-    });
-  </script>
-  <script>
-    let data = JSON.parse(localStorage.getItem("customProduct"));
-
-    if (data) {
-      document.getElementById("ref-img").src = data.image;
-      document.getElementById("ref-name").innerText = data.name;
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".unit-dropdown")) {
+      unitOptions.style.display = "none";
     }
-    
-  </script>
-  <script>
-    let data = JSON.parse(localStorage.getItem("customProduct"));
+  });
 
-const refImg = document.getElementById("ref-img");
-const refName = document.getElementById("ref-name");
-const uploadBox = document.getElementById("uploadBox");
+  /* ===== CUSTOM FURNITURE ===== */
+  const furnitureSelect = document.getElementById("furnitureSelect");
+  const customBox = document.getElementById("customBox");
 
-if(data){
-  // show reference
-  refImg.src = data.image;
-  refName.innerText = data.name;
+  furnitureSelect.addEventListener("change", () => {
+    customBox.style.display = furnitureSelect.value === "custom" ? "block" : "none";
+  });
 
-  // 🔥 hide upload box
-  uploadBox.style.display = "none";
-}
-  </script>
-  <script>
-const applyBtn = document.getElementById("applyCoupon");
-const input = document.getElementById("couponInput");
-const msg = document.getElementById("couponMsg");
+  /* ===== MATERIAL ===== */
+  const materialBtns = document.querySelectorAll(".material button");
+  const otherBtn = document.getElementById("otherBtn");
+  const otherInput = document.getElementById("otherInput");
 
-applyBtn.addEventListener("click", () => {
+  materialBtns.forEach(btn => {
+    btn.onclick = () => {
+      materialBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      otherInput.style.display = btn === otherBtn ? "block" : "none";
+    };
+  });
 
-  let code = input.value.trim().toUpperCase();
+  /* ===== TOGGLE ===== */
+  const toggleBtns = document.querySelectorAll(".toggle-btn");
+  const section = document.getElementById("customSection");
 
-  if(code === "PF20"){
-    msg.innerText = "✅ Coupon Applied! 20% Discount";
-    msg.style.color = "green";
+  toggleBtns.forEach(btn => {
+    btn.onclick = () => {
+      toggleBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      section.classList.toggle("disabled", btn.dataset.value === "no");
+    };
+  });
 
+  /* ===== NAME VALIDATION ===== */
+  document.querySelectorAll(".name-only").forEach(input => {
+    input.oninput = () => {
+      input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    };
+  });
+
+  /* ===== EMAIL VALIDATION ===== */
+  const emailInput = document.getElementById("email");
+  const emailError = document.getElementById("emailError");
+
+  emailInput.oninput = () => {
+    const pattern = /^[^\s@]+@[^\s@]+\.(com)$/;
+    emailError.style.display = pattern.test(emailInput.value) ? "none" : "block";
+  };
+
+  /* ===== FILE UPLOAD ===== */
+  const uploadBox = document.getElementById("uploadBox");
+  const fileInput = document.getElementById("fileInput");
+  const uploadText = document.getElementById("uploadText");
+
+  uploadBox.onclick = () => fileInput.click();
+
+  fileInput.onchange = () => {
+    const file = fileInput.files[0];
+    if (file) uploadText.innerText = "Uploaded: " + file.name;
+  };
+
+  uploadBox.ondragover = (e) => {
+    e.preventDefault();
+    uploadBox.classList.add("drag");
+  };
+
+  uploadBox.ondragleave = () => uploadBox.classList.remove("drag");
+
+  uploadBox.ondrop = (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove("drag");
+    const file = e.dataTransfer.files[0];
+    if (file) uploadText.innerText = "Uploaded: " + file.name;
+  };
+
+  /* ===== COUPON ===== */
+  const applyBtn = document.getElementById("applyCoupon");
+  const couponInput = document.getElementById("couponInput");
+  const couponMsg = document.getElementById("couponMsg");
+
+  applyBtn.onclick = () => {
+    const code = couponInput.value.trim().toUpperCase();
+
+    if (code === "PF20") {
+      couponMsg.innerText = "✅ Coupon Applied! 20% Discount";
+      couponMsg.style.color = "green";
+      localStorage.setItem("discount", "20");
+    } else {
+      couponMsg.innerText = "❌ Invalid Coupon Code";
+      couponMsg.style.color = "red";
+    }
+  };
+
+  /* ===== AUTO COUPON ===== */
+  const params = new URLSearchParams(window.location.search);
+  const coupon = params.get("coupon");
+
+  if (coupon === "PF20") {
+    couponInput.value = coupon;
+    couponMsg.innerText = "🎉 Coupon Applied Automatically (20% OFF)";
+    couponMsg.style.color = "green";
     localStorage.setItem("discount", "20");
   }
-  else{
-    msg.innerText = "❌ Invalid Coupon Code";
-    msg.style.color = "red";
-  }
+
+  /* ===== SUBMIT ===== */
+  document.getElementById("submitBtn").onclick = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+      alert("✅ Request Submitted Successfully!");
+    } else {
+      alert("⚠️ Please login first");
+      window.location.href = "login.html";
+    }
+  };
 
 });
 </script>
-</body>
 
+</body>
 </html>
