@@ -380,27 +380,6 @@ document.querySelectorAll(".add-to-cart").forEach((btn, i)=>{
 });
 </script>
 <script>
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-
-/* TOGGLE WISHLIST */
-function toggleWishlist(el, name, price, image){
-
-  let index = wishlist.findIndex(item => item.name === name);
-
-  if(index !== -1){
-    // REMOVE
-    wishlist.splice(index,1);
-    el.innerText = "♡";
-  } else {
-    // ADD
-    wishlist.push({name, price, image});
-    el.innerText = "❤️";
-  }
-
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-}
-</script>
-<script>
 function goToCustom(name, price, image){
   localStorage.setItem("customProduct", JSON.stringify({
     name, price, image

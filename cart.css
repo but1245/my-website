@@ -688,4 +688,30 @@ body{
   background: #c49b63;
   color: #fff;
   font-weight: 500;
-  
+}
+/* HEART ICON */
+.wishlist{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+/* HOVER EFFECT */
+.wishlist:hover{
+  color: #c49b63;
+}
+
+/* HEART ANIMATION */
+.wishlist.liked{
+  color: #c49b63;
+  animation: heartBeat 0.5s ease;
+}
+
+@keyframes heartBeat{
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}

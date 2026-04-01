@@ -52,30 +52,47 @@ export const coupons = [
                              //CARD ADD//
 export const products = [
   {
-    id: 1,
+  id: 2004,
     name: "Modern Sofa",
     price: 40000,
+    review: 4.5,
+    reviewsCount: 97,  
     image: "images/sofa.jpg",
     category: "sofa"
   },
   {
-    id: 1,
-    name: "Modern Sofa",
-    price: 40000,
-    image: "images/sofa.jpg",
-    category: "sofa"
-  },{
-    id: 1,
-    name: "Modern Sofa",
-    price: 40000,
-    image: "images/sofa.jpg",
+    id: 2005,
+    name: "Wooden Wardrobe",
+    price: 38000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/wardrobes.png",
     category: "sofa"
   },
   {
-    id: 1,
+    id: 2006,
+    name: "Modern Dressing",
+    price: 19000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/dressing.png",
+    category: "sofa"
+  },
+  {
+    id: 2007,
     name: "Luxury Bed",
     price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
     image: "images/bed.jpg",
     category: "bed"
-  }
+  },
+  {
+  id: 2008,
+  name: "Wooden Dining Table",
+  price: 18000,
+  image: "images/dining.png",
+  category: "dining"
+}
+
 ]; 
