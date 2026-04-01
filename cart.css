@@ -155,7 +155,7 @@ body{
 
 /* ERROR */
 .coupon-msg.error{
-  color: #d32f2f;
+  color: #1f1919;
 }
 .coupon-msg.success{
   color:#2e7d32;

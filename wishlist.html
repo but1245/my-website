@@ -155,5 +155,21 @@ function toggleWishlist(el, name, price, image){
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }
 </script>
+<script>
+function updateCartCountLive() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+
+  let el = document.getElementById("cart-count");
+  if (el) el.innerText = total;
+}
+
+/* 🔥 INITIAL */
+updateCartCountLive();
+
+/* 🔥 CUSTOM EVENT LISTENER */
+window.addEventListener("cartUpdated", updateCartCountLive);
+</script>
 </body>
 </html>
