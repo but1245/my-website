@@ -798,7 +798,7 @@ body {
 
 /* TITLE */
 .featured-header h2 {
-  font-size: 36px;
+  font-size: 56px;
   font-weight: 700;
   letter-spacing: 1px;
   position: relative;
@@ -899,16 +899,6 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-/* 🔥 HOVER GLOW */
-.featured-header h2:hover{
-  color: #c89b3c;
-
-  text-shadow:
-    0 0 5px rgba(200,155,60,0.6),
-    0 0 10px rgba(200,155,60,0.5),
-    0 0 20px rgba(200,155,60,0.4);
-}
 .text.animate li{
   opacity: 1;
   transform: translateY(0);
@@ -919,3 +909,26 @@ body {
 .text.animate li:nth-child(3){ transition-delay: 0.6s; }
 .text.animate li:nth-child(4){ transition-delay: 0.8s; }
 .text.animate li:nth-child(5){ transition-delay: 1.0s; }
+.featured-header h2{
+  transition: all 0.4s ease;
+}
+
+/* 🔥 HOVER GRADIENT TEXT */
+.featured-header h2:hover{
+  background: linear-gradient(90deg, #c89b3c, #f5d27a, #c89b3c);
+  
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-size: 200% auto;
+  animation: shine 2s linear infinite;
+}
+/* 🔥 SHINE ANIMATION */
+@keyframes shine{
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.featured-header h2:hover{
+  letter-spacing: 1px;
+  transform: scale(1.02);
+}
