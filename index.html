@@ -23,7 +23,9 @@
 
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
-
+<div class="menu-toggle" onclick="toggleMenu()">
+  ☰
+</div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -435,6 +437,11 @@
 
     /* 🔥 CUSTOM EVENT LISTENER */
     window.addEventListener("cartUpdated", updateCartCountLive);
+  </script>
+  <script>
+    function toggleMenu(){
+  document.querySelector(".nav-links").classList.toggle("active");
+}
   </script>
 </body>
 

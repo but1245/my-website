@@ -1090,3 +1090,38 @@ a:focus{
 .cart-icon:active{
   transform: scale(0.9);
 }
+/* HAMBURGER HIDE (desktop) */
+.menu-toggle{
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+  .menu-toggle{
+    display: block;
+  }
+
+  .nav-links{
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: white;
+
+    flex-direction: column;
+    display: none;   /* hidden by default */
+    padding: 20px;
+  }
+
+  .nav-links.active{
+    display: flex;  /* show when clicked */
+  }
+
+  .nav-links li{
+    margin: 10px 0;
+  }
+
+}
