@@ -1,7 +1,9 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background: #f5f5f5;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* SECTION */
@@ -17,7 +19,8 @@ body {
 }
 
 .section-title p {
-  color: #777;
+  color: var(--text-secondary);
+  opacity: 0.9;
   margin-bottom: 30px;
 }
 
@@ -32,11 +35,13 @@ body {
 .top-card {
   width: 250px;
   height: 120px;
-  background: #ddd;
+  background: var(--secondary-bg);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
+  border: 1px solid var(--border-color);
   font-weight: 600;
 }
 
@@ -52,26 +57,22 @@ body {
   padding: 8px 15px;
   border: none;
   border-radius: 8px;
-  background: #eee;
+  background: var(--secondary-bg);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .filter .active {
-  background: #c49b63;
+  background: var(--accent-color);
   color: #fff;
 }
 
 /* GRID */
-.portfolio-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
 .card {
   height: 150px;
-  background: #ddd;
+  background: var(--secondary-bg);
   border-radius: 10px;
+  border: 1px solid var(--border-color);
 }
 
 /* PORTFOLIO GRID */
@@ -83,7 +84,9 @@ body {
 }
 
 .portfolio-card {
-  background: #f5f5f5;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   height: 180px;
   display: flex;
@@ -107,11 +110,12 @@ body {
 }
 
 .category-box {
-  background: #eee;
+  background: var(--card-bg);
   padding: 40px 20px;
   border-radius: 15px;
   text-align: center;
   transition: 0.3s;
+  border: 1px solid var(--border-color);
 }
 
 .category-box:hover {
@@ -132,7 +136,9 @@ body {
   padding: 6px 15px;
   border: none;
   border-radius: 20px;
-  background: #eee;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: 0.3s;
 }

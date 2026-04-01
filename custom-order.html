@@ -4,12 +4,26 @@
 <meta charset="UTF-8">
 <title>Custom Order</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="custom-order.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="custom-order.css">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
+  <!-- Floating Theme Toggle -->
+  <div style="position: fixed; top: 20px; right: 20px; z-index: 2000;">
+    <button id="theme-toggle" class="theme-btn" style="background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--card-shadow); width: 48px; height: 48px;">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+  </div>
 
 <div class="wrapper">
 
@@ -287,6 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
-
+<script src="theme.js"></script>
 </body>
 </html>

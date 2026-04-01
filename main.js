@@ -237,4 +237,4 @@ section.addEventListener("mouseleave", () => {
 
 /* ================= INIT ================= */
 window.updateCartCount();
-window.renderProducts();
+window.renderProducts();

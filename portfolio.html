@@ -6,9 +6,20 @@
   <title>Portfolio</title>
   <link rel="stylesheet" href="portfolio.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
+
+  <!-- 🔝 NAVBAR -->
   <header class="navbar">
 
     <!-- LOGO -->
@@ -61,9 +72,9 @@
           </ul>
         </li>
 
-        <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
         <li><a href="track.html">Track Order</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="portfolio.html" class="active">Portfolio</a></li>
         <li><a href="#">Contact</a></li>
         <li><a href="#">About</a></li>
 
@@ -72,7 +83,7 @@
 
     <!-- RIGHT -->
     <div class="nav-right">
-      <span id="user-name" style="margin-left:10px;"></span>
+
 
       <a href="wishlist.html">
         <i class="fa-regular fa-heart"></i>
@@ -90,6 +101,11 @@
           Login <span>/</span> Signup
         </button>
       </a>
+      <span id="user-name" style="margin-left:10px;"></span>
+
+      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
 
     </div>
 
@@ -202,21 +218,22 @@
     });
   </script>
   <script>
-function updateCartCountLive() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    function updateCartCountLive() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+      let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
 
-  let el = document.getElementById("cart-count");
-  if (el) el.innerText = total;
-}
+      let el = document.getElementById("cart-count");
+      if (el) el.innerText = total;
+    }
 
-/* 🔥 INITIAL */
-updateCartCountLive();
+    /* 🔥 INITIAL */
+    updateCartCountLive();
 
-/* 🔥 CUSTOM EVENT LISTENER */
-window.addEventListener("cartUpdated", updateCartCountLive);
-</script>
+    /* 🔥 CUSTOM EVENT LISTENER */
+    window.addEventListener("cartUpdated", updateCartCountLive);
+  </script>
+  <script src="theme.js"></script>
 </body>
 
 </html>

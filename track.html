@@ -3,94 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <title>Track Order</title>
-<link rel="stylesheet" href="track.css">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="track.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
-<header class="navbar">
 
-  <!-- LOGO -->
-  <a href="index.html" class="logo">
-  <img src="images/logo.png" alt="logo">
-  
-</a>
+  <!-- 🔝 NAVBAR -->
+  <header class="navbar">
 
-  <!-- LINKS -->
-  <nav>
-    <ul class="nav-links">
+    <!-- LOGO -->
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="logo">
 
-      <li><a href="index.html">Home</a></li>
+    </a>
 
-      <!-- DROPDOWN -->
-      <li class="dropdown">
-        <a href="#">Furniture Categories ▾</a>
+    <!-- LINKS -->
+    <nav>
+      <ul class="nav-links">
 
-        <ul class="menu level-1">
+        <li><a href="index.html">Home</a></li>
 
-          <li>
-            <a href="#">Living Room ▸</a>
+        <!-- DROPDOWN -->
+        <li class="dropdown">
+          <a href="#">Furniture Categories ▾</a>
 
-            <ul class="menu level-2">
-              <li>
-                <a href="#">Sofas ▸</a>
+          <ul class="menu level-1">
 
-                <ul class="menu level-3">
-                  <li>
-                    <a href="#">Leather Sofa ▸</a>
+            <li>
+              <a href="#">Living Room ▸</a>
 
-                    <ul class="menu level-4">
-                      <li><a href="#">2 Seater</a></li>
-                      <li><a href="#">3 Seater</a></li>
-                      <li><a href="#">L Shape</a></li>
-                    </ul>
+              <ul class="menu level-2">
+                <li>
+                  <a href="#">Sofas ▸</a>
 
-                  </li>
-                  <li><a href="#">Fabric Sofa</a></li>
-                </ul>
+                  <ul class="menu level-3">
+                    <li>
+                      <a href="#">Leather Sofa ▸</a>
 
-              </li>
-              <li><a href="#">Center Table</a></li>
-            </ul>
+                      <ul class="menu level-4">
+                        <li><a href="#">2 Seater</a></li>
+                        <li><a href="#">3 Seater</a></li>
+                        <li><a href="#">L Shape</a></li>
+                      </ul>
 
-          </li>
+                    </li>
+                    <li><a href="#">Fabric Sofa</a></li>
+                  </ul>
 
-          <li><a href="#">Bedroom</a></li>
+                </li>
+                <li><a href="#">Center Table</a></li>
+              </ul>
 
-        </ul>
-      </li>
+            </li>
 
-      <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
-      <li><a href="track.html">Track Order</a></li>
-      <li><a href="portfolio.html">Portfolio</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">About</a></li>
+            <li><a href="#">Bedroom</a></li>
 
-    </ul>
-  </nav>
+          </ul>
+        </li>
 
-  <!-- RIGHT -->
-  <div class="nav-right">
-    <span id="user-name" style="margin-left:10px;"></span>
+        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
+        <li><a href="track.html" class="active">Track Order</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">About</a></li>
 
-    <i class="fa-regular fa-heart"></i>
-<div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-    <div class="cart-icon">
-      <a href="cart.html">
-  <i class="fa-solid fa-cart-shopping"></i>
-</a>
-      <span id="cart-count">0</span>
+      </ul>
+    </nav>
+
+    <!-- RIGHT -->
+    <div class="nav-right">
+      
+
+      <a href="wishlist.html">
+        <i class="fa-regular fa-heart"></i>
+      </a>
+      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
+      <div class="cart-icon">
+        <a href="cart.html">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+        <span id="cart-count">0</span>
+      </div>
+
+      <a href="login.html">
+        <button class="auth-btn">
+          Login <span>/</span> Signup
+        </button>
+      </a>
+      <span id="user-name" style="margin-left:10px;"></span>
+
+      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
     </div>
 
-    <a href="login.html">
-  <button class="auth-btn">
-    Login <span>/</span> Signup
-  </button>
-</a>
-
-  </div>
-</header>
+  </header>
 <div class="track-wrapper">
 
   <h1 class="title">Track Your Order</h1>
@@ -242,6 +260,8 @@ updateCartCountLive();
 /* 🔥 CUSTOM EVENT LISTENER */
 window.addEventListener("cartUpdated", updateCartCountLive);
 </script>
+<script src="theme.js"></script>
+</body>
 
 </body>
 </html>

@@ -8,11 +8,18 @@
   <link rel="stylesheet" href="cart.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
 
+ 
+  <!-- 🔝 NAVBAR -->
   <header class="navbar">
 
     <!-- LOGO -->
@@ -76,7 +83,7 @@
 
     <!-- RIGHT -->
     <div class="nav-right">
-      <span id="user-name" style="margin-left:10px;"></span>
+      
 
       <a href="wishlist.html">
         <i class="fa-regular fa-heart"></i>
@@ -94,6 +101,11 @@
           Login <span>/</span> Signup
         </button>
       </a>
+      <span id="user-name" style="margin-left:10px;"></span>
+
+      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
 
     </div>
 
@@ -443,7 +455,7 @@
       </button>
     </div>
   </div>
-
+  <script src="theme.js"></script>
 </body>
 
 </html>

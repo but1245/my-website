@@ -6,10 +6,17 @@
   <title>Pradeep Furniture</title>
 
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
@@ -78,7 +85,7 @@
 
     <!-- RIGHT -->
     <div class="nav-right">
-      <span id="user-name" style="margin-left:10px;"></span>
+      
 
       <a href="wishlist.html">
         <i class="fa-regular fa-heart"></i>
@@ -96,6 +103,11 @@
           Login <span>/</span> Signup
         </button>
       </a>
+      <span id="user-name" style="margin-left:10px;"></span>
+
+      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
 
     </div>
 
@@ -402,6 +414,7 @@
     }
   </script>
   <script type="module" src="main.js"></script>
+  <script src="theme.js"></script>
   <script type="module">
     import { updateCartUI } from "./common.js";
 

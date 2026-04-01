@@ -1,6 +1,8 @@
-body{
-  background:#f3f3f3;
-  font-family:sans-serif;
+body {
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-family: sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 
@@ -17,15 +19,17 @@ body{
   flex:2;
 }
 
-.cart-item{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  background:#fff;
-  padding:15px;
-  border-radius:15px;
-  margin-bottom:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease;
 }
 
 .cart-item img{
@@ -44,12 +48,14 @@ body{
   align-items:center;
 }
 
-.qty button{
-  padding:5px 10px;
-  border:none;
-  background:#eee;
-  border-radius:5px;
-  cursor:pointer;
+.qty button {
+  padding: 5px 10px;
+  border: none;
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 /* REMOVE */
@@ -63,13 +69,15 @@ body{
 }
 
 /* RIGHT */
-.summary{
-  flex:1;
-  background:#fff;
-  padding:20px;
-  border-radius:15px;
-  height:fit-content;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+.summary {
+  flex: 1;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 15px;
+  height: fit-content;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease;
 }
 
 .summary p{
@@ -84,11 +92,13 @@ body{
   margin:10px 0;
 }
 
-.coupon-box input{
-  flex:1;
-  padding:8px;
-  border-radius:8px;
-  border:1px solid #ccc;
+.coupon-box input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .coupon-box button{
@@ -330,12 +340,13 @@ body{
 }
 
 /* POPUP BOX */
-.popup-content{
-  background: #fff;
+.popup-content {
+  background: var(--card-bg);
+  color: var(--text-color);
   padding: 20px;
   border-radius: 15px;
   width: 320px;
-
+  border: 1px solid var(--border-color);
   transform: scale(0.7);
   opacity: 0;
   transition: all 0.3s ease;

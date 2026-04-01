@@ -107,7 +107,7 @@ export const products = [
   },
     {
     id: 2010,
-    name: "Wooden Storage Almiraah",
+    name: "Wooden Almiraah",
     price: 25000,
     review: 4.5,
     reviewsCount: 97,  
