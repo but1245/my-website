@@ -1,7 +1,7 @@
 import { products } from "./database.js";
 
 /* ================= RENDER PRODUCTS ================= */
-window.renderProducts = function() {
+window.renderProducts = function () {
   const container = document.querySelector(".products");
   if (!container) return;
 
@@ -52,7 +52,7 @@ window.renderProducts = function() {
             <i class="fa-solid fa-star"></i>
             <i class="fa-solid fa-star"></i>
             <i class="fa-solid fa-star-half-stroke"></i>
-            <span class="review-text">${item.review}(${item.reviewsCount})</span>
+            <span class="review-text">135</span>
           </div>
         </div>
         
@@ -72,7 +72,7 @@ window.renderProducts = function() {
 };
 
 /* ================= CART COUNT ================= */
-window.updateCartCount = function() {
+window.updateCartCount = function () {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
 
@@ -83,7 +83,7 @@ window.updateCartCount = function() {
 };
 
 /* ================= FLY ANIMATION ================= */
-window.flyToCart = function(btn) {
+window.flyToCart = function (btn) {
   if (!btn) return;
   let productCard = btn.closest(".product-card");
   let img = productCard?.querySelector(".product-img");
@@ -170,7 +170,7 @@ window.addToCart = function (name, price, image, btn) {
 };
 
 /* ================= WISHLIST TOGGLE ================= */
-window.toggleWishlist = function(el, name, price, image) {
+window.toggleWishlist = function (el, name, price, image) {
   let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   let index = wishlist.findIndex(item => item.name === name);
 
@@ -183,6 +183,57 @@ window.toggleWishlist = function(el, name, price, image) {
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
   window.renderProducts();
 };
+
+/* ================= SEARCH ================= */
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("input", function () {
+
+  const value = this.value.toLowerCase();
+
+  const cards = document.querySelectorAll(".product-card");
+
+  cards.forEach(card => {
+
+    const title = card.querySelector("h3").innerText.toLowerCase();
+
+    const id = card.querySelector(".product-id")?.innerText.toLowerCase();
+
+    if (title.includes(value) || (id && id.includes(value))) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+
+  });
+
+});
+
+
+
+const section = document.getElementById("tiltSection");
+const text = document.querySelector(".tilt-text");
+
+section.addEventListener("mousemove", (e) => {
+
+  const rect = section.getBoundingClientRect();
+
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  const rotateY = ((x - centerX) / centerX) * 10; // left-right
+  const rotateX = -((y - centerY) / centerY) * 10; // up-down
+
+  text.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+
+section.addEventListener("mouseleave", () => {
+  text.style.transform = "rotateX(0deg) rotateY(0deg)";
+});
+
 
 /* ================= INIT ================= */
 window.updateCartCount();

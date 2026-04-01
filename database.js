@@ -87,8 +87,53 @@ export const products = [
     image: "images/bed.jpg",
     category: "bed"
   },
+    {
+    id: 2008,
+    name: "Wooden Dining Table",
+    price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/dining.png",
+    category: "bed"
+  },
+    {
+    id: 2009,
+    name: "Luxury 3 Seater Sofa",
+    price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/sofa.jpg",
+    category: "bed"
+  },
+    {
+    id: 2010,
+    name: "Wooden Storage Almiraah",
+    price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/wardrobes.png",
+    category: "bed"
+  },
+    {
+    id: 2011,
+    name: "wall Dressing table",
+    price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/dressing.png",
+    category: "bed"
+  },
+    {
+    id: 2012,
+    name: "Luxury Wooden Bed",
+    price: 25000,
+    review: 4.5,
+    reviewsCount: 97,  
+    image: "images/bed.jpg",
+    category: "bed"
+  },
   {
-  id: 2008,
+  id: 2013,
   name: "Wooden Dining Table",
   price: 18000,
   image: "images/dining.png",
