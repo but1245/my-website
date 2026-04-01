@@ -59,10 +59,23 @@ export const products = [
     category: "sofa"
   },
   {
-    id: 2,
+    id: 1,
+    name: "Modern Sofa",
+    price: 40000,
+    image: "images/sofa.jpg",
+    category: "sofa"
+  },{
+    id: 1,
+    name: "Modern Sofa",
+    price: 40000,
+    image: "images/sofa.jpg",
+    category: "sofa"
+  },
+  {
+    id: 1,
     name: "Luxury Bed",
     price: 25000,
     image: "images/bed.jpg",
     category: "bed"
   }
-];
+]; 
