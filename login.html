@@ -23,7 +23,9 @@
 
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
-
+    <div class="menu-toggle" onclick="toggleMenu()">
+      ☰
+    </div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -36,174 +38,162 @@
 
         <li><a href="index.html">Home</a></li>
 
-        <!-- DROPDOWN -->
-        <li class="dropdown">
-          <a href="#">Furniture Categories ▾</a>
+          <!-- DROPDOWN -->
+          <li class="dropdown">
+            <a href="#">Furniture Categories ▾</a>
 
-          <ul class="menu level-1">
+            <ul class="menu level-1">
 
-            <li>
-              <a href="#">Living Room ▸</a>
+              <li>
+                <a href="#">Living Room ▸</a>
 
-              <ul class="menu level-2">
-                <li>
-                  <a href="#">Sofas ▸</a>
+                <ul class="menu level-2">
+                  <li>
+                    <a href="#">Sofas ▸</a>
 
-                  <ul class="menu level-3">
-                    <li>
-                      <a href="#">Leather Sofa ▸</a>
+                    <ul class="menu level-3">
+                      <li>
+                        <a href="#">Leather Sofa ▸</a>
 
-                      <ul class="menu level-4">
-                        <li><a href="#">2 Seater</a></li>
-                        <li><a href="#">3 Seater</a></li>
-                        <li><a href="#">L Shape</a></li>
-                      </ul>
+                        <ul class="menu level-4">
+                          <li><a href="#">2 Seater</a></li>
+                          <li><a href="#">3 Seater</a></li>
+                          <li><a href="#">L Shape</a></li>
+                        </ul>
 
-                    </li>
-                    <li><a href="#">Fabric Sofa</a></li>
-                  </ul>
+                      </li>
+                      <li><a href="#">Fabric Sofa</a></li>
+                    </ul>
 
-                </li>
-                <li><a href="#">Center Table</a></li>
-              </ul>
+                  </li>
+                  <li><a href="#">Center Table</a></li>
+                </ul>
 
-            </li>
+              </li>
 
-            <li><a href="#">Bedroom</a></li>
+              <li><a href="#">Bedroom</a></li>
 
-          </ul>
-        </li>
+            </ul>
+          </li>
 
-        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
-        <li><a href="track.html">Track Order</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+          <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
+          <li><a href="track.html">Track Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
 
-      </ul>
-    </nav>
+        </ul>
+      </nav>
 
-    <!-- RIGHT -->
-    <div class="nav-right">
+      <!-- RIGHT -->
+      <div class="nav-right">
 
 
-      <a href="wishlist.html">
-        <i class="fa-regular fa-heart"></i>
-      </a>
-      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-      <div class="cart-icon">
-        <a href="cart.html">
-          <i class="fa-solid fa-cart-shopping"></i>
+        <div class="nav-icon">
+          <a href="wishlist.html">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+          <span id="wishlist-count">0</span>
+        </div>
+
+        <div class="nav-icon cart-icon">
+          <a href="cart.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <span id="cart-count">0</span>
+        </div>
+
+        <a href="login.html">
+          <button class="auth-btn">
+            Login <span>/</span> Signup
+          </button>
         </a>
-        <span id="cart-count">0</span>
+        <span id="user-name" style="margin-left:10px;"></span>
+
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
       </div>
 
-      <a href="login.html">
-        <button class="auth-btn">
-          Login <span>/</span> Signup
-        </button>
-      </a>
-      <span id="user-name" style="margin-left:10px;"></span>
+    </header>
+    <div class="login-page">
 
-      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      <!-- HEADER -->
+      <div class="login-header">
+        <h1>Pradeep Furniture</h1>
+        <p>Crafting Your Dream Home</p>
+      </div>
+
+      <!-- CARD -->
+      <div class="login-card">
+
+        <!-- TITLE -->
+        <h2 class="title">Welcome Back!</h2>
+
+        <!-- SOCIAL -->
+        <div class="social-login">
+
+          <button class="social-btn">
+            <i class="fab fa-google"></i>
+            Google
+          </button>
+
+          <button class="social-btn">
+            <i class="fab fa-github"></i>
+            Github
+          </button>
+
+          <button class="social-btn">
+            <i class="fab fa-facebook-f"></i>
+            Facebook
+          </button>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="divider">
+          <span></span>
+          <p>OR</p>
+          <span></span>
+        </div>
+
+        <!-- EMAIL -->
+        <input type="text" placeholder="Email or Username" class="input">
+
+        <!-- PASSWORD -->
+        <div class="password-box">
+          <input type="password" id="password" placeholder="Password" class="input">
+          <i class="fa fa-eye" onclick="togglePassword()"></i>
+        </div>
+
+        <!-- OPTIONS -->
+        <div class="options">
+          <label><input type="checkbox"> Remember Me</label>
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <!-- BUTTON -->
+        <button class="btn">Login</button>
+
+        <!-- SIGNUP -->
+        <p class="signup">
+          Don't have an account? <a href="signup.html">Sign Up</a>
+        </p>
+
+      </div>
 
     </div>
 
-  </header>
-  <div class="login-page">
-
-    <!-- HEADER -->
-    <div class="login-header">
-      <h1>Pradeep Furniture</h1>
-      <p>Crafting Your Dream Home</p>
-    </div>
-
-    <!-- CARD -->
-    <div class="login-card">
-
-      <!-- TITLE -->
-      <h2 class="title">Welcome Back!</h2>
-
-      <!-- SOCIAL -->
-      <div class="social-login">
-
-        <button class="social-btn">
-          <i class="fab fa-google"></i>
-          Google
-        </button>
-
-        <button class="social-btn">
-          <i class="fab fa-github"></i>
-          Github
-        </button>
-
-        <button class="social-btn">
-          <i class="fab fa-facebook-f"></i>
-          Facebook
-        </button>
-
-      </div>
-
-      <!-- DIVIDER -->
-      <div class="divider">
-        <span></span>
-        <p>OR</p>
-        <span></span>
-      </div>
-
-      <!-- EMAIL -->
-      <input type="text" placeholder="Email or Username" class="input">
-
-      <!-- PASSWORD -->
-      <div class="password-box">
-        <input type="password" id="password" placeholder="Password" class="input">
-        <i class="fa fa-eye" onclick="togglePassword()"></i>
-      </div>
-
-      <!-- OPTIONS -->
-      <div class="options">
-        <label><input type="checkbox"> Remember Me</label>
-        <a href="#">Forgot Password?</a>
-      </div>
-
-      <!-- BUTTON -->
-      <button class="btn">Login</button>
-
-      <!-- SIGNUP -->
-      <p class="signup">
-        Don't have an account? <a href="signup.html">Sign Up</a>
-      </p>
-
-    </div>
-
-  </div>
-
-  <script>
-    function togglePassword() {
-      const pass = document.getElementById("password");
-      pass.type = pass.type === "password" ? "text" : "password";
-    }
-  </script>
-  <script>
-    function updateCartCountLive() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-
-      let el = document.getElementById("cart-count");
-      if (el) el.innerText = total;
-    }
-
-    /* 🔥 INITIAL */
-    updateCartCountLive();
-
-    /* 🔥 CUSTOM EVENT LISTENER */
-    window.addEventListener("cartUpdated", updateCartCountLive);
-  </script>
-  <script type="module" src="auth.js"></script>
-  <script src="theme.js"></script>
-</body>
+    <script>
+      function togglePassword() {
+        const pass = document.getElementById("password");
+        pass.type = pass.type === "password" ? "text" : "password";
+      }
+    </script>
+    <script type="module" src="auth.js"></script>
+    <script src="theme.js"></script>
+  </body>
+</html>
 
 </html>

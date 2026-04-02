@@ -20,8 +20,15 @@
 
   
   <!-- 🔝 NAVBAR -->
-  <header class="navbar">
+ </head>
 
+<body>
+
+  <!-- 🔝 NAVBAR -->
+  <header class="navbar">
+    <div class="menu-toggle" onclick="toggleMenu()">
+      ☰
+    </div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -32,7 +39,7 @@
     <nav>
       <ul class="nav-links">
 
-        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html" class="active">Home</a></li>
 
         <!-- DROPDOWN -->
         <li class="dropdown">
@@ -72,24 +79,27 @@
           </ul>
         </li>
 
-        <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
         <li><a href="track.html">Track Order</a></li>
         <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about.html">About</a></li>
 
       </ul>
     </nav>
 
     <!-- RIGHT -->
     <div class="nav-right">
-      
 
-      <a href="wishlist.html">
-        <i class="fa-regular fa-heart"></i>
-      </a>
-      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-      <div class="cart-icon">
+
+      <div class="nav-icon">
+        <a href="wishlist.html">
+          <i class="fa-regular fa-heart"></i>
+        </a>
+        <span id="wishlist-count">0</span>
+      </div>
+      
+      <div class="nav-icon cart-icon">
         <a href="cart.html">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>

@@ -36,7 +36,7 @@
     <nav>
       <ul class="nav-links">
 
-        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="index.html">Home</a></li>
 
         <!-- DROPDOWN -->
         <li class="dropdown">
@@ -482,31 +482,8 @@
 
     updateCartUI();
   </script>
-  <script>
-    function updateCountsLive() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
-
-      let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-      let cartEl = document.getElementById("cart-count");
-      if (cartEl) cartEl.innerText = cartTotal;
-
-      let wishEl = document.getElementById("wishlist-count");
-      if (wishEl) wishEl.innerText = wList.length;
-    }
-
-    /* 🔥 INITIAL */
-    updateCountsLive();
-
-    /* 🔥 CUSTOM EVENT LISTENER */
-    window.addEventListener("cartUpdated", updateCountsLive);
-    window.addEventListener("wishlistUpdated", updateCountsLive);
-  </script>
-  <script>
-    function toggleMenu() {
-      document.querySelector(".nav-links").classList.toggle("active");
-    }
-  </script>
+  <script src="theme.js"></script>
+</body>
 
   <!-- 📞 SUPPORT WIDGET -->
   <div class="support-widget">

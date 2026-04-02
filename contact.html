@@ -30,282 +30,370 @@
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
+
     </a>
 
     <!-- LINKS -->
     <nav>
       <ul class="nav-links">
+
         <li><a href="index.html">Home</a></li>
-        
-        <!-- DROPDOWN -->
-        <li class="dropdown">
-          <a href="#">Furniture Categories ▾</a>
-          <ul class="menu level-1">
-            <li>
-              <a href="#">Living Room ▸</a>
-              <ul class="menu level-2">
-                <li>
-                  <a href="#">Sofas ▸</a>
-                  <ul class="menu level-3">
-                    <li>
-                      <a href="#">Leather Sofa ▸</a>
-                      <ul class="menu level-4">
-                        <li><a href="#">2 Seater</a></li>
-                        <li><a href="#">3 Seater</a></li>
-                        <li><a href="#">L Shape</a></li>
-                      </ul>
-                    </li>
-                    <li><a href="#">Fabric Sofa</a></li>
-                  </ul>
-                </li>
-                <li><a href="#">Center Table</a></li>
-              </ul>
-            </li>
-            <li><a href="#">Bedroom</a></li>
-          </ul>
-        </li>
 
-        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
-        <li><a href="track.html">Track Order</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="contact.html" class="active">Contact</a></li>
-        <li><a href="#">About</a></li>
-      </ul>
-    </nav>
+          <!-- DROPDOWN -->
+          <li class="dropdown">
+            <a href="#">Furniture Categories ▾</a>
 
-    <!-- RIGHT -->
-    <div class="nav-right">
-      <div class="nav-icon">
-        <a href="wishlist.html">
-          <i class="fa-regular fa-heart"></i>
-        </a>
-        <span id="wishlist-count">0</span>
-      </div>
-      
-      <div class="nav-icon cart-icon">
-        <a href="cart.html">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-        <span id="cart-count">0</span>
-      </div>
+            <ul class="menu level-1">
 
-      <a href="login.html">
-        <button class="auth-btn">
-          Login <span>/</span> Signup
-        </button>
-      </a>
-      <span id="user-name" style="margin-left:10px;"></span>
+              <li>
+                <a href="#">Living Room ▸</a>
 
-      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
-    </div>
-  </header>
+                <ul class="menu level-2">
+                  <li>
+                    <a href="#">Sofas ▸</a>
 
-  <!-- CONTACT HERO -->
-  <section class="contact-hero">
-    <h1>Let's Craft Your Dream Space</h1>
-    <p>Whether you have a question about our custom collections, need a material consultation, or are ready to order, our design team is entirely at your service.</p>
-  </section>
+                    <ul class="menu level-3">
+                      <li>
+                        <a href="#">Leather Sofa ▸</a>
 
-  <!-- CONTACT CONTAINER -->
-  <section class="contact-container">
-    
-    <!-- LEFT: INFO -->
-    <div class="contact-info">
-      
-      <div class="info-item">
-        <div class="icon">
-          <i class="fa-solid fa-location-dot"></i>
-        </div>
-        <div>
-          <h3>Our Studio</h3>
-          <p>34/48-B, Nagla Latoori Singh Deori road Agra 282001</p>
-        </div>
-      </div>
+                        <ul class="menu level-4">
+                          <li><a href="#">2 Seater</a></li>
+                          <li><a href="#">3 Seater</a></li>
+                          <li><a href="#">L Shape</a></li>
+                        </ul>
 
-      <div class="info-item">
-        <div class="icon">
-          <i class="fa-solid fa-phone"></i>
-        </div>
-        <div>
-          <h3>Direct Line</h3>
-          <p>+91 844 555 3853<br>Available Mon-Fri, 9am - 7pm</p>
-        </div>
-      </div>
+                      </li>
+                      <li><a href="#">Fabric Sofa</a></li>
+                    </ul>
 
-      <div class="info-item">
-        <div class="icon">
-          <i class="fa-solid fa-envelope"></i>
-        </div>
-        <div>
-          <h3>Email Us</h3>
-          <p>Pradeepfurniture2@gmail.com</p>
-        </div>
-      </div>
+                  </li>
+                  <li><a href="#">Center Table</a></li>
+                </ul>
 
-      <!-- Add aesthetic image as a filler for the left block -->
-      <img src="images/modern_leather_sofa_1775107934552.png" alt="Furniture Design Studio" style="margin-top: 30px; border-radius: 12px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+              </li>
 
-    </div>
+              <li><a href="#">Bedroom</a></li>
 
-    <!-- RIGHT: FORM -->
-    <div class="contact-form-wrapper">
-      <h2>Send a Message</h2>
-      <form onsubmit="event.preventDefault(); alert('Your message has been sent to our design team! We will get back to you shortly.'); this.reset();">
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" placeholder="John" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" placeholder="Doe" required>
-          </div>
-        </div>
+            </ul>
+          </li>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" placeholder="john@example.com" required>
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" placeholder="+91 00000 00000">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Subject</label>
-          <input type="text" placeholder="Custom Order Inquiry" required>
-        </div>
-
-        <div class="form-group">
-          <label>Your Message / Project Details</label>
-          <textarea placeholder="Tell us about the space you want to transform..." required></textarea>
-        </div>
-
-        <button type="submit" class="submit-btn">
-          Send Message <i class="fa-solid fa-paper-plane"></i>
-        </button>
-
-      </form>
-    </div>
-
-  </section>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="footer">
-    <div class="footer-container">
-      
-      <!-- Brand -->
-      <div class="footer-col">
-        <h3>Custom Furniture</h3>
-        <p>Crafting bespoke, premium furniture tailored to your beautiful living spaces. Quality materials, exquisite design.</p>
-      </div>
-
-      <!-- Links -->
-      <div class="footer-col">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="custom-order.html">Custom Order</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
           <li><a href="track.html">Track Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+
         </ul>
+      </nav>
+
+      <!-- RIGHT -->
+      <div class="nav-right">
+
+
+        <div class="nav-icon">
+          <a href="wishlist.html">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+          <span id="wishlist-count">0</span>
+        </div>
+
+        <div class="nav-icon cart-icon">
+          <a href="cart.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <span id="cart-count">0</span>
+        </div>
+
+        <a href="login.html">
+          <button class="auth-btn">
+            Login <span>/</span> Signup
+          </button>
+        </a>
+        <span id="user-name" style="margin-left:10px;"></span>
+
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
       </div>
 
-      <!-- Customer Support -->
-      <div class="footer-col">
-        <h3>Customer Support</h3>
-        <ul>
-          <li><a href="contact.html">Contact Us</a></li>
-          <li><a href="#">Shipping & Returns</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
+    </header>
+
+    <!-- CONTACT HERO -->
+    <section class="contact-hero">
+      <h1>Let's Craft Your Dream Space</h1>
+      <p>Whether you have a question about our custom collections, need a material consultation, or are ready to order,
+        our design team is entirely at your service.</p>
+    </section>
+
+    <!-- CONTACT CONTAINER -->
+    <section class="contact-container">
+
+      <!-- LEFT: INFO -->
+      <div class="contact-info">
+
+        <div class="info-item">
+          <div class="icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <div>
+            <h3>Our Studio</h3>
+            <p>34/48-B, Nagla Latoori Singh Deori road Agra 282001</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="icon">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <div>
+            <h3>Direct Line</h3>
+            <p>+91 844 555 3853<br>Available Mon-Fri, 9am - 7pm</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="icon">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div>
+            <h3>Email Us</h3>
+            <p>Pradeepfurniture2@gmail.com</p>
+          </div>
+        </div>
+
+        <!-- Add aesthetic image as a filler for the left block -->
+        <img src="images/modern_leather_sofa_1775107934552.png" alt="Furniture Design Studio"
+          style="margin-top: 30px; border-radius: 12px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
       </div>
 
-      <!-- Newsletter -->
-      <div class="footer-col">
-        <h3>Newsletter</h3>
-        <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
-        <form class="newsletter-form" id="newsletter-form">
-          <input type="email" id="newsletter-email" placeholder="Enter your email" required>
-          <button type="submit">Join</button>
+      <!-- RIGHT: FORM -->
+      <div class="contact-form-wrapper">
+        <h2>Send a Message</h2>
+        <form id="contact-form">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="contact-fname" placeholder="John" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="contact-lname" placeholder="Doe" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="contact-email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" id="contact-phone" placeholder="+91 00000 00000">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="contact-subject" placeholder="Custom Order Inquiry" required>
+          </div>
+
+          <div class="form-group">
+            <label>Your Message / Project Details</label>
+            <textarea id="contact-message" placeholder="Tell us about the space you want to transform..."
+              required></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Send Message <i class="fa-solid fa-paper-plane"></i>
+          </button>
+
         </form>
       </div>
 
-    </div>
+    </section>
 
-    <!-- Bottom Bar -->
-    <div class="footer-bottom">
-      <p>&copy; 2026 Custom Furniture. All rights reserved.</p>
-      <div class="social-links">
-        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
-        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+    <!-- MAP SECTION -->
+    <section class="map-section" id="animated-map-section">
+      <h2>Visit Our Studio</h2>
+      <div class="map-wrapper" id="contact-map-wrapper">
+        <button class="map-expand-btn" onclick="toggleFullScreen('contact-map-wrapper')" title="Expand Map">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+        <iframe
+          src="https://www.google.com/maps?q=Pradeep%20Furniture%20Agra%2034/48-B,%20Nagla%20Latoori%20Singh%20Deori%20road&output=embed"
+          width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+      <div class="footer-container">
+
+        <!-- Brand -->
+        <div class="footer-col">
+          <h3>Custom Furniture</h3>
+          <p>Crafting bespoke, premium furniture tailored to your beautiful living spaces. Quality materials, exquisite
+            design.</p>
+        </div>
+
+        <!-- Links -->
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="custom-order.html">Custom Order</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="track.html">Track Order</a></li>
+          </ul>
+        </div>
+
+        <!-- Customer Support -->
+        <div class="footer-col">
+          <h3>Customer Support</h3>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Shipping & Returns</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-col">
+          <h3>Newsletter</h3>
+          <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
+          <form class="newsletter-form" id="newsletter-form">
+            <input type="email" id="newsletter-email" placeholder="Enter your email" required>
+            <button type="submit">Join</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p>&copy; 2026 Custom Furniture. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="theme.js"></script>
+    <script>
+      function updateCountsLive() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+        let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+        let cartEl = document.getElementById("cart-count");
+        if (cartEl) cartEl.innerText = cartTotal;
+
+        let wishEl = document.getElementById("wishlist-count");
+        if (wishEl) wishEl.innerText = wList.length;
+      }
+
+      /* 🔥 INITIAL */
+      updateCountsLive();
+      window.addEventListener("cartUpdated", updateCountsLive);
+      window.addEventListener("wishlistUpdated", updateCountsLive);
+
+      function toggleMenu() {
+        document.querySelector(".nav-links").classList.toggle("active");
+      }
+
+      /* 🔥 NEWSLETTER SCRIPT */
+      document.getElementById("newsletter-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const email = document.getElementById("newsletter-email").value;
+        let emails = JSON.parse(localStorage.getItem("newsletter_emails")) || [];
+        emails.push({ email: email, date: new Date().toLocaleString() });
+        localStorage.setItem("newsletter_emails", JSON.stringify(emails));
+        alert("Perfect! Your email has been successfully saved to the local database.");
+        this.reset();
+      });
+
+      /* 🔥 CONTACT FORM SCRIPT */
+      document.getElementById("contact-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const payload = {
+          name: document.getElementById("contact-fname").value + " " + document.getElementById("contact-lname").value,
+          email: document.getElementById("contact-email").value,
+          phone: document.getElementById("contact-phone").value,
+          subject: document.getElementById("contact-subject").value,
+          message: document.getElementById("contact-message").value,
+          date: new Date().toLocaleString()
+        };
+
+        let messages = JSON.parse(localStorage.getItem("contact_messages")) || [];
+        messages.push(payload);
+        localStorage.setItem("contact_messages", JSON.stringify(messages));
+
+        alert("Your message has been safely saved to the Local Database! Our team will get back to you shortly.");
+        this.reset();
+      });
+    </script>
+
+    <!-- 📞 SUPPORT WIDGET -->
+    <div class="support-widget">
+      <div class="support-options">
+        <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i
+            class="fa-brands fa-whatsapp"></i></a>
+        <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+        <a href="mailto:Pradeepfurniture2@gmail.com" class="support-btn email" title="Email Us"><i
+            class="fa-solid fa-envelope"></i></a>
+      </div>
+      <div class="support-toggle" onclick="toggleSupport()">
+        <i class="fa-solid fa-headset"></i>
       </div>
     </div>
-  </footer>
 
-  <!-- SCRIPTS -->
-  <script src="theme.js"></script>
-  <script>
-    function updateCountsLive() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
+    <script>
+      function toggleSupport() {
+        document.querySelector('.support-options').classList.toggle('active');
+      }
 
-      let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-      let cartEl = document.getElementById("cart-count");
-      if (cartEl) cartEl.innerText = cartTotal;
+      /* 🔥 MAP RESIZE & SCROLL SCRIPT */
+      function scrollToLargeMap() {
+        const largeMap = document.getElementById('animated-map-section');
+        largeMap.scrollIntoView({ behavior: 'smooth' });
+        largeMap.classList.add('reveal');
+      }
 
-      let wishEl = document.getElementById("wishlist-count");
-      if (wishEl) wishEl.innerText = wList.length;
-    }
+      function toggleFullScreen(wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        const btn = wrapper.querySelector('.map-expand-btn i');
+        wrapper.classList.toggle('full-screen');
 
-    /* 🔥 INITIAL */
-    updateCountsLive();
-    window.addEventListener("cartUpdated", updateCountsLive);
-    window.addEventListener("wishlistUpdated", updateCountsLive);
+        if (wrapper.classList.contains('full-screen')) {
+          btn.classList.replace('fa-expand', 'fa-compress');
+          document.body.style.overflow = 'hidden';
+        } else {
+          btn.classList.replace('fa-compress', 'fa-expand');
+          document.body.style.overflow = 'auto';
+        }
+      }
 
-    function toggleMenu() {
-      document.querySelector(".nav-links").classList.toggle("active");
-    }
+      /* 🔥 SCROLL REVEAL SCRIPT */
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal');
+          }
+        });
+      }, { threshold: 0.1 });
 
-    /* 🔥 NEWSLETTER SCRIPT */
-    document.getElementById("newsletter-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = document.getElementById("newsletter-email").value;
-      let emails = JSON.parse(localStorage.getItem("newsletter_emails")) || [];
-      emails.push({ email: email, date: new Date().toLocaleString() });
-      localStorage.setItem("newsletter_emails", JSON.stringify(emails));
-      alert("Perfect! Your email has been successfully saved to the local database.");
-      this.reset();
-    });
-  </script>
-
-  <!-- 📞 SUPPORT WIDGET -->
-  <div class="support-widget">
-    <div class="support-options">
-      <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i
-          class="fa-brands fa-whatsapp"></i></a>
-      <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
-      <a href="mailto:Pradeepfurniture2@gmail.com" class="support-btn email" title="Email Us"><i
-          class="fa-solid fa-envelope"></i></a>
-    </div>
-    <div class="support-toggle" onclick="toggleSupport()">
-      <i class="fa-solid fa-headset"></i>
-    </div>
-  </div>
-
-  <script>
-    function toggleSupport() {
-      document.querySelector('.support-options').classList.toggle('active');
-    }
-  </script>
-</body>
+      const mapSection = document.getElementById('animated-map-section');
+      if (mapSection) observer.observe(mapSection);
+    </script>
+  </body>
 
 </html>

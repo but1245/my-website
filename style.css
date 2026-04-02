@@ -102,13 +102,13 @@ body {
   transition: 0.3s;
 }
 
-.nav-links a:hover::after,
-.nav-links a.active::after {
-  width: 100%;
-}
-
 .nav-links a.active {
   color: var(--accent-color);
+}
+
+.nav-links a.active::after,
+.nav-links a:hover::after {
+  width: 100%;
 }
 
 /* RIGHT SIDE */
@@ -139,6 +139,18 @@ body {
 
 .nav-icon:hover a i {
   color: var(--accent-color);
+}
+
+/* ❤️ HEART BLINK ANIMATION (Gold blink when empty) */
+@keyframes heartblink {
+  0% { color: inherit; opacity: 0.5; }
+  50% { color: var(--accent-color); opacity: 1; text-shadow: 0 0 10px var(--accent-color); }
+  100% { color: inherit; opacity: 0.5; }
+}
+
+.heart-pulse i {
+  animation: heartblink 1.5s infinite ease-in-out;
+  display: inline-block;
 }
 
 .nav-icon span {
@@ -1456,4 +1468,114 @@ a:focus {
     flex-direction: column;
     text-align: center;
   }
+}
+/* ================= MAP SECTION (Dedicated Footer Area) ================= */
+.map-section {
+  padding: 80px 10%;
+  background: var(--navbar-bg);
+  text-align: center;
+  opacity: 0;
+  margin-top: 50px; /* Use margin instead of transform */
+  transition: all 0.8s ease-out;
+}
+
+.map-section.reveal {
+  opacity: 1;
+  margin-top: 0;
+}
+
+.map-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+}
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto 0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  transition: all 0.3s ease;
+}
+
+.map-preview {
+  height: 300px;
+  cursor: pointer;
+}
+
+.map-preview i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  color: #fff;
+  background: var(--accent-color);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.map-preview:hover i {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: #a67c52;
+}
+
+.map-expand-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.map-expand-btn:hover {
+  background: var(--accent-color);
+}
+
+/* Expanded State for Large Map */
+.map-wrapper.full-screen {
+  position: fixed;
+  top: 75px; /* Slightly lower for better floating look */
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  width: auto; /* Allow left/right to define width */
+  height: auto; /* Allow top/bottom to define height */
+  max-width: none !important;
+  z-index: 1100; /* Above navbar if desired? Actually slightly below is safer to see menu. No, 1100 is above navbar. */
+  padding: 0;
+  margin: 0 !important;
+  border-radius: 25px !important; /* Premium Rounded Corners */
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.4) !important;
+  border: 2px solid var(--accent-color);
+}
+
+.map-wrapper.full-screen iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 25px !important;
 }

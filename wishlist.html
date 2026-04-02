@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="wishlist.css">
-<link rel="icon" type="image/png" href="images/logo.png">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script>
-  (function () {
-    const theme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-</script>
+  <link rel="stylesheet" href="wishlist.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
 
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
-
+    <div class="menu-toggle" onclick="toggleMenu()">
+      ☰
+    </div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -32,105 +35,105 @@
 
         <li><a href="index.html">Home</a></li>
 
-        <!-- DROPDOWN -->
-        <li class="dropdown">
-          <a href="#">Furniture Categories ▾</a>
+          <!-- DROPDOWN -->
+          <li class="dropdown">
+            <a href="#">Furniture Categories ▾</a>
 
-          <ul class="menu level-1">
+            <ul class="menu level-1">
 
-            <li>
-              <a href="#">Living Room ▸</a>
+              <li>
+                <a href="#">Living Room ▸</a>
 
-              <ul class="menu level-2">
-                <li>
-                  <a href="#">Sofas ▸</a>
+                <ul class="menu level-2">
+                  <li>
+                    <a href="#">Sofas ▸</a>
 
-                  <ul class="menu level-3">
-                    <li>
-                      <a href="#">Leather Sofa ▸</a>
+                    <ul class="menu level-3">
+                      <li>
+                        <a href="#">Leather Sofa ▸</a>
 
-                      <ul class="menu level-4">
-                        <li><a href="#">2 Seater</a></li>
-                        <li><a href="#">3 Seater</a></li>
-                        <li><a href="#">L Shape</a></li>
-                      </ul>
+                        <ul class="menu level-4">
+                          <li><a href="#">2 Seater</a></li>
+                          <li><a href="#">3 Seater</a></li>
+                          <li><a href="#">L Shape</a></li>
+                        </ul>
 
-                    </li>
-                    <li><a href="#">Fabric Sofa</a></li>
-                  </ul>
+                      </li>
+                      <li><a href="#">Fabric Sofa</a></li>
+                    </ul>
 
-                </li>
-                <li><a href="#">Center Table</a></li>
-              </ul>
+                  </li>
+                  <li><a href="#">Center Table</a></li>
+                </ul>
 
-            </li>
+              </li>
 
-            <li><a href="#">Bedroom</a></li>
+              <li><a href="#">Bedroom</a></li>
 
-          </ul>
-        </li>
+            </ul>
+          </li>
 
-        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
-        <li><a href="track.html">Track Order</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+          <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
+          <li><a href="track.html">Track Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
 
-      </ul>
-    </nav>
+        </ul>
+      </nav>
 
-    <!-- RIGHT -->
-    <div class="nav-right">
-      
+      <!-- RIGHT -->
+      <div class="nav-right">
 
-      <div class="nav-icon">
-        <a href="wishlist.html">
-          <i class="fa-regular fa-heart"></i>
+
+        <div class="nav-icon">
+          <a href="wishlist.html">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+          <span id="wishlist-count">0</span>
+        </div>
+
+        <div class="nav-icon cart-icon">
+          <a href="cart.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <span id="cart-count">0</span>
+        </div>
+
+        <a href="login.html">
+          <button class="auth-btn">
+            Login <span>/</span> Signup
+          </button>
         </a>
-        <span id="wishlist-count">0</span>
-      </div>
-      
-      <div class="nav-icon cart-icon">
-        <a href="cart.html">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-        <span id="cart-count">0</span>
-      </div>
+        <span id="user-name" style="margin-left:10px;"></span>
 
-      <a href="login.html">
-        <button class="auth-btn">
-          Login <span>/</span> Signup
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i class="fa-solid fa-moon"></i>
         </button>
-      </a>
-      <span id="user-name" style="margin-left:10px;"></span>
 
-      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      </div>
 
-    </div>
+    </header>
 
-  </header>
+    <section class="wishlist-page">
+      <div class="wishlist-header featured-header">
+        <h2 class="tilt-text">My Wishlist</h2>
+        <p>Your curated collection of premium furniture pieces.</p>
+      </div>
 
-  <section class="wishlist-page">
-    <div class="wishlist-header featured-header">
-      <h2 class="tilt-text">My Wishlist</h2>
-      <p>Your curated collection of premium furniture pieces.</p>
-    </div>
-    
-    <div id="wishlist-container" class="products"></div>
-  </section>
+      <div id="wishlist-container" class="products"></div>
+    </section>
 
-<script>
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    <script>
+      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function renderWishlist(){
-  let container = document.getElementById("wishlist-container");
-  container.innerHTML = "";
-  
-  if (wishlist.length === 0) {
-    container.innerHTML = `
+      function renderWishlist() {
+        let container = document.getElementById("wishlist-container");
+        container.innerHTML = "";
+
+        if (wishlist.length === 0) {
+          container.innerHTML = `
       <div class="empty-wishlist">
         <i class="fa-regular fa-heart empty-icon"></i>
         <h3>Your Wishlist is Empty</h3>
@@ -138,14 +141,14 @@ function renderWishlist(){
         <a href="index.html#tiltSection" class="continue-shopping">Explore Collections</a>
       </div>
     `;
-    container.classList.add("empty-wrap");
-    return;
-  }
-  
-  container.classList.remove("empty-wrap");
+          container.classList.add("empty-wrap");
+          return;
+        }
 
-  wishlist.forEach((item,i)=>{
-    container.innerHTML += `
+        container.classList.remove("empty-wrap");
+
+        wishlist.forEach((item, i) => {
+          container.innerHTML += `
       <div class="product-card">
         <div class="wishlist-remove" onclick="removeItem(${i})" title="Remove from Wishlist">
           <i class="fa-solid fa-xmark"></i>
@@ -168,102 +171,86 @@ function renderWishlist(){
         </div>
       </div>
     `;
-  });
-}
+        });
+      }
 
-function removeItem(i){
-  wishlist.splice(i,1);
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  // Let listeners know wishlist changed
-  window.dispatchEvent(new Event("wishlistUpdated"));
-  renderWishlist();
-}
+      function removeItem(i) {
+        wishlist.splice(i, 1);
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        // Let listeners know wishlist changed
+        window.dispatchEvent(new Event("wishlistUpdated"));
+        renderWishlist();
+      }
 
-function addToCart(i){
-  let item = wishlist[i];
-  let existing = cart.find(p => p.name === item.name);
+      function addToCart(i) {
+        let item = wishlist[i];
+        let existing = cart.find(p => p.name === item.name);
 
-  if(existing){
-    existing.qty++;
-  } else {
-    cart.push({...item, qty:1});
-  }
+        if (existing) {
+          existing.qty++;
+        } else {
+          cart.push({ ...item, qty: 1 });
+        }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-  window.dispatchEvent(new Event("cartUpdated"));
-  
-  let btn = document.querySelectorAll('.product-card .add')[i];
-  if(btn) {
-    let originalText = btn.innerText;
-    btn.innerText = "Added ✓";
-    btn.style.background = "#28a745";
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.style.background = "";
-    }, 1500);
-  }
-}
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
 
-renderWishlist();
-</script>
-<script>
-// Use the outer scope wishlist variable to prevent redeclaration error
-function toggleWishlist(el, name, price, image){
+        let btn = document.querySelectorAll('.product-card .add')[i];
+        if (btn) {
+          let originalText = btn.innerText;
+          btn.innerText = "Added ✓";
+          btn.style.background = "#28a745";
+          setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = "";
+          }, 1500);
+        }
+      }
 
-  let index = wishlist.findIndex(item => item.name === name);
+      renderWishlist();
+    </script>
+    <script>
+      // Use the outer scope wishlist variable to prevent redeclaration error
+      function toggleWishlist(el, name, price, image) {
 
-  if(index !== -1){
-    wishlist.splice(index,1);
-    el.classList.remove("fa-solid");
-    el.classList.add("fa-regular");
-  } else {
-    wishlist.push({name, price, image});
-    el.classList.remove("fa-regular");
-    el.classList.add("fa-solid");
-  }
+        let index = wishlist.findIndex(item => item.name === name);
 
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-}
-</script>
-<script>
-function updateCountsLive() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
+        if (index !== -1) {
+          wishlist.splice(index, 1);
+          el.classList.remove("fa-solid");
+          el.classList.add("fa-regular");
+        } else {
+          wishlist.push({ name, price, image });
+          el.classList.remove("fa-regular");
+          el.classList.add("fa-solid");
+        }
 
-  let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-  let cartEl = document.getElementById("cart-count");
-  if (cartEl) cartEl.innerText = cartTotal;
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      }
+    </script>
+    <script src="theme.js"></script>
 
-  let wishEl = document.getElementById("wishlist-count");
-  if (wishEl) wishEl.innerText = wList.length;
-}
-
-/* 🔥 INITIAL */
-updateCountsLive();
-
-/* 🔥 CUSTOM EVENT LISTENER */
-window.addEventListener("cartUpdated", updateCountsLive);
-window.addEventListener("wishlistUpdated", updateCountsLive);
-</script>
-
-  <!-- 📞 SUPPORT WIDGET -->
-  <div class="support-widget">
-    <div class="support-options">
-      <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-      <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
-      <a href="mailto:support@pradeepfurniture.com" class="support-btn email" title="Email Us"><i class="fa-solid fa-envelope"></i></a>
+    <!-- 📞 SUPPORT WIDGET -->
+    <div class="support-widget">
+      <div class="support-options">
+        <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i
+            class="fa-brands fa-whatsapp"></i></a>
+        <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+        <a href="mailto:support@pradeepfurniture.com" class="support-btn email" title="Email Us"><i
+            class="fa-solid fa-envelope"></i></a>
+      </div>
+      <div class="support-toggle" onclick="toggleSupport()">
+        <i class="fa-solid fa-headset"></i>
+      </div>
     </div>
-    <div class="support-toggle" onclick="toggleSupport()">
-      <i class="fa-solid fa-headset"></i>
-    </div>
-  </div>
 
-  <script>
-    function toggleSupport() {
-      document.querySelector('.support-options').classList.toggle('active');
-    }
-  </script>
+    <script>
+      function toggleSupport() {
+        document.querySelector('.support-options').classList.toggle('active');
+      }
+    </script>
 
-<script src="theme.js"></script>
-</body>
+    <script src="theme.js"></script>
+  </body>
+
 </html>

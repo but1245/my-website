@@ -22,7 +22,9 @@
 
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
-
+    <div class="menu-toggle" onclick="toggleMenu()">
+      ☰
+    </div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -35,255 +37,247 @@
 
         <li><a href="index.html">Home</a></li>
 
-        <!-- DROPDOWN -->
-        <li class="dropdown">
-          <a href="#">Furniture Categories ▾</a>
+          <!-- DROPDOWN -->
+          <li class="dropdown">
+            <a href="#">Furniture Categories ▾</a>
 
-          <ul class="menu level-1">
+            <ul class="menu level-1">
 
-            <li>
-              <a href="#">Living Room ▸</a>
+              <li>
+                <a href="#">Living Room ▸</a>
 
-              <ul class="menu level-2">
-                <li>
-                  <a href="#">Sofas ▸</a>
+                <ul class="menu level-2">
+                  <li>
+                    <a href="#">Sofas ▸</a>
 
-                  <ul class="menu level-3">
-                    <li>
-                      <a href="#">Leather Sofa ▸</a>
+                    <ul class="menu level-3">
+                      <li>
+                        <a href="#">Leather Sofa ▸</a>
 
-                      <ul class="menu level-4">
-                        <li><a href="#">2 Seater</a></li>
-                        <li><a href="#">3 Seater</a></li>
-                        <li><a href="#">L Shape</a></li>
-                      </ul>
+                        <ul class="menu level-4">
+                          <li><a href="#">2 Seater</a></li>
+                          <li><a href="#">3 Seater</a></li>
+                          <li><a href="#">L Shape</a></li>
+                        </ul>
 
-                    </li>
-                    <li><a href="#">Fabric Sofa</a></li>
-                  </ul>
+                      </li>
+                      <li><a href="#">Fabric Sofa</a></li>
+                    </ul>
 
-                </li>
-                <li><a href="#">Center Table</a></li>
-              </ul>
+                  </li>
+                  <li><a href="#">Center Table</a></li>
+                </ul>
 
-            </li>
+              </li>
 
-            <li><a href="#">Bedroom</a></li>
+              <li><a href="#">Bedroom</a></li>
 
-          </ul>
-        </li>
+            </ul>
+          </li>
 
-        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
-        <li><a href="track.html">Track Order</a></li>
-        <li><a href="portfolio.html" class="active">Portfolio</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+          <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
+          <li><a href="track.html">Track Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
 
-      </ul>
-    </nav>
+        </ul>
+      </nav>
 
-    <!-- RIGHT -->
-    <div class="nav-right">
+      <!-- RIGHT -->
+      <div class="nav-right">
 
 
-      <div class="nav-icon">
-        <a href="wishlist.html">
-          <i class="fa-regular fa-heart"></i>
+        <div class="nav-icon">
+          <a href="wishlist.html">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+          <span id="wishlist-count">0</span>
+        </div>
+
+        <div class="nav-icon cart-icon">
+          <a href="cart.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <span id="cart-count">0</span>
+        </div>
+
+        <a href="login.html">
+          <button class="auth-btn">
+            Login <span>/</span> Signup
+          </button>
         </a>
-        <span id="wishlist-count">0</span>
-      </div>
-      
-      <div class="nav-icon cart-icon">
-        <a href="cart.html">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-        <span id="cart-count">0</span>
-      </div>
+        <span id="user-name" style="margin-left:10px;"></span>
 
-      <a href="login.html">
-        <button class="auth-btn">
-          Login <span>/</span> Signup
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i class="fa-solid fa-moon"></i>
         </button>
-      </a>
-      <span id="user-name" style="margin-left:10px;"></span>
 
-      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      </div>
 
+    </header>
+    <section class="portfolio">
+
+      <div class="wishlist-header featured-header" style="margin-top: 20px;">
+        <h2 class="tilt-text">Our Portfolio</h2>
+        <p>Explore Our Custom Furniture Creations</p>
+      </div>
+
+      <!-- FILTER -->
+      <div class="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="living">Living Spaces</button>
+        <button data-filter="dining">Dining Areas</button>
+        <button data-filter="bedroom">Bedroom</button>
+        <button data-filter="workspace">Workspaces</button>
+      </div>
+
+      <!-- MASONRY GRID -->
+      <div class="portfolio-grid">
+
+        <div class="portfolio-card large" data-category="living" data-title="Modern Leather Sectional"
+          style="background-image:url('images/modern_leather_sofa_1775107934552.png')">
+          <div class="overlay">
+            <h3>Modern Leather Sectional</h3>
+            <p>Living Spaces</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card tall" data-category="dining" data-title="Rustic Timber Dining Set"
+          style="background-image:url('images/rustic_timber_dining_1775107955632.png')">
+          <div class="overlay">
+            <h3>Rustic Timber Dining Set</h3>
+            <p>Dining Areas</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card wide" data-category="bedroom" data-title="Minimalist Floating Bed"
+          style="background-image:url('images/minimalist_floating_bed_1775107978480.png')">
+          <div class="overlay">
+            <h3>Minimalist Floating Bed</h3>
+            <p>Bedroom</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card tall" data-category="workspace" data-title="Ergonomic Walnut Desk"
+          style="background-image:url('images/ergonomic_workspace_1775108000781.png')">
+          <div class="overlay">
+            <h3>Ergonomic Walnut Desk</h3>
+            <p>Workspaces</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card" data-category="living" data-title="Velvet Mid-Century Sofa"
+          style="background-image:url('images/slide1.jpg')">
+          <div class="overlay">
+            <h3>Velvet Mid-Century Sofa</h3>
+            <p>Living Spaces</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card" data-category="dining" data-title="Marble Pedestal Table"
+          style="background-image:url('images/slide2.jpg')">
+          <div class="overlay">
+            <h3>Marble Pedestal Table</h3>
+            <p>Dining Areas</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card" data-category="bedroom" data-title="Oak Platform Bed"
+          style="background-image:url('images/slide3.jpg')">
+          <div class="overlay">
+            <h3>Oak Platform Bed</h3>
+            <p>Bedroom</p>
+          </div>
+        </div>
+
+        <div class="portfolio-card" data-category="workspace" data-title="Accent Lounge Chair"
+          style="background-image:url('images/chair.jpg')">
+          <div class="overlay">
+            <h3>Accent Lounge Chair</h3>
+            <p>Living & Workspaces</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- POPUP MODAL -->
+    <div class="modal" id="imageModal">
+      <div class="modal-backdrop" onclick="closeModal()"></div>
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-content-wrap">
+        <img class="modal-content" id="modalImg">
+        <div class="modal-info">
+          <h3 id="modalTitle">Featured Project</h3>
+          <p id="modalCategory">Custom Furniture</p>
+        </div>
+      </div>
     </div>
 
-  </header>
-  <section class="portfolio">
+    <script>
+      const buttons = document.querySelectorAll(".filters button");
+      const cards = document.querySelectorAll(".portfolio-card");
 
-    <div class="wishlist-header featured-header" style="margin-top: 20px;">
-      <h2 class="tilt-text">Our Portfolio</h2>
-      <p>Explore Our Custom Furniture Creations</p>
-    </div>
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
 
-    <!-- FILTER -->
-    <div class="filters">
-      <button class="active" data-filter="all">All</button>
-      <button data-filter="living">Living Spaces</button>
-      <button data-filter="dining">Dining Areas</button>
-      <button data-filter="bedroom">Bedroom</button>
-      <button data-filter="workspace">Workspaces</button>
-    </div>
+          let filter = btn.getAttribute("data-filter");
 
-    <!-- MASONRY GRID -->
-    <div class="portfolio-grid">
+          cards.forEach(card => {
+            let category = card.getAttribute("data-category");
 
-      <div class="portfolio-card large" data-category="living" data-title="Modern Leather Sectional" style="background-image:url('images/modern_leather_sofa_1775107934552.png')">
-        <div class="overlay">
-          <h3>Modern Leather Sectional</h3>
-          <p>Living Spaces</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card tall" data-category="dining" data-title="Rustic Timber Dining Set" style="background-image:url('images/rustic_timber_dining_1775107955632.png')">
-        <div class="overlay">
-          <h3>Rustic Timber Dining Set</h3>
-          <p>Dining Areas</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card wide" data-category="bedroom" data-title="Minimalist Floating Bed" style="background-image:url('images/minimalist_floating_bed_1775107978480.png')">
-        <div class="overlay">
-          <h3>Minimalist Floating Bed</h3>
-          <p>Bedroom</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card tall" data-category="workspace" data-title="Ergonomic Walnut Desk" style="background-image:url('images/ergonomic_workspace_1775108000781.png')">
-        <div class="overlay">
-          <h3>Ergonomic Walnut Desk</h3>
-          <p>Workspaces</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card" data-category="living" data-title="Velvet Mid-Century Sofa" style="background-image:url('images/slide1.jpg')">
-        <div class="overlay">
-          <h3>Velvet Mid-Century Sofa</h3>
-          <p>Living Spaces</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card" data-category="dining" data-title="Marble Pedestal Table" style="background-image:url('images/slide2.jpg')">
-        <div class="overlay">
-          <h3>Marble Pedestal Table</h3>
-          <p>Dining Areas</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card" data-category="bedroom" data-title="Oak Platform Bed" style="background-image:url('images/slide3.jpg')">
-        <div class="overlay">
-          <h3>Oak Platform Bed</h3>
-          <p>Bedroom</p>
-        </div>
-      </div>
-      
-      <div class="portfolio-card" data-category="workspace" data-title="Accent Lounge Chair" style="background-image:url('images/chair.jpg')">
-        <div class="overlay">
-          <h3>Accent Lounge Chair</h3>
-          <p>Living & Workspaces</p>
-        </div>
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- POPUP MODAL -->
-  <div class="modal" id="imageModal">
-    <div class="modal-backdrop" onclick="closeModal()"></div>
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div class="modal-content-wrap">
-      <img class="modal-content" id="modalImg">
-      <div class="modal-info">
-        <h3 id="modalTitle">Featured Project</h3>
-        <p id="modalCategory">Custom Furniture</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const buttons = document.querySelectorAll(".filters button");
-    const cards = document.querySelectorAll(".portfolio-card");
-
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        let filter = btn.getAttribute("data-filter");
-
-        cards.forEach(card => {
-          let category = card.getAttribute("data-category");
-
-          if (filter === "all" || category === filter) {
-            card.style.display = "block";
-          } else {
-            card.style.display = "none";
-          }
+            if (filter === "all" || category === filter) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
         });
       });
-    });
 
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImg");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalCategory = document.getElementById("modalCategory");
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImg");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalCategory = document.getElementById("modalCategory");
 
-    cards.forEach(card => {
-      card.addEventListener("click", () => {
-        let bg = card.style.backgroundImage;
-        let imgUrl = bg.slice(5, -2); // Parse background-image URL
-        
-        // Handle double quotes inside url()
-        if (imgUrl.startsWith('"') && imgUrl.endsWith('"')) {
-          imgUrl = imgUrl.slice(1, -1);
-        }
-        
-        let title = card.getAttribute("data-title");
-        let category = card.getAttribute("data-category");
+      cards.forEach(card => {
+        card.addEventListener("click", () => {
+          let bg = card.style.backgroundImage;
+          let imgUrl = bg.slice(5, -2); // Parse background-image URL
 
-        modal.style.display = "flex";
-        modalImg.src = imgUrl;
-        modalTitle.innerText = title;
-        modalCategory.innerText = category.toUpperCase();
+          // Handle double quotes inside url()
+          if (imgUrl.startsWith('"') && imgUrl.endsWith('"')) {
+            imgUrl = imgUrl.slice(1, -1);
+          }
+
+          let title = card.getAttribute("data-title");
+          let category = card.getAttribute("data-category");
+
+          modal.style.display = "flex";
+          modalImg.src = imgUrl;
+          modalTitle.innerText = title;
+          modalCategory.innerText = category.toUpperCase();
+        });
       });
-    });
 
-    function closeModal() {
-      modal.style.display = "none";
-    }
-    
-    // allow ESC key to close modal
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
-  </script>
-  <script>
-    function updateCountsLive() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
+      function closeModal() {
+        modal.style.display = "none";
+      }
 
-      let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-      let cartEl = document.getElementById("cart-count");
-      if (cartEl) cartEl.innerText = cartTotal;
-
-      let wishEl = document.getElementById("wishlist-count");
-      if (wishEl) wishEl.innerText = wList.length;
-    }
-
-    /* 🔥 INITIAL */
-    updateCountsLive();
-
-    /* 🔥 CUSTOM EVENT LISTENER */
-    window.addEventListener("cartUpdated", updateCountsLive);
-    window.addEventListener("wishlistUpdated", updateCountsLive);
-  </script>
-  <script src="theme.js"></script>
-</body>
+      // allow ESC key to close modal
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    </script>
+    </script>
+    <script src="theme.js"></script>
+  </body>
+</html>
+    <script src="theme.js"></script>
+  </body>
 
 </html>
