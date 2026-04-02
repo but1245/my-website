@@ -86,11 +86,14 @@
     <div class="nav-right">
 
 
-      <a href="wishlist.html">
-        <i class="fa-regular fa-heart"></i>
-      </a>
-      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-      <div class="cart-icon">
+      <div class="nav-icon">
+        <a href="wishlist.html">
+          <i class="fa-regular fa-heart"></i>
+        </a>
+        <span id="wishlist-count">0</span>
+      </div>
+      
+      <div class="nav-icon cart-icon">
         <a href="cart.html">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>
@@ -113,64 +116,102 @@
   </header>
   <section class="portfolio">
 
-    <!-- TITLE -->
-    <div class="section-title">
-      <h2>Our Portfolio</h2>
+    <div class="wishlist-header featured-header" style="margin-top: 20px;">
+      <h2 class="tilt-text">Our Portfolio</h2>
       <p>Explore Our Custom Furniture Creations</p>
-    </div>
-
-    <!-- TOP CARDS -->
-    <div class="portfolio-top">
-
-      <div class="top-card">Living Spaces</div>
-      <div class="top-card">Dining Areas</div>
-      <div class="top-card">Workspaces</div>
-
     </div>
 
     <!-- FILTER -->
     <div class="filters">
       <button class="active" data-filter="all">All</button>
-      <button data-filter="modern">Modern</button>
-      <button data-filter="rustic">Rustic</button>
-      <button data-filter="minimal">Minimal</button>
+      <button data-filter="living">Living Spaces</button>
+      <button data-filter="dining">Dining Areas</button>
+      <button data-filter="bedroom">Bedroom</button>
+      <button data-filter="workspace">Workspaces</button>
     </div>
 
-    <!-- GRID -->
+    <!-- MASONRY GRID -->
     <div class="portfolio-grid">
 
-      <div class="portfolio-card" data-category="modern" style="background-image:url('images/dining.png')">
-        <span>Modern Sofa</span>
+      <div class="portfolio-card large" data-category="living" data-title="Modern Leather Sectional" style="background-image:url('images/modern_leather_sofa_1775107934552.png')">
+        <div class="overlay">
+          <h3>Modern Leather Sectional</h3>
+          <p>Living Spaces</p>
+        </div>
       </div>
 
-      <div class="portfolio-card" data-category="rustic" style="background-image:url('images/wardrobes.png')">
-        <span>Wooden Table</span>
+      <div class="portfolio-card tall" data-category="dining" data-title="Rustic Timber Dining Set" style="background-image:url('images/rustic_timber_dining_1775107955632.png')">
+        <div class="overlay">
+          <h3>Rustic Timber Dining Set</h3>
+          <p>Dining Areas</p>
+        </div>
       </div>
 
-      <div class="portfolio-card" data-category="minimal" style="background-image:url('images/chair.jpg')">
-        <span>Minimal Chair</span>
+      <div class="portfolio-card wide" data-category="bedroom" data-title="Minimalist Floating Bed" style="background-image:url('images/minimalist_floating_bed_1775107978480.png')">
+        <div class="overlay">
+          <h3>Minimalist Floating Bed</h3>
+          <p>Bedroom</p>
+        </div>
       </div>
 
-      <div class="portfolio-card" data-category="modern" style="background-image:url('images/bed.jpg')">
-        <span>Luxury Bed</span>
+      <div class="portfolio-card tall" data-category="workspace" data-title="Ergonomic Walnut Desk" style="background-image:url('images/ergonomic_workspace_1775108000781.png')">
+        <div class="overlay">
+          <h3>Ergonomic Walnut Desk</h3>
+          <p>Workspaces</p>
+        </div>
+      </div>
+
+      <div class="portfolio-card" data-category="living" data-title="Velvet Mid-Century Sofa" style="background-image:url('images/slide1.jpg')">
+        <div class="overlay">
+          <h3>Velvet Mid-Century Sofa</h3>
+          <p>Living Spaces</p>
+        </div>
+      </div>
+
+      <div class="portfolio-card" data-category="dining" data-title="Marble Pedestal Table" style="background-image:url('images/slide2.jpg')">
+        <div class="overlay">
+          <h3>Marble Pedestal Table</h3>
+          <p>Dining Areas</p>
+        </div>
+      </div>
+
+      <div class="portfolio-card" data-category="bedroom" data-title="Oak Platform Bed" style="background-image:url('images/slide3.jpg')">
+        <div class="overlay">
+          <h3>Oak Platform Bed</h3>
+          <p>Bedroom</p>
+        </div>
+      </div>
+      
+      <div class="portfolio-card" data-category="workspace" data-title="Accent Lounge Chair" style="background-image:url('images/chair.jpg')">
+        <div class="overlay">
+          <h3>Accent Lounge Chair</h3>
+          <p>Living & Workspaces</p>
+        </div>
       </div>
 
     </div>
 
   </section>
+
   <!-- POPUP MODAL -->
   <div class="modal" id="imageModal">
+    <div class="modal-backdrop" onclick="closeModal()"></div>
     <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImg">
+    <div class="modal-content-wrap">
+      <img class="modal-content" id="modalImg">
+      <div class="modal-info">
+        <h3 id="modalTitle">Featured Project</h3>
+        <p id="modalCategory">Custom Furniture</p>
+      </div>
+    </div>
   </div>
+
   <script>
     const buttons = document.querySelectorAll(".filters button");
     const cards = document.querySelectorAll(".portfolio-card");
 
     buttons.forEach(btn => {
       btn.addEventListener("click", () => {
-
-        // active button change
         buttons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
@@ -180,59 +221,67 @@
           let category = card.getAttribute("data-category");
 
           if (filter === "all" || category === filter) {
-            card.style.display = "flex";
+            card.style.display = "block";
           } else {
             card.style.display = "none";
           }
         });
-
       });
     });
 
-  </script>
-  <script>
-    const cards = document.querySelectorAll(".portfolio-card");
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCategory = document.getElementById("modalCategory");
 
     cards.forEach(card => {
       card.addEventListener("click", () => {
         let bg = card.style.backgroundImage;
-
-        // extract URL
-        let imgUrl = bg.slice(5, -2);
+        let imgUrl = bg.slice(5, -2); // Parse background-image URL
+        
+        // Handle double quotes inside url()
+        if (imgUrl.startsWith('"') && imgUrl.endsWith('"')) {
+          imgUrl = imgUrl.slice(1, -1);
+        }
+        
+        let title = card.getAttribute("data-title");
+        let category = card.getAttribute("data-category");
 
         modal.style.display = "flex";
         modalImg.src = imgUrl;
+        modalTitle.innerText = title;
+        modalCategory.innerText = category.toUpperCase();
       });
     });
 
     function closeModal() {
       modal.style.display = "none";
     }
-
-    // click outside close
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) {
-        closeModal();
-      }
+    
+    // allow ESC key to close modal
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
     });
   </script>
   <script>
-    function updateCartCountLive() {
+    function updateCountsLive() {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-      let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+      let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+      let cartEl = document.getElementById("cart-count");
+      if (cartEl) cartEl.innerText = cartTotal;
 
-      let el = document.getElementById("cart-count");
-      if (el) el.innerText = total;
+      let wishEl = document.getElementById("wishlist-count");
+      if (wishEl) wishEl.innerText = wList.length;
     }
 
     /* 🔥 INITIAL */
-    updateCartCountLive();
+    updateCountsLive();
 
     /* 🔥 CUSTOM EVENT LISTENER */
-    window.addEventListener("cartUpdated", updateCartCountLive);
+    window.addEventListener("cartUpdated", updateCountsLive);
+    window.addEventListener("wishlistUpdated", updateCountsLive);
   </script>
   <script src="theme.js"></script>
 </body>

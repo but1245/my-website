@@ -83,11 +83,14 @@
     <div class="nav-right">
       
 
-      <a href="wishlist.html">
-        <i class="fa-regular fa-heart"></i>
-      </a>
-      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-      <div class="cart-icon">
+      <div class="nav-icon">
+        <a href="wishlist.html">
+          <i class="fa-regular fa-heart"></i>
+        </a>
+        <span id="wishlist-count">0</span>
+      </div>
+      
+      <div class="nav-icon cart-icon">
         <a href="cart.html">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>
@@ -108,8 +111,15 @@
     </div>
 
   </header>
-<h2>My Wishlist</h2>
-<div id="wishlist-container"></div>
+
+  <section class="wishlist-page">
+    <div class="wishlist-header featured-header">
+      <h2 class="tilt-text">My Wishlist</h2>
+      <p>Your curated collection of premium furniture pieces.</p>
+    </div>
+    
+    <div id="wishlist-container" class="products"></div>
+  </section>
 
 <script>
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -118,16 +128,44 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 function renderWishlist(){
   let container = document.getElementById("wishlist-container");
   container.innerHTML = "";
+  
+  if (wishlist.length === 0) {
+    container.innerHTML = `
+      <div class="empty-wishlist">
+        <i class="fa-regular fa-heart empty-icon"></i>
+        <h3>Your Wishlist is Empty</h3>
+        <p>Looks like you haven't added any premium furniture to your wishlist yet.</p>
+        <a href="index.html#tiltSection" class="continue-shopping">Explore Collections</a>
+      </div>
+    `;
+    container.classList.add("empty-wrap");
+    return;
+  }
+  
+  container.classList.remove("empty-wrap");
 
   wishlist.forEach((item,i)=>{
     container.innerHTML += `
-      <div>
-        <img src="${item.image}" width="100">
-        <h3>${item.name}</h3>
-        <p>₹${item.price}</p>
-
-        <button onclick="addToCart(${i})">Add to Cart</button>
-        <button onclick="removeItem(${i})">Remove</button>
+      <div class="product-card">
+        <div class="wishlist-remove" onclick="removeItem(${i})" title="Remove from Wishlist">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="card-img">
+          <img src="${item.image}" alt="${item.name}">
+        </div>
+        <div class="card-content">
+          <div class="card-header-info">
+            <span class="product-id">Top Pick</span>
+            <div class="rating">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+          </div>
+          <h3>${item.name}</h3>
+          <p class="price">₹${item.price.toLocaleString('en-IN')}</p>
+          <div class="card-buttons">
+            <button class="add" onclick="addToCart(${i})">Add to Cart</button>
+          </div>
+        </div>
       </div>
     `;
   });
@@ -136,6 +174,8 @@ function renderWishlist(){
 function removeItem(i){
   wishlist.splice(i,1);
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  // Let listeners know wishlist changed
+  window.dispatchEvent(new Event("wishlistUpdated"));
   renderWishlist();
 }
 
@@ -150,13 +190,24 @@ function addToCart(i){
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
+  window.dispatchEvent(new Event("cartUpdated"));
+  
+  let btn = document.querySelectorAll('.product-card .add')[i];
+  if(btn) {
+    let originalText = btn.innerText;
+    btn.innerText = "Added ✓";
+    btn.style.background = "#28a745";
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = "";
+    }, 1500);
+  }
 }
 
 renderWishlist();
 </script>
 <script>
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-
+// Use the outer scope wishlist variable to prevent redeclaration error
 function toggleWishlist(el, name, price, image){
 
   let index = wishlist.findIndex(item => item.name === name);
@@ -175,21 +226,44 @@ function toggleWishlist(el, name, price, image){
 }
 </script>
 <script>
-function updateCartCountLive() {
+function updateCountsLive() {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-  let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+  let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+  let cartEl = document.getElementById("cart-count");
+  if (cartEl) cartEl.innerText = cartTotal;
 
-  let el = document.getElementById("cart-count");
-  if (el) el.innerText = total;
+  let wishEl = document.getElementById("wishlist-count");
+  if (wishEl) wishEl.innerText = wList.length;
 }
 
 /* 🔥 INITIAL */
-updateCartCountLive();
+updateCountsLive();
 
 /* 🔥 CUSTOM EVENT LISTENER */
-window.addEventListener("cartUpdated", updateCartCountLive);
+window.addEventListener("cartUpdated", updateCountsLive);
+window.addEventListener("wishlistUpdated", updateCountsLive);
 </script>
+
+  <!-- 📞 SUPPORT WIDGET -->
+  <div class="support-widget">
+    <div class="support-options">
+      <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+      <a href="mailto:support@pradeepfurniture.com" class="support-btn email" title="Email Us"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <div class="support-toggle" onclick="toggleSupport()">
+      <i class="fa-solid fa-headset"></i>
+    </div>
+  </div>
+
+  <script>
+    function toggleSupport() {
+      document.querySelector('.support-options').classList.toggle('active');
+    }
+  </script>
+
 <script src="theme.js"></script>
 </body>
 </html>

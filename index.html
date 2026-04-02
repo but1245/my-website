@@ -23,9 +23,9 @@
 
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
-<div class="menu-toggle" onclick="toggleMenu()">
-  ☰
-</div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+      ☰
+    </div>
     <!-- LOGO -->
     <a href="index.html" class="logo">
       <img src="images/logo.png" alt="logo">
@@ -36,7 +36,7 @@
     <nav>
       <ul class="nav-links">
 
-        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html" class="active">Home</a></li>
 
         <!-- DROPDOWN -->
         <li class="dropdown">
@@ -76,24 +76,27 @@
           </ul>
         </li>
 
-        <li><a href="custom-order.html" target="_blank" class="active">Custom Order</a></li>
+        <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
         <li><a href="track.html">Track Order</a></li>
         <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about.html">About</a></li>
 
       </ul>
     </nav>
 
     <!-- RIGHT -->
     <div class="nav-right">
-      
 
-      <a href="wishlist.html">
-        <i class="fa-regular fa-heart"></i>
-      </a>
-      <div class="wishlist-icon" onclick="toggleWishlist(this, 'Wooden Bed', 25000, 'images/bed.jpg')"></div>
-      <div class="cart-icon">
+
+      <div class="nav-icon">
+        <a href="wishlist.html">
+          <i class="fa-regular fa-heart"></i>
+        </a>
+        <span id="wishlist-count">0</span>
+      </div>
+      
+      <div class="nav-icon cart-icon">
         <a href="cart.html">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>
@@ -415,6 +418,63 @@
       window.location.href = "custom-order.html";
     }
   </script>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="footer-container">
+      
+      <!-- Brand -->
+      <div class="footer-col">
+        <h3>Custom Furniture</h3>
+        <p>Crafting bespoke, premium furniture tailored to your beautiful living spaces. Quality materials, exquisite design.</p>
+      </div>
+
+      <!-- Links -->
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="custom-order.html">Custom Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="track.html">Track Order</a></li>
+        </ul>
+      </div>
+
+      <!-- Customer Support -->
+      <div class="footer-col">
+        <h3>Customer Support</h3>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Shipping & Returns</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="footer-col">
+        <h3>Newsletter</h3>
+        <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" id="newsletter-email" placeholder="Enter your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <p>&copy; 2026 Custom Furniture. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+      </div>
+    </div>
+  </footer>
+
   <script type="module" src="main.js"></script>
   <script src="theme.js"></script>
   <script type="module">
@@ -423,25 +483,67 @@
     updateCartUI();
   </script>
   <script>
-    function updateCartCountLive() {
+    function updateCountsLive() {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let wList = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-      let total = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+      let cartTotal = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+      let cartEl = document.getElementById("cart-count");
+      if (cartEl) cartEl.innerText = cartTotal;
 
-      let el = document.getElementById("cart-count");
-      if (el) el.innerText = total;
+      let wishEl = document.getElementById("wishlist-count");
+      if (wishEl) wishEl.innerText = wList.length;
     }
 
     /* 🔥 INITIAL */
-    updateCartCountLive();
+    updateCountsLive();
 
     /* 🔥 CUSTOM EVENT LISTENER */
-    window.addEventListener("cartUpdated", updateCartCountLive);
+    window.addEventListener("cartUpdated", updateCountsLive);
+    window.addEventListener("wishlistUpdated", updateCountsLive);
   </script>
   <script>
-    function toggleMenu(){
-  document.querySelector(".nav-links").classList.toggle("active");
-}
+    function toggleMenu() {
+      document.querySelector(".nav-links").classList.toggle("active");
+    }
+  </script>
+
+  <!-- 📞 SUPPORT WIDGET -->
+  <div class="support-widget">
+    <div class="support-options">
+      <a href="https://wa.me/+918445553853" target="_blank" class="support-btn whatsapp" title="WhatsApp"><i
+          class="fa-brands fa-whatsapp"></i></a>
+      <a href="tel:+918445553853" class="support-btn phone" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+      <a href="mailto:Pradeepfurniture2@gmail.com" class="support-btn email" title="Email Us"><i
+          class="fa-solid fa-envelope"></i></a>
+    </div>
+    <div class="support-toggle" onclick="toggleSupport()">
+      <i class="fa-solid fa-headset"></i>
+    </div>
+  </div>
+
+  <script>
+    function toggleSupport() {
+      document.querySelector('.support-options').classList.toggle('active');
+    }
+  </script>
+  <!-- NEWSLETTER SCRIPT -->
+  <script>
+    document.getElementById("newsletter-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("newsletter-email").value;
+      
+      let emails = JSON.parse(localStorage.getItem("newsletter_emails")) || [];
+      emails.push({ 
+        email: email, 
+        date: new Date().toLocaleString() 
+      });
+      
+      localStorage.setItem("newsletter_emails", JSON.stringify(emails));
+      
+      alert("Perfect! Your email has been successfully saved to the local database.");
+      this.reset();
+    });
   </script>
 </body>
 
