@@ -12,6 +12,17 @@ import {
   getDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// Helper to get redirection URL
+const getRedirectUrl = () => {
+  const url = localStorage.getItem("authRedirect");
+  return url || "index.html";
+};
+
+// Record current page as redirect target if not auth page
+if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("signup.html")) {
+    localStorage.setItem("authRedirect", window.location.href);
+}
+
 /* SIGNUP FUNCTION */
 window.signup = async function() {
   const firstName = document.getElementById("firstname").value;
@@ -21,7 +32,7 @@ window.signup = async function() {
   const password = document.getElementById("password").value;
 
   if(!email || !password || !firstName || !username) {
-    alert("Please fill all required fields!");
+    window.showToast("Please fill all required fields!", "error");
     return;
   }
 
@@ -39,10 +50,15 @@ window.signup = async function() {
       createdAt: new Date().toISOString()
     });
 
-    alert("Account Created Successfully! ✅");
-    window.location.href = "login.html";
+    window.showToast("Account Created Successfully! 🎉", "success");
+    
+    // Redirect back to where the user was before
+    setTimeout(() => {
+        window.location.href = getRedirectUrl();
+    }, 1500);
+
   } catch (error) {
-    alert("Signup Error: " + error.message);
+    window.showToast("Signup Error: " + error.message, "error");
   }
 };
 
@@ -52,16 +68,19 @@ window.login = async function() {
   const password = document.getElementById("login-password").value;
 
   if(!email || !password) {
-    alert("Please enter email and password!");
+    window.showToast("Please enter email and password!", "error");
     return;
   }
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    alert("Login Success! ✅");
-    window.location.href = "index.html";
+    window.showToast("Login Success! Welcome back 👋", "success");
+    
+    setTimeout(() => {
+        window.location.href = getRedirectUrl();
+    }, 1500);
   } catch (error) {
-    alert("Login Error: " + error.message);
+    window.showToast("Login Error: " + error.message, "error");
   }
 };
 
@@ -69,8 +88,10 @@ window.login = async function() {
 window.logout = async function() {
   try {
     await signOut(auth);
-    alert("Logged Out!");
-    window.location.reload();
+    window.showToast("Logged Out Successfully!", "success");
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
   } catch (error) {
     console.error("Logout Error", error);
   }
@@ -92,7 +113,6 @@ onAuthStateChanged(auth, async (user) => {
       if (authBtn) {
         authBtn.innerText = "Logout";
         authBtn.onclick = window.logout;
-        // Prevent default link behavior if it's inside an <a> tag
         const parentA = authBtn.closest('a');
         if (parentA) parentA.href = "javascript:void(0)";
       }
