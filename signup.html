@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="toast.css">
+  <script src="toast.js"></script>
   <script>
     (function () {
       const theme = localStorage.getItem('theme') || 'light';
@@ -147,26 +149,28 @@
         <!-- FIRST NAME + LAST NAME -->
         <div class="row">
           <div class="input-box">
-            <input type="text" required>
+            <input type="text" id="firstname" required>
             <label>First Name</label>
           </div>
 
           <div class="input-box">
-            <input type="text" required>
+            <input type="text" id="lastname" required>
             <label>Last Name</label>
           </div>
         </div>
 
         <!-- USERNAME -->
         <div class="input-box">
-          <input type="text" required>
+          <input type="text" id="username" required>
           <label>Choose Username</label>
+          <i id="userIcon"></i>
         </div>
 
         <!-- EMAIL -->
         <div class="input-box">
-          <input type="email" required>
+          <input type="email" id="email" required>
           <label>Enter Email</label>
+          <i id="emailIcon"></i>
         </div>
 
         <!-- PASSWORD -->
@@ -203,7 +207,7 @@
         </div>
 
         <!-- BUTTON -->
-        <button class="btn">Create Account</button>
+        <button class="btn" onclick="signup()">Create Account</button>
 
         <!-- LOGIN -->
         <p class="login">
@@ -214,213 +218,6 @@
 
     </div>
 
-    <script>
-      function togglePassword() {
-        const pass = document.getElementById("password");
-        pass.type = pass.type === "password" ? "text" : "password";
-      }
-      const password = document.getElementById("password");
-      const bars = document.querySelectorAll(".strength div");
-
-      password.addEventListener("input", () => {
-
-        let val = password.value;
-        let strength = 0;
-
-        if (val.length >= 8) strength++;
-        if (/[A-Z]/.test(val)) strength++;
-        if (/[0-9]/.test(val)) strength++;
-        if (/[^A-Za-z0-9]/.test(val)) strength++;
-
-        bars.forEach((bar, i) => {
-          bar.style.background = i < strength ? "#c49b63" : "#ddd";
-        });
-
-      });
-      const username = document.getElementById("username");
-      const icon = document.getElementById("userIcon");
-
-      const taken = ["admin", "user", "test"];
-
-      username.addEventListener("input", () => {
-
-        let val = username.value;
-
-        /* 🔥 REMOVE SPACES AUTOMATIC */
-        val = val.replace(/\s/g, "");
-        username.value = val;
-
-        let lower = val.toLowerCase();
-
-        /* MIN LENGTH CHECK */
-        if (val.length < 3) {
-          icon.className = "";
-          return;
-        }
-
-        /* TAKEN CHECK */
-        if (taken.includes(lower)) {
-          icon.className = "fa fa-times invalid";
-          return;
-        }
-
-        /* VALID */
-        icon.className = "fa fa-check valid";
-
-      });
-      const email = document.getElementById("email");
-      const emailIcon = document.getElementById("emailIcon");
-
-      email.addEventListener("input", () => {
-
-        let val = email.value;
-        let pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-
-        if (pattern.test(val)) {
-          emailIcon.className = "fa fa-check valid";
-        } else {
-          emailIcon.className = "fa fa-times invalid";
-        }
-
-      });
-    </script>
-    <script>
-      const pass = document.getElementById("password");
-      const text = document.getElementById("strength-text");
-
-      pass.addEventListener("input", function () {
-
-        let value = pass.value;
-
-        let lines = [
-          document.getElementById("line1"),
-          document.getElementById("line2"),
-          document.getElementById("line3"),
-          document.getElementById("line4")
-        ];
-
-        // reset
-        lines.forEach(el => {
-          el.className = "";
-          el.style.background = "#ddd";
-        });
-
-        if (value.length === 0) {
-
-          text.style.color = "#777";
-          return;
-        }
-
-        // REGEX CHECKS
-        let hasLower = /[a-z]/.test(value);
-        let hasUpper = /[A-Z]/.test(value);
-        let hasNumber = /[0-9]/.test(value);
-        let hasSymbol = /[^A-Za-z0-9]/.test(value);
-
-        // WEAK 🔴 (only lowercase)
-        if (hasLower && !hasUpper && !hasNumber && !hasSymbol) {
-          lines.forEach(el => el.classList.add("red"));
-          text.innerText = "Weak";
-          text.style.color = "red";
-        }
-
-        // MEDIUM 🟠 (lower + upper)
-        else if (hasLower && hasUpper && !hasNumber && !hasSymbol) {
-          lines.forEach(el => el.classList.add("orange"));
-          text.innerText = "Medium";
-          text.style.color = "orange";
-        }
-
-        // STRONG 🟢 (letters + numbers)
-        else if ((hasLower || hasUpper) && hasNumber && !hasSymbol) {
-          lines.forEach(el => el.classList.add("green"));
-          text.innerText = "Strong";
-          text.style.color = "green";
-        }
-
-        // STRONGEST 💚 (letters + numbers + symbols)
-        else if ((hasLower || hasUpper) && hasNumber && hasSymbol) {
-          lines.forEach(el => el.style.background = "#006400"); // dark green
-          text.innerText = "Strongest";
-          text.style.color = "#006400";
-        }
-
-        // fallback (random mix)
-        else {
-          lines.forEach(el => el.classList.add("orange"));
-          text.innerText = "Medium";
-          text.style.color = "orange";
-        }
-
-      });
-    </script>
-    <script>
-      const pass = document.getElementById("password");
-      const text = document.getElementById("strength-text");
-
-      pass.addEventListener("input", function () {
-
-        let value = pass.value;
-
-        let lines = [
-          document.getElementById("line1"),
-          document.getElementById("line2"),
-          document.getElementById("line3"),
-          document.getElementById("line4")
-        ];
-
-        // reset
-        lines.forEach(el => {
-          el.className = "";
-          el.style.background = "#ddd";
-        });
-
-        if (value.length === 0) {
-          text.innerText = "Enter password";
-          text.style.color = "#777";
-          return;
-        }
-
-        // SCORE SYSTEM
-        let score = 0;
-
-        if (/[a-z]/.test(value)) score++;
-        if (/[A-Z]/.test(value)) score++;
-        if (/[0-9]/.test(value)) score++;
-        if (/[^A-Za-z0-9]/.test(value)) score++;
-
-        // OPTIONAL: minimum length check
-        if (value.length < 6) {
-          score = 1;
-        }
-
-        // APPLY COLORS
-        if (score === 1) {
-          lines.forEach(el => el.classList.add("red"));
-          text.innerText = "Weak";
-          text.style.color = "#ef4444";
-        }
-
-        else if (score === 2) {
-          lines.forEach(el => el.classList.add("orange"));
-          text.innerText = "Medium";
-          text.style.color = "#f97316";
-        }
-
-        else if (score === 3) {
-          lines.forEach(el => el.classList.add("yellow"));
-          text.innerText = "Strong";
-          text.style.color = "#eab308";
-        }
-
-        else if (score === 4) {
-          lines.forEach(el => el.classList.add("green"));
-          text.innerText = "Strongest";
-          text.style.color = "#22c55e";
-        }
-
-      });
-    </script>
     <script>
       function togglePassword() {
         const pass = document.getElementById("password");
@@ -436,6 +233,89 @@
           icon.classList.add("fa-eye-slash"); // 🙈 closed
         }
       }
+
+      const passwordInput = document.getElementById("password");
+      const strengthText = document.getElementById("strength-text");
+      const bars = document.querySelectorAll(".strength div");
+
+      passwordInput.addEventListener("input", () => {
+        let value = passwordInput.value;
+
+        // Reset bars
+        bars.forEach(bar => {
+          bar.className = "";
+          bar.style.background = "#ddd";
+        });
+
+        if (value.length === 0) {
+          strengthText.innerText = "Enter password";
+          strengthText.style.color = "#777";
+          return;
+        }
+
+        // Score system
+        let score = 0;
+        if (/[a-z]/.test(value)) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+
+        if (value.length < 6) score = 1;
+
+        // Apply colors
+        if (score === 1) {
+          bars.forEach(el => el.classList.add("red"));
+          strengthText.innerText = "Weak";
+          strengthText.style.color = "#ef4444";
+        } else if (score === 2) {
+          bars.forEach(el => el.classList.add("orange"));
+          strengthText.innerText = "Medium";
+          strengthText.style.color = "#f97316";
+        } else if (score === 3) {
+          bars.forEach(el => el.classList.add("yellow"));
+          strengthText.innerText = "Strong";
+          strengthText.style.color = "#eab308";
+        } else if (score === 4) {
+          bars.forEach(el => el.classList.add("green"));
+          strengthText.innerText = "Strongest";
+          strengthText.style.color = "#22c55e";
+        }
+      });
+
+      const usernameInput = document.getElementById("username");
+      const userIcon = document.getElementById("userIcon");
+      const takenUsernames = ["admin", "user", "test"];
+
+      usernameInput.addEventListener("input", () => {
+        let val = usernameInput.value.replace(/\s/g, "");
+        usernameInput.value = val;
+
+        if (val.length < 3) {
+          userIcon.className = "";
+          return;
+        }
+
+        if (takenUsernames.includes(val.toLowerCase())) {
+          userIcon.className = "fa fa-times invalid";
+          return;
+        }
+
+        userIcon.className = "fa-solid fa-check valid";
+      });
+
+      const emailInput = document.getElementById("email");
+      const emailIcon = document.getElementById("emailIcon");
+
+      emailInput.addEventListener("input", () => {
+        let val = emailInput.value;
+        let pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+        if (pattern.test(val)) {
+          emailIcon.className = "fa-solid fa-check valid";
+        } else {
+          emailIcon.className = "fa-solid fa-times invalid";
+        }
+      });
     </script>
     <script type="module" src="auth.js"></script>
     <script src="theme.js"></script>
