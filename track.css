@@ -57,6 +57,7 @@ body {
   border:none;
   outline:none;
   flex:1;
+  background: transparent;
 }
 
 /* CAPTCHA */
@@ -155,7 +156,7 @@ body {
 .captcha input {
   padding: 10px;
   border-radius: 10px;
-  background: var(--bg-color);
+  background: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   outline: none;
