@@ -65,6 +65,73 @@
         }
         .summary-card h4 { font-size: 24px; color: var(--accent-color); }
         .summary-card p { font-size: 13px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+
+        /* Inherited Sidebar & Layout Styles */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            background: var(--bg-color);
+            padding-top: 80px;
+        }
+
+        .admin-sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .admin-sidebar .nav-item {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .admin-sidebar .nav-item:hover,
+        .admin-sidebar .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .admin-sidebar .nav-item i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .admin-main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .admin-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-sidebar { width: 80px; padding: 30px 10px; }
+            .admin-sidebar span.nav-text { display: none; }
+            .admin-sidebar .nav-item { justify-content: center; padding: 15px; }
+            .admin-main { margin-left: 80px; padding: 20px; }
+        }
     </style>
 </head>
 <body class="admin-page">
@@ -76,8 +143,7 @@
       </a>
       <nav>
         <ul class="nav-links">
-          <li><a href="dashboard.html">My Dashboard</a></li>
-          <li><a href="admin-orders.html" class="active">Manage All Orders</a></li>
+          <li><a href="dashboard.html">Back to Site</a></li>
         </ul>
       </nav>
       <div class="nav-right">
@@ -86,12 +152,36 @@
       </div>
     </header>
 
-    <main class="dashboard-container" style="margin-top: 100px;">
-        <section class="dashboard-content">
-            <header class="content-header">
-                <h2 class="welcome-text">Order Management Center 🛠️</h2>
-                <p style="color: var(--text-muted); margin-bottom: 30px;">Move orders through the production lifecycle. Real-time sync with customers.</p>
-            </header>
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <a href="admin-dashboard.html" class="nav-item">
+                <i class="fa-solid fa-chart-pie"></i> <span class="nav-text">Overview</span>
+            </a>
+            <a href="admin-orders.html" class="nav-item active">
+                <i class="fa-solid fa-boxes-packing"></i> <span class="nav-text">All Orders</span>
+            </a>
+            <a href="#" class="nav-item" onclick="window.showToast('Full user management coming soon!', 'info')">
+                <i class="fa-solid fa-users"></i> <span class="nav-text">Users</span>
+            </a>
+            <a href="#" class="nav-item" onclick="window.showToast('Analytics & Reports coming soon!', 'info')">
+                <i class="fa-solid fa-chart-line"></i> <span class="nav-text">Analytics</span>
+            </a>
+            <div style="flex-grow: 1;"></div>
+            <a href="#" class="nav-item" onclick="window.logout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="nav-text">Logout</span>
+            </a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="admin-main">
+            <section class="dashboard-content">
+                <header class="admin-header">
+                    <div>
+                        <h1 class="welcome-text" style="font-family:'Playfair Display'; font-size:36px; margin:0;">Order Management Center</h1>
+                        <p style="color: var(--text-muted);">Move orders through the production lifecycle. Real-time sync with customers.</p>
+                    </div>
+                </header>
 
             <div class="stats-summary">
                 <div class="summary-card"><h4 id="count-total">0</h4><p>Total Requests</p></div>
@@ -107,11 +197,14 @@
                     <p style="margin-top: 15px;">Loading Order Database...</p>
                 </div>
             </div>
+            </div>
         </section>
     </main>
+    </div>
 
     <!-- Project Scripts -->
     <script type="module" src="firebase.js"></script>
+    <script type="module" src="auth.js"></script>
     <script type="module" src="admin-orders.js"></script>
     <script src="theme.js"></script>
 </body>

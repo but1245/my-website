@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard | Pradeep Furniture</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="toast.css">
+    <script src="toast.js"></script>
+    
+    <style>
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            background: var(--bg-color);
+            padding-top: 80px;
+        }
+
+        /* Modern Sidebar */
+        .admin-sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .admin-sidebar .nav-item {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .admin-sidebar .nav-item:hover,
+        .admin-sidebar .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .admin-sidebar .nav-item i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .admin-main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .admin-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .admin-header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Metric Cards */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .metric-info h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .metric-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Charts & Tables Section */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Premium Table Design */
+        .glass-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .glass-panel h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .premium-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .premium-table th {
+            text-align: left;
+            padding: 15px 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .premium-table td {
+            padding: 20px 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .premium-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-pill {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pill.active { background: #e8f5e9; color: #2e7d32; }
+        .status-pill.pending { background: #fff3e0; color: #ef6c00; }
+
+        .user-avatar-sm {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .admin-sidebar { width: 80px; padding: 30px 10px; }
+            .admin-sidebar span.nav-text { display: none; }
+            .admin-sidebar .nav-item { justify-content: center; padding: 15px; }
+            .admin-main { margin-left: 80px; padding: 20px; }
+        }
+    </style>
+</head>
+<body class="admin-page">
+
+    <!-- 🔝 NAVBAR -->
+    <header class="navbar">
+      <a href="index.html" class="logo">
+        <img src="images/logo.png" alt="logo">
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="dashboard.html">Back to Site</a></li>
+        </ul>
+      </nav>
+      <div class="nav-right">
+        <span id="admin-name-header" style="font-weight: 600; color: var(--accent-color);">Admin Portal</span>
+        <button id="theme-toggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </header>
+
+    <div class="admin-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <a href="admin-dashboard.html" class="nav-item active">
+                <i class="fa-solid fa-chart-pie"></i> <span class="nav-text">Overview</span>
+            </a>
+            <a href="admin-orders.html" class="nav-item">
+                <i class="fa-solid fa-boxes-packing"></i> <span class="nav-text">All Orders</span>
+            </a>
+            <a href="#" class="nav-item" onclick="window.showToast('Full user management coming soon!', 'info')">
+                <i class="fa-solid fa-users"></i> <span class="nav-text">Users</span>
+            </a>
+            <a href="#" class="nav-item" onclick="window.showToast('Analytics & Reports coming soon!', 'info')">
+                <i class="fa-solid fa-chart-line"></i> <span class="nav-text">Analytics</span>
+            </a>
+            <div style="flex-grow: 1;"></div>
+            <a href="#" class="nav-item" onclick="window.logout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="nav-text">Logout</span>
+            </a>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div>
+                    <h1 id="welcome-text">Owner Dashboard</h1>
+                    <p>Here's what's happening with your platform today.</p>
+                </div>
+                <button class="btn-primary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh Data</button>
+            </div>
+
+            <!-- METRICS -->
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="metric-info">
+                        <h3 id="stat-users">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-couch"></i></div>
+                    <div class="metric-info">
+                        <h3 id="stat-orders">0</h3>
+                        <p>Total Custom Orders</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#fff3e0; color:#ef6c00;"><i class="fa-solid fa-clock"></i></div>
+                    <div class="metric-info">
+                        <h3 id="stat-pending">0</h3>
+                        <p>Pending Processing</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#e8f5e9; color:#2e7d32;"><i class="fa-solid fa-check-double"></i></div>
+                    <div class="metric-info">
+                        <h3 id="stat-delivered">0</h3>
+                        <p>Orders Delivered</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- RECENT ORDERS -->
+                <div class="glass-panel">
+                    <h2><i class="fa-solid fa-bolt" style="color: var(--accent-color);"></i> Recent Orders</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="premium-table">
+                            <thead>
+                                <tr>
+                                    <th>Furniture</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-orders-list">
+                                <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 20px; text-align: right;">
+                        <a href="admin-orders.html" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">View All Orders →</a>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS CHART -->
+                <div class="glass-panel">
+                    <h2><i class="fa-solid fa-chart-pie" style="color: var(--accent-color);"></i> Order Distribution</h2>
+                    <div style="position: relative; height: 300px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT USERS -->
+            <div class="glass-panel" style="margin-bottom: 40px;">
+                <h2><i class="fa-solid fa-user-plus" style="color: var(--accent-color);"></i> Newly Registered Users</h2>
+                <div style="overflow-x: auto;">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>User Profile</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-users-list">
+                            <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="admin-dashboard.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>

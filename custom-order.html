@@ -261,7 +261,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     uploadBox.classList.remove("drag");
     const file = e.dataTransfer.files[0];
-    if (file) uploadText.innerText = "Uploaded: " + file.name;
+    if (file) {
+        uploadText.innerText = "Uploaded: " + file.name;
+        fileInput.files = e.dataTransfer.files; // Assign to input so JS can read it
+    }
   };
 
   /* ===== COUPON ===== */

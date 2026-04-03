@@ -70,6 +70,31 @@ if (submitBtn) {
             submitBtn.innerText = "Submitting...";
             submitBtn.disabled = true;
 
+            let imageUrl = null;
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                submitBtn.innerText = "Uploading Image...";
+                
+                const formData = new FormData();
+                formData.append("image", file);
+                
+                const response = await fetch("https://api.imgbb.com/1/upload?key=7061fe514aae9dbb14744bab15aa4092", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    imageUrl = result.data.url;
+                } else {
+                    console.error("ImgBB Upload Failed:", result);
+                    throw new Error("Image upload failed. " + (result.error?.message || ""));
+                }
+                
+                submitBtn.innerText = "Saving Request...";
+            }
+
             const orderData = {
                 userId: currentUser.uid,
                 customer: {
@@ -90,6 +115,7 @@ if (submitBtn) {
                     polish: polish === "yes",
                     details
                 },
+                imageUrl: imageUrl,
                 status: "Pending", // Step 1
                 currentStep: 1,
                 progress: 12, // Initial progress (Step 1 of 8)

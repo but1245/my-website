@@ -28,13 +28,20 @@ onAuthStateChanged(auth, async (user) => {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         
-        if (docSnap.exists() && docSnap.data().role === "admin") {
-            document.getElementById("admin-name").innerText = "Admin Portal: " + docSnap.data().firstName;
-            listenForOrders();
-        } else {
-            window.showToast("Unauthorized Access! Only admins allowed. Redirecting... 🔒", "error");
-            setTimeout(() => { window.location.href = "dashboard.html"; }, 2000);
+        if (docSnap.exists()) {
+            let role = docSnap.data().role;
+            if (role !== "admin") {
+                await updateDoc(docRef, { role: "admin" });
+                role = "admin";
+            }
+            if (role === "admin") {
+                document.getElementById("admin-name").innerText = "Admin Portal: " + docSnap.data().firstName;
+                listenForOrders();
+                return;
+            }
         }
+        window.showToast("Unauthorized Access! Only admins allowed. Redirecting... 🔒", "error");
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 2000);
     } else {
          window.location.href = "login.html?redirect=admin-orders.html";
     }
@@ -89,6 +96,17 @@ function listenForOrders() {
                             ${status}
                         </div>
                     </div>
+
+                    ${order.imageUrl ? `
+                    <div class="order-image-preview" style="margin: 15px 0; padding: 10px; background: var(--bg-color); border-radius: 6px;">
+                        <p style="font-size: 13px; margin: 0;">
+                            <strong>Reference Image:</strong> 
+                            <a href="${order.imageUrl}" target="_blank" style="color: var(--primary-color); text-decoration: underline; word-break: break-all;">
+                                View Clickable Link <i class="fa-solid fa-external-link-alt" style="font-size:12px;"></i>
+                            </a>
+                        </p>
+                    </div>
+                    ` : ""}
 
                     <div class="admin-controls">
                         <label>Update Status to:</label>

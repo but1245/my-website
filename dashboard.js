@@ -82,9 +82,18 @@ function loadCustomOrders(uid) {
                         </div>
                     </div>
                     
-                    <div class="order-details">
-                        <p><strong>Material:</strong> ${order.preferences.material}</p>
-                        <p><strong>Size:</strong> ${order.furniture.dimensions.length}x${order.furniture.dimensions.width} ${order.furniture.dimensions.unit}</p>
+                    <div class="order-details" style="display: flex; gap: 15px; align-items: start; justify-content: space-between;">
+                        <div>
+                            <p><strong>Material:</strong> ${order.preferences.material}</p>
+                            <p><strong>Size:</strong> ${order.furniture.dimensions.length}x${order.furniture.dimensions.width} ${order.furniture.dimensions.unit}</p>
+                        </div>
+                        ${order.imageUrl ? `
+                        <div style="margin-top: 5px;">
+                            <a href="${order.imageUrl}" target="_blank" style="color: var(--primary-color); font-size: 13px; font-weight: 500; text-decoration: underline;">
+                                <i class="fa-solid fa-link"></i> View Uploaded Image
+                            </a>
+                        </div>
+                        ` : ""}
                     </div>
 
                     <div class="progress-container">
