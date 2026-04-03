@@ -265,7 +265,7 @@
           </div>
 
           <button class="place-order elite-btn" onclick="placeOrder()">
-            Confirm & Place Order <i class="fa-solid fa-arrow-right"></i>
+            Continue to Shipping <i class="fa-solid fa-truck-fast"></i>
           </button>
           
           <p class="terms-note">By placing your order, you agree to our Terms of Service.</p>
@@ -387,11 +387,11 @@
             // Clear Cart
             localStorage.removeItem("cart");
             
-            window.showToast(`Order Placed! ID: #${docRef.id.substring(0,8).toUpperCase()}`, "success");
+            window.showToast("Address Saved! Proceeding to Shipping...", "success");
             
             setTimeout(() => {
-                window.location.href = `payment.html?orderId=${docRef.id}`;
-            }, 2500);
+                window.location.href = `shipping.html?orderId=${docRef.id}`;
+            }, 2000);
 
         } catch (error) {
             console.error("Order Error:", error);
