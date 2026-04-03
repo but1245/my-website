@@ -89,6 +89,7 @@ window.signup = async function() {
       lastName: lastName,
       username: username,
       email: email,
+      role: "user", // Default Role
       createdAt: new Date().toISOString()
     });
 
@@ -236,6 +237,26 @@ window.githubLogin = (e) => handleSocialLogin(githubProvider, e);
 window.twitterLogin = (e) => handleSocialLogin(twitterProvider, e);
 
 
+/* GLOBAL UI UPDATER */
+window.updateWishlistCount = function() {
+  setTimeout(() => {
+    const countEl = document.getElementById("wishlist-count");
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (countEl) countEl.innerText = wishlist.length;
+    
+    // Pulse animation if empty (reusing styles from index if present)
+    const icon = countEl?.parentElement?.querySelector("i");
+    if (icon) {
+      if (wishlist.length === 0) icon.parentElement.classList.add("heart-pulse");
+      else icon.parentElement.classList.remove("heart-pulse");
+    }
+    
+    // Sync Dashboard if on that page
+    const dashCount = document.getElementById("dash-wishlist-count");
+    if (dashCount) dashCount.innerText = wishlist.length;
+  }, 100);
+};
+
 /* MONITOR AUTH STATE */
 onAuthStateChanged(auth, async (user) => {
   const userDisplay = document.getElementById("user-name");
@@ -249,6 +270,15 @@ onAuthStateChanged(auth, async (user) => {
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
+      
+      // SYNC WISHLIST FROM ACCOUNT
+      if (userData.wishlist) {
+        localStorage.setItem("wishlist", JSON.stringify(userData.wishlist));
+        window.updateWishlistCount();
+        // Notify other scripts/tabs
+        window.dispatchEvent(new Event("wishlistUpdated"));
+      }
+
       if (userDisplay) {
         userDisplay.innerHTML = `<a href="dashboard.html" class="user-profile-link" style="display:inline-block;">Hi, ${userData.firstName}</a>`;
         userDisplay.style.display = "inline-block";
@@ -258,7 +288,11 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
   } else {
-    // User is signed out
+    // User is signed out -> CLEAR WISHLIST
+    localStorage.removeItem("wishlist");
+    window.updateWishlistCount();
+    window.dispatchEvent(new Event("wishlistUpdated"));
+
     if (userDisplay) {
         userDisplay.innerHTML = "";
         userDisplay.style.display = "none";

@@ -117,6 +117,9 @@
                 <button class="nav-item" data-tab="orders"><i class="fa-solid fa-box"></i> My Orders</button>
                 <button class="nav-item" data-tab="wishlist"><i class="fa-solid fa-heart"></i> Wishlist</button>
                 <button class="nav-item" data-tab="settings"><i class="fa-solid fa-user-gear"></i> Settings</button>
+                <button class="nav-item" id="admin-manage-btn" style="display:none;" onclick="location.href='admin-orders.html'">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Manage Orders
+                </button>
                 <button class="nav-item logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
             </nav>
         </aside>
@@ -125,26 +128,47 @@
         <section class="dashboard-content">
             <!-- Overview Tab -->
             <div id="overview" class="tab-content active">
-                <h2 class="welcome-text">Welcome back, <span id="dash-name">Dear User</span>!</h2>
+                <header class="content-header">
+                    <h2 class="welcome-text">Welcome back, <span id="dash-name">Dear User</span> 👋</h2>
+                </header>
+
                 <div class="stats-grid">
-                    <div class="stat-card"><h3>0</h3> <p>Active Orders</p></div>
-                    <div class="stat-card"><h3>0</h3> <p>Completed</p></div>
-                    <div class="stat-card"><h3 id="dash-wishlist-count">0</h3> <p>Wishlist Items</p></div>
+                    <div class="stat-card">
+                        <h3>0</h3> 
+                        <p>Active Orders</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>0</h3> 
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="dash-wishlist-count">0</h3> 
+                        <p>Wishlist Items</p>
+                    </div>
                 </div>
 
                 <div class="quick-profile card">
-                    <h3>Profile Information</h3>
+                    <h3><i class="fa-solid fa-address-card"></i> Profile Information</h3>
                     <div class="info-grid">
-                        <div class="info-row"><span>Full Name:</span> <span id="info-fullname">Loading...</span></div>
-                        <div class="info-row"><span>Email Address:</span> <span id="info-email">Loading...</span></div>
-                        <div class="info-row"><span>Customer Since:</span> <span id="info-since">Loading...</span></div>
+                        <div class="info-row">
+                            <span><i class="fa-solid fa-user"></i> Full Name:</span> 
+                            <span id="info-fullname">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span><i class="fa-solid fa-envelope"></i> Email Address:</span> 
+                            <span id="info-email">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span><i class="fa-solid fa-calendar-days"></i> Customer Since:</span> 
+                            <span id="info-since">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Orders Tab -->
             <div id="orders" class="tab-content">
-                <h2>My Order History</h2>
+                <h2 class="welcome-text">My Order History</h2>
                 <div class="orders-list" id="order-history">
                     <div class="empty-state">
                         <i class="fa-solid fa-box-open"></i>
@@ -156,26 +180,37 @@
 
             <!-- Wishlist Tab (Quick View) -->
             <div id="wishlist" class="tab-content">
-                <h2>My Wishlist</h2>
+                <h2 class="welcome-text">My Wishlist</h2>
                 <div class="wishlist-grid" id="wishlist-items">
-                    <!-- Dynamic -->
+                    <div class="empty-state">
+                        <i class="fa-solid fa-heart-crack"></i>
+                        <p>Your wishlist is empty.</p>
+                        <a href="index.html" class="btn-primary">Find Something to Love</a>
+                    </div>
                 </div>
             </div>
 
             <!-- Settings Tab -->
             <div id="settings" class="tab-content">
-                <h2>Account Settings</h2>
-                <form id="settings-form" class="card">
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <input type="text" id="settings-firstname">
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name</label>
-                        <input type="text" id="settings-lastname">
-                    </div>
-                    <button type="submit" class="save-btn">Update Profile</button>
-                </form>
+                <h2 class="welcome-text">Account Settings</h2>
+                <div class="card">
+                    <h3><i class="fa-solid fa-sliders"></i> Personal Details</h3>
+                    <form id="settings-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="settings-firstname" placeholder="Enter first name">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="settings-lastname" placeholder="Enter last name">
+                            </div>
+                        </div>
+                        <div class="form-actions" style="margin-top: 30px;">
+                            <button type="submit" class="save-btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
     </main>

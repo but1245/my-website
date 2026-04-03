@@ -90,7 +90,16 @@ if (submitBtn) {
                     polish: polish === "yes",
                     details
                 },
-                status: "Pending",
+                status: "Pending", // Step 1
+                currentStep: 1,
+                progress: 12, // Initial progress (Step 1 of 8)
+                statusHistory: [
+                    { 
+                        status: "Pending", 
+                        note: "Order request received.", 
+                        updatedAt: new Date().toISOString() 
+                    }
+                ],
                 createdAt: serverTimestamp()
             };
 

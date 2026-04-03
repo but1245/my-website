@@ -124,23 +124,27 @@
       <div id="wishlist-container" class="products"></div>
     </section>
 
-    <script>
+    <script type="module">
+      import { auth, db } from "./firebase.js";
+      import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
       let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      function renderWishlist() {
+      window.renderWishlist = function() {
         let container = document.getElementById("wishlist-container");
+        if (!container) return;
         container.innerHTML = "";
 
         if (wishlist.length === 0) {
           container.innerHTML = `
-      <div class="empty-wishlist">
-        <i class="fa-regular fa-heart empty-icon"></i>
-        <h3>Your Wishlist is Empty</h3>
-        <p>Looks like you haven't added any premium furniture to your wishlist yet.</p>
-        <a href="index.html#tiltSection" class="continue-shopping">Explore Collections</a>
-      </div>
-    `;
+            <div class="empty-wishlist">
+              <i class="fa-regular fa-heart empty-icon"></i>
+              <h3>Your Wishlist is Empty</h3>
+              <p>Looks like you haven't added any premium furniture to your wishlist yet.</p>
+              <a href="index.html#tiltSection" class="continue-shopping">Explore Collections</a>
+            </div>
+          `;
           container.classList.add("empty-wrap");
           return;
         }
@@ -149,53 +153,64 @@
 
         wishlist.forEach((item, i) => {
           container.innerHTML += `
-      <div class="product-card">
-        <div class="wishlist-remove" onclick="removeItem(${i})" title="Remove from Wishlist">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-        <div class="card-img">
-          <img src="${item.image}" alt="${item.name}">
-        </div>
-        <div class="card-content">
-          <div class="card-header-info">
-            <span class="product-id">Top Pick</span>
-            <div class="rating">
-              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            <div class="product-card">
+              <div class="wishlist-remove" onclick="removeItem(${i})" title="Remove from Wishlist">
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-img">
+                <img src="${item.image}" alt="${item.name}">
+              </div>
+              <div class="card-content">
+                <div class="card-header-info">
+                  <span class="product-id">Top Pick</span>
+                  <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                  </div>
+                </div>
+                <h3>${item.name}</h3>
+                <p class="price">₹${item.price.toLocaleString('en-IN')}</p>
+                <div class="card-buttons">
+                  <button class="add" onclick="addToCart(${i}, this)">Add to Cart</button>
+                </div>
+              </div>
             </div>
-          </div>
-          <h3>${item.name}</h3>
-          <p class="price">₹${item.price.toLocaleString('en-IN')}</p>
-          <div class="card-buttons">
-            <button class="add" onclick="addToCart(${i})">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    `;
+          `;
         });
       }
 
-      function removeItem(i) {
-        wishlist.splice(i, 1);
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        // Let listeners know wishlist changed
-        window.dispatchEvent(new Event("wishlistUpdated"));
-        renderWishlist();
+      window.syncWishlistToAccount = async function() {
+        const user = auth.currentUser;
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid);
+            await updateDoc(docRef, { wishlist: wishlist });
+          } catch (e) { console.error("Wishlist Sync Error:", e); }
+        }
       }
 
-      function addToCart(i) {
+      window.removeItem = async function(i) {
+        wishlist.splice(i, 1);
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        await window.syncWishlistToAccount();
+        window.dispatchEvent(new Event("wishlistUpdated"));
+        if (window.updateWishlistCount) window.updateWishlistCount();
+        window.renderWishlist();
+      }
+
+      window.addToCart = function(i, btn) {
         let item = wishlist[i];
-        let existing = cart.find(p => p.name === item.name);
+        let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+        let existing = cartItems.find(p => p.name === item.name);
 
         if (existing) {
           existing.qty++;
         } else {
-          cart.push({ ...item, qty: 1 });
+          cartItems.push({ ...item, qty: 1 });
         }
 
-        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("cart", JSON.stringify(cartItems));
         window.dispatchEvent(new Event("cartUpdated"));
 
-        let btn = document.querySelectorAll('.product-card .add')[i];
         if (btn) {
           let originalText = btn.innerText;
           btn.innerText = "Added ✓";
@@ -207,26 +222,12 @@
         }
       }
 
-      renderWishlist();
-    </script>
-    <script>
-      // Use the outer scope wishlist variable to prevent redeclaration error
-      function toggleWishlist(el, name, price, image) {
-
-        let index = wishlist.findIndex(item => item.name === name);
-
-        if (index !== -1) {
-          wishlist.splice(index, 1);
-          el.classList.remove("fa-solid");
-          el.classList.add("fa-regular");
-        } else {
-          wishlist.push({ name, price, image });
-          el.classList.remove("fa-regular");
-          el.classList.add("fa-solid");
-        }
-
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-      }
+      // Initial render & sync detection
+      window.renderWishlist();
+      window.addEventListener("wishlistUpdated", () => {
+        wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        window.renderWishlist();
+      });
     </script>
     <script src="theme.js"></script>
 

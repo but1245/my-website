@@ -1,4 +1,6 @@
 import { products } from "./database.js";
+import { auth, db } from "./firebase.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* ================= RENDER PRODUCTS ================= */
 window.renderProducts = function () {
@@ -170,7 +172,7 @@ window.addToCart = function (name, price, image, btn) {
 };
 
 /* ================= WISHLIST TOGGLE ================= */
-window.toggleWishlist = function (el, name, price, image) {
+window.toggleWishlist = async function (el, name, price, image) {
   let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
   let index = wishlist.findIndex(item => item.name === name);
 
@@ -181,6 +183,22 @@ window.toggleWishlist = function (el, name, price, image) {
   }
 
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  
+  // SYNC WITH FIRESTORE IF LOGGED IN
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, {
+        wishlist: wishlist
+      });
+      console.log("Wishlist synced to Firestore");
+    } catch (error) {
+      console.error("Firestore Wishlist Sync Error:", error);
+    }
+  }
+
+  if (window.updateWishlistCount) window.updateWishlistCount();
   window.renderProducts();
 };
 

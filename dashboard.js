@@ -1,3 +1,8 @@
+import { auth, db } from "./firebase.js";
+import { 
+    onAuthStateChanged, 
+    signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
     doc, 
     getDoc, 
@@ -26,7 +31,9 @@ onAuthStateChanged(auth, async (user) => {
 // Load Custom Orders (Real-time)
 function loadCustomOrders(uid) {
     const ordersList = document.getElementById("order-history");
-    const activeStat = document.querySelector(".stat-card h3"); // First stat card is active orders
+    const statCards = document.querySelectorAll(".stat-card h3");
+    const activeStat = statCards[0];
+    const completedStat = statCards[1];
 
     const q = query(
         collection(db, "custom_orders"), 
@@ -44,26 +51,24 @@ function loadCustomOrders(uid) {
                 </div>
             `;
             if (activeStat) activeStat.innerText = "0";
+            if (completedStat) completedStat.innerText = "0";
             return;
         }
 
         let ordersHTML = "";
         let activeCount = 0;
+        let completedCount = 0;
 
         snapshot.forEach((doc) => {
             const order = doc.data();
             const status = order.status || "Pending";
-            if (status !== "Delivered") activeCount++;
-
-            // Map status to progress percentage
-            const progressMap = {
-                "Pending": 20,
-                "Designing": 40,
-                "Material Selection": 60,
-                "Production": 80,
-                "Delivered": 100
-            };
-            const progress = progressMap[status] || 20;
+            const progress = order.progress || 12; // Default to step 1
+            
+            if (status === "Delivered") {
+                completedCount++;
+            } else {
+                activeCount++;
+            }
 
             ordersHTML += `
                 <div class="order-card card">
@@ -72,7 +77,7 @@ function loadCustomOrders(uid) {
                             <h4>${order.furniture.type}</h4>
                             <span>ID: #${doc.id.substring(0, 8).toUpperCase()}</span>
                         </div>
-                        <div class="order-status-badge status-${status.toLowerCase().replace(" ", "-")}">
+                        <div class="order-status-badge status-${status.toLowerCase().replace(/\s+/g, "-")}">
                             ${status}
                         </div>
                     </div>
@@ -85,10 +90,13 @@ function loadCustomOrders(uid) {
                     <div class="progress-container">
                         <div class="progress-labels">
                             <span>Request</span>
-                            <span>Design</span>
+                            <span>Confirmed</span>
+                            <span>Designing</span>
                             <span>Material</span>
                             <span>Production</span>
-                            <span>Ready</span>
+                            <span>QC</span>
+                            <span>Delivery</span>
+                            <span>Delivered</span>
                         </div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: ${progress}%"></div>
@@ -100,6 +108,7 @@ function loadCustomOrders(uid) {
 
         ordersList.innerHTML = ordersHTML;
         if (activeStat) activeStat.innerText = activeCount;
+        if (completedStat) completedStat.innerText = completedCount;
     });
 }
 
@@ -126,6 +135,12 @@ async function loadUserData(uid) {
             // Settings tab
             document.getElementById("settings-firstname").value = data.firstName;
             document.getElementById("settings-lastname").value = data.lastName;
+
+            // Admin Check
+            if (data.role === "admin") {
+                const adminBtn = document.getElementById("admin-manage-btn");
+                if (adminBtn) adminBtn.style.display = "flex";
+            }
             
         } else {
             console.error("No such user document!");
@@ -135,13 +150,10 @@ async function loadUserData(uid) {
     }
 }
 
-// Update Wishlist Count Summary
-async function updateWishlistCount() {
-    // This can be synced with localStorage or a separate Firestore collection
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    const countEl = document.getElementById("dash-wishlist-count");
-    if (countEl) countEl.innerText = wishlist.length;
-}
+// Sync Wishlist on changes
+window.addEventListener("wishlistUpdated", () => {
+    if (window.updateWishlistCount) window.updateWishlistCount();
+});
 
 // Handle Settings Update
 const settingsForm = document.getElementById("settings-form");

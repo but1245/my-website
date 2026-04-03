@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders | Admin | Pradeep Furniture</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="toast.css">
+    <script src="toast.js"></script>
+    <style>
+        .admin-controls {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-color);
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .admin-select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            flex-grow: 1;
+        }
+        .update-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 155, 99, 0.3);
+        }
+        .order-card.selected {
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(196, 155, 99, 0.2);
+        }
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .summary-card h4 { font-size: 24px; color: var(--accent-color); }
+        .summary-card p { font-size: 13px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+    </style>
+</head>
+<body class="admin-page">
+
+    <!-- 🔝 NAVBAR -->
+    <header class="navbar">
+      <a href="index.html" class="logo">
+        <img src="images/logo.png" alt="logo">
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="dashboard.html">My Dashboard</a></li>
+          <li><a href="admin-orders.html" class="active">Manage All Orders</a></li>
+        </ul>
+      </nav>
+      <div class="nav-right">
+        <span id="admin-name" style="font-weight: 600; color: var(--accent-color);"></span>
+        <button id="theme-toggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </header>
+
+    <main class="dashboard-container" style="margin-top: 100px;">
+        <section class="dashboard-content">
+            <header class="content-header">
+                <h2 class="welcome-text">Order Management Center 🛠️</h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">Move orders through the production lifecycle. Real-time sync with customers.</p>
+            </header>
+
+            <div class="stats-summary">
+                <div class="summary-card"><h4 id="count-total">0</h4><p>Total Requests</p></div>
+                <div class="summary-card"><h4 id="count-pending">0</h4><p>Pending</p></div>
+                <div class="summary-card"><h4 id="count-production">0</h4><p>In Production</p></div>
+                <div class="summary-card"><h4 id="count-delivered">0</h4><p>Completed</p></div>
+            </div>
+
+            <div id="all-orders-list">
+                <!-- Dynamic -->
+                <div class="loading-state" style="text-align: center; padding: 50px;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 40px; color: var(--accent-color);"></i>
+                    <p style="margin-top: 15px;">Loading Order Database...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Project Scripts -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="admin-orders.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>
