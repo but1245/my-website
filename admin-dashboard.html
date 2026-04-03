@@ -25,7 +25,6 @@
             display: flex;
             min-height: 100vh;
             background: var(--bg-color);
-            padding-top: 80px;
         }
 
         /* Modern Sidebar */
@@ -35,16 +34,26 @@
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            padding: 30px 20px;
+            padding: 0;
             position: fixed;
-            height: calc(100vh - 80px);
+            top: 0;
+            left: 0;
+            height: 100vh;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 1000;
         }
 
+        .sidebar-brand {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .sidebar-brand img { width: 45px; }
+
         .admin-sidebar .nav-item {
-            padding: 15px 20px;
-            margin-bottom: 10px;
+            padding: 10px 18px;
+            margin: 0 15px 5px 15px;
             border-radius: 12px;
             color: var(--text-primary);
             text-decoration: none;
@@ -302,10 +311,7 @@
 <body class="admin-page">
 
     <!-- 🔝 NAVBAR -->
-    <header class="navbar">
-      <a href="index.html" class="logo">
-        <img src="images/logo.png" alt="logo">
-      </a>
+    <header class="navbar" style="left: 260px; width: calc(100% - 260px);">
       <nav>
         <ul class="nav-links">
           <li><a href="dashboard.html">Back to Site</a></li>
@@ -322,12 +328,21 @@
     <div class="admin-layout">
         
         <!-- SIDEBAR -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" style="position:fixed; top:0; left:0;">
+            <div class="sidebar-brand">
+              <a href="index.html" class="logo"><img src="images/logo.png" alt="logo"></a>
+            </div>
             <a href="javascript:void(0)" onclick="switchTab('overview')" class="nav-item tab-link active" id="tab-overview">
                 <i class="fa-solid fa-chart-pie"></i> <span class="nav-text">Overview</span>
             </a>
             <a href="admin-orders.html" class="nav-item">
                 <i class="fa-solid fa-boxes-packing"></i> <span class="nav-text">All Orders</span>
+            </a>
+            <a href="admin-products.html" class="nav-item">
+                <i class="fa-solid fa-couch"></i> <span class="nav-text">Manage Products</span>
+            </a>
+            <a href="admin-coupons.html" class="nav-item">
+                <i class="fa-solid fa-ticket"></i> <span class="nav-text">Manage Coupons</span>
             </a>
             <a href="javascript:void(0)" onclick="switchTab('users')" class="nav-item tab-link" id="tab-users">
                 <i class="fa-solid fa-users"></i> <span class="nav-text">Users</span>

@@ -1,16 +1,44 @@
-import { products } from "./database.js";
 import { auth, db } from "./firebase.js";
-import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { 
+  doc, 
+  updateDoc, 
+  collection, 
+  onSnapshot, 
+  query, 
+  orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+let liveProducts = [];
 
 /* ================= RENDER PRODUCTS ================= */
+function getRatingStars(rating = 5.0) {
+    let html = "";
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.4; // 0.4 upwards is half star
+    for(let i=0; i<full; i++) html += '<i class="fa-solid fa-star"></i>';
+    if(half && full < 5) html += '<i class="fa-solid fa-star-half-stroke"></i>';
+    const empty = 5 - full - (half ? 1 : 0);
+    for(let i=0; i<empty; i++) html += '<i class="fa-regular fa-star"></i>';
+    return html;
+}
+
 window.renderProducts = function () {
   const container = document.querySelector(".products");
   if (!container) return;
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  
+  if (liveProducts.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">
+      <i class="fa-solid fa-hourglass-start fa-spin" style="font-size:30px; margin-bottom:10px;"></i>
+      <p>Loading the latest collection...</p>
+    </div>`;
+    return;
+  }
+
   container.innerHTML = "";
 
-  products.forEach((item, i) => {
+  liveProducts.forEach((item, i) => {
     let cartItem = cart.find(c => c.name === item.name);
     let qty = cartItem ? cartItem.qty : 0;
 
@@ -47,19 +75,15 @@ window.renderProducts = function () {
 
       <div class="card-content">
         <div class="card-header-info">
-          <span class="product-id">ID: #PF-${item.id || 'N/A'}</span>
+          <span class="product-id">ID: #PF-${item.id ? item.id.toString().substring(0,6).toUpperCase() : 'NEW'}</span>
           <div class="rating">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star-half-stroke"></i>
-            <span class="review-text">135</span>
+            ${getRatingStars(item.rating)}
+            <span class="review-text">${item.reviewsCount || 0}</span>
           </div>
         </div>
         
         <h3>${item.name}</h3>
-        <p class="price">₹${item.price}</p>
+        <p class="price">₹${item.price.toLocaleString()}</p>
 
         <div class="card-buttons">
           ${btnHTML}
@@ -72,6 +96,18 @@ window.renderProducts = function () {
     `;
   });
 };
+
+/* ================= LIVE PRODUCTS LISTENER ================= */
+function initLiveProducts() {
+  const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    liveProducts = snapshot.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+    window.renderProducts();
+  });
+}
 
 /* ================= CART COUNT ================= */
 window.updateCartCount = function () {
@@ -204,55 +240,42 @@ window.toggleWishlist = async function (el, name, price, image) {
 
 /* ================= SEARCH ================= */
 const searchInput = document.getElementById("searchInput");
-
-searchInput.addEventListener("input", function () {
-
-  const value = this.value.toLowerCase();
-
-  const cards = document.querySelectorAll(".product-card");
-
-  cards.forEach(card => {
-
-    const title = card.querySelector("h3").innerText.toLowerCase();
-
-    const id = card.querySelector(".product-id")?.innerText.toLowerCase();
-
-    if (title.includes(value) || (id && id.includes(value))) {
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
-    }
-
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+    const cards = document.querySelectorAll(".product-card");
+    cards.forEach(card => {
+      const title = card.querySelector("h3").innerText.toLowerCase();
+      const id = card.querySelector(".product-id")?.innerText.toLowerCase();
+      if (title.includes(value) || (id && id.includes(value))) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
   });
-
-});
-
-
+}
 
 const section = document.getElementById("tiltSection");
 const text = document.querySelector(".tilt-text");
 
-section.addEventListener("mousemove", (e) => {
+if (section && text) {
+  section.addEventListener("mousemove", (e) => {
+    const rect = section.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateY = ((x - centerX) / centerX) * 10; // left-right
+    const rotateX = -((y - centerY) / centerY) * 10; // up-down
+    text.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
 
-  const rect = section.getBoundingClientRect();
-
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  const centerX = rect.width / 2;
-  const centerY = rect.height / 2;
-
-  const rotateY = ((x - centerX) / centerX) * 10; // left-right
-  const rotateX = -((y - centerY) / centerY) * 10; // up-down
-
-  text.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-});
-
-section.addEventListener("mouseleave", () => {
-  text.style.transform = "rotateX(0deg) rotateY(0deg)";
-});
-
+  section.addEventListener("mouseleave", () => {
+    text.style.transform = "rotateX(0deg) rotateY(0deg)";
+  });
+}
 
 /* ================= INIT ================= */
 window.updateCartCount();
-window.renderProducts();
+initLiveProducts();

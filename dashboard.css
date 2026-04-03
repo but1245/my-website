@@ -339,15 +339,85 @@
 .status-material-selection { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
 .status-production { background: #fbe9e7; color: #d84315; border: 1px solid #ffccbc; }
 .status-delivered { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.status-confirmed { background: #e0f2f1; color: #00796b; border: 1px solid #b2dfdb; }
+.status-shipping { background: #e1f5fe; color: #0288d1; border: 1px solid #b3e5fc; }
 
-.order-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px;
+/* Cart Items Preview (For Store Orders) */
+.cart-items-preview {
     background: var(--bg-color);
     border-radius: 16px;
-    margin-bottom: 30px;
+    padding: 15px;
+    margin-bottom: 25px;
+}
+
+.cart-item-mini {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cart-item-mini:last-child {
+    border-bottom: none;
+}
+
+.cart-item-mini img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.mini-info .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.mini-info .qty {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.order-summary-mini {
+    margin-top: 15px;
+    text-align: right;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Order Details Grid (For Custom Requests) */
+.order-details-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    background: var(--bg-color);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+}
+
+.order-details-grid p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.upload-link a {
+    color: var(--accent-color);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.upload-link a:hover {
+    text-decoration: underline;
 }
 
 /* Progress Section */

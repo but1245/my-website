@@ -128,9 +128,10 @@
       <div class="summary">
 
         <p>Subtotal <span>₹<span id="subtotal" data-value="0">0</span></span></p>
-        <p>Shipping <span style="font-size: 0.8em; color: var(--text-muted);">Calculated at Checkout</span></p>
+        <p>Shipping <span style="font-size: 0.8em; color: var(--text-muted);">₹<span id="shipping">0</span></span></p>
         <p>GST (18%) <span>₹<span id="gst" data-value="0">0</span></span></p>
         <p>CGST (9%) <span>₹<span id="cgst" data-value="0">0</span></span></p>
+        <p>SGST (9%) <span>₹<span id="sgst" data-value="0">0</span></span></p>
         <div class="coupon-box">
           <input type="text" id="couponInput" placeholder="Enter Coupon">
           <div id="couponBadge" class="coupon-badge"></div>
@@ -161,10 +162,25 @@
 
   <script type="module">
 
-    import { coupons } from "./database.js";
+    import { db } from "./firebase.js";
+    import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let discountValue = 0;
+    let coupons = [];
+
+    // 🎫 Fetch Live Coupons
+    async function fetchCoupons() {
+      try {
+        const q = query(collection(db, "coupons"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        coupons = snap.docs.map(doc => doc.data());
+        console.log("Coupons loaded from Firestore:", coupons);
+      } catch (err) {
+        console.error("Coupon Fetch Error:", err);
+      }
+    }
+    fetchCoupons();
 
     /* ================= NUMBER ANIMATION ================= */
     function animateNumber(id, newValue) {
@@ -300,11 +316,15 @@
       let shipping = 0;
       
       let gst = Math.round(subtotal * 0.18);
+      let cgst = Math.round(subtotal * 0.09);
+      let sgst = Math.round(subtotal * 0.09);
       let total = subtotal + shipping + gst - discountValue;
 
       animateNumber("subtotal", subtotal);
       animateNumber("shipping", shipping);
       animateNumber("gst", gst);
+      animateNumber("cgst", cgst);
+      animateNumber("sgst", sgst);
       animateNumber("discount", discountValue);
 
       animateNumber("total", total);

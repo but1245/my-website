@@ -18,12 +18,6 @@
 
 <body>
 
-  
-  <!-- 🔝 NAVBAR -->
- </head>
-
-<body>
-
   <!-- 🔝 NAVBAR -->
   <header class="navbar">
     <div class="menu-toggle" onclick="toggleMenu()">
@@ -251,6 +245,14 @@
             <span>GST (18%)</span>
             <span class="value">₹<span id="gst">0</span></span>
           </div>
+          <div class="receipt-item">
+            <span>CGST (9%)</span>
+            <span class="value">₹<span id="cgst">0</span></span>
+          </div>
+          <div class="receipt-item">
+            <span>SGST (9%)</span>
+            <span class="value">₹<span id="sgst">0</span></span>
+          </div>
 
           <div class="receipt-divider"></div>
 
@@ -279,10 +281,22 @@
   <script type="module">
 
     import { auth, db } from "./firebase.js";
-    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { collection, addDoc, serverTimestamp, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let discountValue = 0;
+    
+    let coupons = [];
+    async function fetchCoupons() {
+      try {
+        const q = query(collection(db, "coupons"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        coupons = snap.docs.map(doc => doc.data());
+      } catch (err) {
+        console.error("Coupon Fetch Error:", err);
+      }
+    }
+    fetchCoupons();
 
     /* ================= TOTAL ================= */
     window.updateTotal = function() {
@@ -317,10 +331,14 @@
       }
 
       let gst = Math.round(subtotal * 0.18);
+      let cgst = Math.round(subtotal * 0.09);
+      let sgst = Math.round(subtotal * 0.09);
       let total = subtotal + shipping + gst - discountValue;
 
       document.getElementById("subtotal").innerText = subtotal;
       document.getElementById("gst").innerText = gst;
+      document.getElementById("cgst").innerText = cgst;
+      document.getElementById("sgst").innerText = sgst;
       document.getElementById("total").innerText = total;
 
       let shipEl = document.getElementById("shipping-amount");
@@ -364,39 +382,57 @@
 
         try {
             const btn = document.querySelector(".place-order");
-            btn.innerText = "Processing Order...";
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing Order...`;
             btn.disabled = true;
 
             const subtotal = parseInt(document.getElementById("subtotal").innerText);
             const shipping = parseInt(document.getElementById("shipping-amount").innerText.replace("₹", "")) || 0;
+            const gst = parseInt(document.getElementById("gst").innerText);
+            const cgst = parseInt(document.getElementById("cgst").innerText);
+            const sgst = parseInt(document.getElementById("sgst").innerText);
             const total = parseInt(document.getElementById("total").innerText);
 
             const orderData = {
                 userId: user.uid,
-                customer: { name, mobile: phone, email: user.email, city, state, address: fullAddress },
+                customer: { 
+                  name, 
+                  mobile: phone, 
+                  email: user.email || "N/A", 
+                  city, 
+                  state, 
+                  address: fullAddress,
+                  pincode: document.getElementById("pincode").value.trim()
+                },
                 furniture: { type: "Cart Order", items: cart },
-                summary: { subtotal, shipping, total },
+                summary: { subtotal, shipping, gst, cgst, sgst, total },
                 status: "Pending",
                 currentStep: 1,
                 statusHistory: [{ status: "Pending", note: "Order placed from cart.", updatedAt: new Date().toISOString() }],
                 createdAt: serverTimestamp()
             };
 
+            console.log("Submitting Order Data:", orderData);
+
             const docRef = await addDoc(collection(db, "custom_orders"), orderData);
+            console.log("Order Successful, doc ID:", docRef.id);
             
             // Clear Cart
             localStorage.removeItem("cart");
+            window.dispatchEvent(new Event("cartUpdated"));
             
-            window.showToast("Address Saved! Proceeding to Shipping...", "success");
+            window.showToast("Order Created! Proceeding to Shipping...", "success");
             
             setTimeout(() => {
                 window.location.href = `shipping.html?orderId=${docRef.id}`;
-            }, 2000);
+            }, 1500);
 
         } catch (error) {
-            console.error("Order Error:", error);
-            window.showToast("Failed to place order! ❌", "error");
-            document.querySelector(".place-order").disabled = false;
+            console.error("Order Error Detail:", error);
+            window.showToast("Failed to place order: " + error.message, "error");
+            
+            const btn = document.querySelector(".place-order");
+            btn.innerHTML = `Continue to Shipping <i class="fa-solid fa-truck-fast"></i>`;
+            btn.disabled = false;
         }
     };
 

@@ -85,13 +85,19 @@ window.trackOrder = async function() {
         const idHeader = document.getElementById("orderId-display");
         if (idHeader) idHeader.innerText = `#${foundOrder.id.substring(0,8).toUpperCase()}`;
 
-        // Set Image (if exists)
+        // 🖼️ Set Image (Prioritize product/custom image over logo)
+        let displayImg = "images/logo.png"; // Default
+        
         if (foundOrder.imageUrl) {
-            orderImg.src = foundOrder.imageUrl;
-            orderImg.style.display = "block";
-        } else {
-            orderImg.src = "images/logo.png"; // Placeholder
+            // 1. Custom Order Design Image
+            displayImg = foundOrder.imageUrl;
+        } else if (foundOrder.furniture?.items && foundOrder.furniture.items.length > 0) {
+            // 2. First item from Cart Order
+            displayImg = foundOrder.furniture.items[0].image;
         }
+        
+        orderImg.src = displayImg;
+        orderImg.style.display = "block";
 
         // Update Steps with Dates
         const currentStep = foundOrder.currentStep || 1;

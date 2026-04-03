@@ -28,26 +28,33 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Load Custom Orders (Real-time)
+// Load Orders (Both Cart and Custom)
 function loadCustomOrders(uid) {
     const ordersList = document.getElementById("order-history");
     const statCards = document.querySelectorAll(".stat-card h3");
     const activeStat = statCards[0];
     const completedStat = statCards[1];
 
+    console.log("Fetching orders for UID:", uid);
+
+    // 🔥 Removed orderBy to avoid index requirement
     const q = query(
         collection(db, "custom_orders"), 
-        where("userId", "==", uid),
-        orderBy("createdAt", "desc")
+        where("userId", "==", uid)
     );
 
     onSnapshot(q, (snapshot) => {
+        console.log("Orders Snapshot received, size:", snapshot.size);
+        
         if (snapshot.empty) {
             ordersList.innerHTML = `
                 <div class="empty-state">
                     <i class="fa-solid fa-box-open"></i>
-                    <p>No custom orders yet. Tell us your dream furniture!</p>
-                    <a href="custom-order.html" class="btn-primary">Start Custom Order</a>
+                    <p>No orders yet. Ready to furnish your home?</p>
+                    <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                        <a href="index.html" class="btn-primary" style="padding:10px 20px;">Browse Store</a>
+                        <a href="custom-order.html" class="btn-primary" style="padding:10px 20px; background:var(--text-primary);">Custom Request</a>
+                    </div>
                 </div>
             `;
             if (activeStat) activeStat.innerText = "0";
@@ -55,14 +62,24 @@ function loadCustomOrders(uid) {
             return;
         }
 
-        let ordersHTML = "";
         let activeCount = 0;
         let completedCount = 0;
+        
+        // 🛠️ Client-side sorting by creation date
+        const allOrders = [];
+        snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
+        
+        allOrders.sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return dateB - dateA; // Newest first
+        });
 
-        snapshot.forEach((doc) => {
-            const order = doc.data();
+        let ordersHTML = "";
+        allOrders.forEach((order) => {
             const status = order.status || "Pending";
-            const progress = order.progress || 12; // Default to step 1
+            const progress = order.progress || (order.currentStep ? (order.currentStep * 12.5) : 12);
+            const isCartOrder = order.furniture?.type === "Cart Order";
             
             if (status === "Delivered") {
                 completedCount++;
@@ -70,31 +87,58 @@ function loadCustomOrders(uid) {
                 activeCount++;
             }
 
+            let detailContent = "";
+            if (isCartOrder) {
+                const items = order.furniture?.items || [];
+                const itemsHtml = items.map(item => `
+                    <div class="cart-item-mini">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="mini-info">
+                            <p class="name">${item.name}</p>
+                            <p class="qty">Qty: ${item.qty} × ₹${item.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `).join("");
+                
+                detailContent = `
+                    <div class="cart-items-preview">
+                        ${itemsHtml}
+                        <div class="order-summary-mini">
+                            <p><strong>Total Paid:</strong> ₹${order.summary?.total?.toLocaleString() || 0}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                detailContent = `
+                    <div class="order-details-grid">
+                        <div>
+                            <p><strong>Material:</strong> ${order.preferences?.material || "N/A"}</p>
+                            <p><strong>Size:</strong> ${order.furniture?.dimensions?.length || "?"}x${order.furniture?.dimensions?.width || "?"} ${order.furniture?.dimensions?.unit || ""}</p>
+                        </div>
+                        ${order.imageUrl ? `
+                        <div class="upload-link">
+                            <a href="${order.imageUrl}" target="_blank">
+                                <i class="fa-solid fa-image"></i> View My Design
+                            </a>
+                        </div>
+                        ` : ""}
+                    </div>
+                `;
+            }
+
             ordersHTML += `
                 <div class="order-card card">
                     <div class="order-header">
                         <div class="order-info">
-                            <h4>${order.furniture.type}</h4>
-                            <span>ID: #${doc.id.substring(0, 8).toUpperCase()}</span>
+                            <h4>${isCartOrder ? "Store Order" : (order.furniture?.type || "Custom Order")}</h4>
+                            <span class="order-id">ID: #${order.id.substring(0, 8).toUpperCase()}</span>
                         </div>
                         <div class="order-status-badge status-${status.toLowerCase().replace(/\s+/g, "-")}">
                             ${status}
                         </div>
                     </div>
                     
-                    <div class="order-details" style="display: flex; gap: 15px; align-items: start; justify-content: space-between;">
-                        <div>
-                            <p><strong>Material:</strong> ${order.preferences.material}</p>
-                            <p><strong>Size:</strong> ${order.furniture.dimensions.length}x${order.furniture.dimensions.width} ${order.furniture.dimensions.unit}</p>
-                        </div>
-                        ${order.imageUrl ? `
-                        <div style="margin-top: 5px;">
-                            <a href="${order.imageUrl}" target="_blank" style="color: var(--primary-color); font-size: 13px; font-weight: 500; text-decoration: underline;">
-                                <i class="fa-solid fa-link"></i> View Uploaded Image
-                            </a>
-                        </div>
-                        ` : ""}
-                    </div>
+                    ${detailContent}
 
                     <div class="progress-container">
                         <div class="progress-labels">
@@ -103,8 +147,8 @@ function loadCustomOrders(uid) {
                             <span>Designing</span>
                             <span>Material</span>
                             <span>Production</span>
-                            <span>QC</span>
-                            <span>Delivery</span>
+                            <span>QC Check</span>
+                            <span>Shipping</span>
                             <span>Delivered</span>
                         </div>
                         <div class="progress-bar-bg">
@@ -118,6 +162,9 @@ function loadCustomOrders(uid) {
         ordersList.innerHTML = ordersHTML;
         if (activeStat) activeStat.innerText = activeCount;
         if (completedStat) completedStat.innerText = completedCount;
+    }, (error) => {
+        console.error("Dashboard: Firestore query error", error);
+        ordersList.innerHTML = `<p style="text-align:center; color:var(--text-muted);">Failed to load orders. Error: ${error.message}</p>`;
     });
 }
 

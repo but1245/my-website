@@ -39,9 +39,13 @@ onAuthStateChanged(auth, async (user) => {
                     loadRecentOrders();
                     loadRecentUsers();
                     loadAllUsersData();
-                    // Force the overview tab to show
+                    
+                    // 🔥 DEEP LINKING: Check URL for tab parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const targetTab = urlParams.get('tab') || 'overview';
+                    
                     setTimeout(() => {
-                        window.switchTab('overview');
+                        window.switchTab(targetTab);
                     }, 500);
                 } catch (err) {
                     console.error("Initialization Error:", err);
@@ -66,35 +70,97 @@ function loadDashboardMetrics() {
         console.error("Error loading users:", error);
     });
 
-    // 2. Orders Metrics & Chart
+    // 2. Orders Metrics & Revenue Analytics
     const statOrders = document.getElementById("stat-orders");
     const statPending = document.getElementById("stat-pending");
     const statDelivered = document.getElementById("stat-delivered");
+    const statRevenue = document.getElementById("stat-revenue");
+    const statGrowth = document.getElementById("stat-growth");
 
     onSnapshot(collection(db, "custom_orders"), (snapshot) => {
         if (statOrders) statOrders.innerText = snapshot.size;
         
         let pending = 0;
         let delivered = 0;
+        let totalRevenue = 0;
         let statusCounts = {};
+
+        // Month-wise grouping for growth calculation
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        
+        let revenueThisMonth = 0;
+        let revenueLastMonth = 0;
 
         snapshot.forEach((doc) => {
             const data = doc.data();
             const status = data.status || "Pending";
-            
+            const orderTotal = data.summary?.total || 0;
+            const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+
             if (status === "Pending") pending++;
             if (status === "Delivered") delivered++;
             
+            totalRevenue += orderTotal;
             statusCounts[status] = (statusCounts[status] || 0) + 1;
+
+            // Growth logic
+            if (createdAt) {
+                const oMonth = createdAt.getMonth();
+                const oYear = createdAt.getFullYear();
+
+                if (oYear === currentYear && oMonth === currentMonth) {
+                    revenueThisMonth += orderTotal;
+                } else if (oYear === currentYear && oMonth === currentMonth - 1) {
+                    revenueLastMonth += orderTotal;
+                } else if (currentMonth === 0 && oYear === currentYear - 1 && oMonth === 11) {
+                    // Handle January case (previous month is Dec of last year)
+                    revenueLastMonth += orderTotal;
+                }
+            }
         });
 
         if (statPending) statPending.innerText = pending;
         if (statDelivered) statDelivered.innerText = delivered;
         
+        // Update Revenue with Animation
+        if (statRevenue) {
+            animateRevenue(statRevenue, totalRevenue);
+        }
+
+        // Update Growth
+        if (statGrowth) {
+            let growth = 0;
+            if (revenueLastMonth > 0) {
+                growth = ((revenueThisMonth - revenueLastMonth) / revenueLastMonth) * 100;
+            } else if (revenueThisMonth > 0) {
+                growth = 100; // First month of sales
+            }
+            statGrowth.innerText = (growth >= 0 ? "+" : "") + Math.round(growth) + "%";
+        }
+        
         renderChart(statusCounts);
     }, (error) => {
         console.error("Error loading orders chart:", error);
     });
+}
+
+function animateRevenue(el, finalValue) {
+    let start = 0;
+    const duration = 1000;
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(progress * finalValue);
+        el.innerText = "₹" + current.toLocaleString('en-IN');
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    }
+    window.requestAnimationFrame(step);
 }
 
 function loadRecentOrders() {
@@ -303,44 +369,96 @@ window.searchUsers = function() {
 
 /* ================= ADVANCED ANALYTICS ================= */
 function renderTrendsChart() {
-    const ctx = document.getElementById('orderTrendsChart').getContext('2d');
+    const canvas = document.getElementById('orderTrendsChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     
-    // Static dummy data for trends (simulating growth)
-    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-    const data = [12, 19, 15, 25, 32, 45]; // Orders growth
+    // 1. Get Real Data from the last 6 months
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const now = new Date();
+    const last6Months = [];
+    const counts = [0, 0, 0, 0, 0, 0];
+    
+    // Generate labels for last 6 months
+    for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        last6Months.push({
+            month: d.getMonth(),
+            year: d.getFullYear(),
+            label: monthNames[d.getMonth()]
+        });
+    }
 
-    if (trendsChartInstance) trendsChartInstance.destroy();
+    // Calculate Satisfaction Rating
+    let deliveredCount = 0;
+    let totalCount = 0;
 
-    trendsChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Monthly Orders',
-                data: data,
-                borderColor: '#c49a6c',
-                backgroundColor: 'rgba(196, 154, 108, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 5,
-                pointBackgroundColor: '#c49a6c'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                x: { grid: { display: false } }
+    // Use a small helper to get data for the chart from Firestore
+    onSnapshot(collection(db, "custom_orders"), (snapshot) => {
+        totalCount = snapshot.size;
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            const createdAt = d.createdAt?.toDate ? d.createdAt.toDate() : null;
+            if (d.status === "Delivered") deliveredCount++;
+
+            if (createdAt) {
+                const om = createdAt.getMonth();
+                const oy = createdAt.getFullYear();
+                
+                last6Months.forEach((m, idx) => {
+                    if (m.month === om && m.year === oy) {
+                        counts[idx]++;
+                    }
+                });
             }
-        }
-    });
+        });
 
-    // Update revenue stat
-    const revenue = data.reduce((a, b) => a + b, 0) * 15000; // Average price
-    document.getElementById("stat-revenue").innerText = `₹${revenue.toLocaleString()}`;
-    document.getElementById("stat-growth").innerText = `+${Math.round((data[5]/data[4]-1)*100)}%`;
+        // Update High-Level Satisfaction UI
+        const satisfactionText = document.querySelector(".glass-panel h1");
+        if (satisfactionText) {
+            let rating = 4.5; // Base
+            if (totalCount > 0) {
+                rating = 4.5 + (deliveredCount / totalCount * 0.4);
+            }
+            satisfactionText.innerText = rating.toFixed(1);
+        }
+
+        if (trendsChartInstance) trendsChartInstance.destroy();
+
+        trendsChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: last6Months.map(m => m.label),
+                datasets: [{
+                    label: 'Monthly Orders',
+                    data: counts,
+                    borderColor: '#c49a6c',
+                    backgroundColor: 'rgba(196, 154, 108, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#c49a6c',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: 'rgba(255,255,255,0.5)' }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.5)' }
+                    }
+                }
+            }
+        });
+    });
 }

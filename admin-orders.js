@@ -195,58 +195,138 @@ window.showOrderDetails = function(id) {
     if (!order) return;
 
     const body = document.getElementById("modal-body");
-    const dateStr = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : "N/A";
+    const modalTitle = document.getElementById("modal-title");
+    const dateStr = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString('en-IN') : "N/A";
+    const isCartOrder = order.furniture?.type === "Cart Order";
+
+    modalTitle.innerText = isCartOrder ? "Store Order Details" : "Custom Order Details";
+
+    let detailsHtml = "";
+
+    if (isCartOrder) {
+        const items = order.furniture.items || [];
+        const itemsHtml = items.map(item => `
+            <div style="display:flex; gap:15px; align-items:center; border-bottom:1px solid var(--border-color); padding:10px 0;">
+                <img src="${item.image}" style="width:60px; height:60px; border-radius:8px; object-fit:cover;">
+                <div style="flex:1;">
+                    <p style="margin:0; font-weight:600;">${item.name}</p>
+                    <p style="margin:0; font-size:12px; color:var(--text-muted);">₹${item.price.toLocaleString()} × ${item.qty}</p>
+                </div>
+                <div style="font-weight:700;">₹${(item.price * item.qty).toLocaleString()}</div>
+            </div>
+        `).join("");
+
+        detailsHtml = `
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label>Customer Details</label>
+                    <p>${order.customer.name}</p>
+                    <p style="font-size:13px; color:var(--text-muted);">${order.customer.mobile}</p>
+                    <p style="font-size:13px; color:var(--text-muted);">${order.customer.email || ""}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Shipping Address</label>
+                    <p>${order.customer.address}, ${order.customer.city}</p>
+                    <p>Pincode: ${order.customer.pincode || "N/A"}</p>
+                </div>
+                
+                <div class="detail-item full-width" style="margin-top:15px;">
+                    <label>Purchased Items</label>
+                    <div style="background:var(--bg-color); border-radius:12px; padding:15px;">
+                        ${itemsHtml}
+                        <div style="margin-top:15px; border-top:1px dashed var(--border-color); padding-top:10px;">
+                            <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+                                <span>Subtotal:</span> <span>₹${order.summary?.subtotal?.toLocaleString() || 0}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+                                <span>Shipping:</span> <span>₹${order.summary?.shipping?.toLocaleString() || 0}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:2px;">
+                                <span>GST (18%):</span> <span>₹${order.summary?.gst?.toLocaleString() || 0}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:2px;">
+                                <span>CGST (9%):</span> <span>₹${order.summary?.cgst?.toLocaleString() || 0}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:5px;">
+                                <span>SGST (9%):</span> <span>₹${order.summary?.sgst?.toLocaleString() || 0}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:18px; font-weight:800; color:var(--accent-color); margin-top:10px;">
+                                <span>Total Paid:</span> <span>₹${order.summary?.total?.toLocaleString() || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // Custom Request
+        detailsHtml = `
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label>Customer Name</label>
+                    <p>${order.customer.name}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Mobile Number</label>
+                    <p>${order.customer.mobile}</p>
+                </div>
+                <div class="detail-item">
+                    <label>City & Address</label>
+                    <p>${order.customer.address || "N/A"}, ${order.customer.city || "N/A"}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Furniture Type</label>
+                    <p>${order.furniture.type}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Dimensions (LxWxH)</label>
+                    <p>${order.furniture.dimensions.length} x ${order.furniture.dimensions.width} x ${order.furniture.dimensions.height} ${order.furniture.dimensions.unit || "N/A"}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Material Preference</label>
+                    <p>${order.preferences.material || "Standard Wood"}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Color & Finish</label>
+                    <p>${order.preferences.color || "Default"} (${order.preferences.polish ? "Polished" : "Not Polished"})</p>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Special Instructions</label>
+                    <p style="background:var(--bg-color); padding:10px; border-radius:8px;">${order.preferences.details || "No special instructions provided."}</p>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Uploaded Reference Design</label>
+                    ${order.imageUrl ? 
+                        `<img src="${order.imageUrl}" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid var(--border-color); cursor:pointer;" onclick="window.open(this.src)">` : 
+                        `<p style="color:var(--text-muted); font-style:italic;">No image uploaded.</p>`
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+    // Status History (Shared)
+    const history = order.statusHistory || [];
+    const historyHtml = history.length > 0 ? history.map(h => `
+        <div style="border-left:2px solid var(--accent-light); padding-left:15px; margin-top:15px; position:relative;">
+            <div style="position:absolute; left:-7px; top:0; width:12px; height:12px; background:var(--accent-color); border-radius:50%;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <strong>${h.status}</strong>
+                <span style="font-size:11px; color:var(--text-muted);">${new Date(h.updatedAt).toLocaleString('en-IN')}</span>
+            </div>
+            <p style="margin:5px 0 0 0; font-size:13px; color:var(--text-secondary);">${h.note || ""}</p>
+        </div>
+    `).join("") : `<p style="color:var(--text-muted); font-style:italic;">No updates tracked yet.</p>`;
 
     body.innerHTML = `
-        <div class="details-grid">
-            <div class="detail-item">
-                <label>Customer Name</label>
-                <p>${order.customer.name}</p>
-            </div>
-            <div class="detail-item">
-                <label>Mobile Number</label>
-                <p>${order.customer.mobile}</p>
-            </div>
-            <div class="detail-item">
-                <label>City</label>
-                <p>${order.customer.city || "N/A"}</p>
-            </div>
-            <div class="detail-item">
-                <label>Furniture Type</label>
-                <p>${order.furniture.type}</p>
-            </div>
-            <div class="detail-item">
-                <label>Dimensions (LxWxH)</label>
-                <p>${order.furniture.dimensions.length} x ${order.furniture.dimensions.width} x ${order.furniture.dimensions.height} ${order.furniture.dimensions.unit}</p>
-            </div>
-            <div class="detail-item">
-                <label>Material</label>
-                <p>${order.preferences.material || "Standard"}</p>
-            </div>
-            <div class="detail-item">
-                <label>Color Preference</label>
-                <p>${order.preferences.color || "Default"}</p>
-            </div>
-            <div class="detail-item">
-                <label>Polish/Finish</label>
-                <p>${order.preferences.polish ? "Yes" : "No"}</p>
-            </div>
-            <div class="detail-item full-width">
-                <label>Customization Details</label>
-                <p>${order.preferences.details || "No special instructions provided."}</p>
-            </div>
-            <div class="detail-item full-width">
-                <label>Reference Image</label>
-                ${order.imageUrl ? 
-                    `<img src="${order.imageUrl}" style="width:100%; border-radius:12px; margin-top:10px; border:1px solid var(--border-color);">` : 
-                    `<p style="color:var(--text-muted); font-style:italic;">No image uploaded.</p>`
-                }
-            </div>
-            <div class="detail-item full-width" style="border-top:1px dashed var(--border-color); padding-top:15px;">
-                <label>Created At</label>
-                <p>${dateStr}</p>
+        ${detailsHtml}
+        <div class="full-width" style="border-top:1px solid var(--border-color); margin-top:30px; padding-top:20px;">
+            <label style="color:var(--text-muted); font-size:11px; text-transform:uppercase; font-weight:700;">Order Timeline & Notes</label>
+            <div style="max-height:200px; overflow-y:auto; padding:10px;">
+                ${historyHtml}
             </div>
         </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-top:20px; text-align:right;">Order ID: #${id.toUpperCase()} | Created: ${dateStr}</p>
     `;
 
     modal.style.display = "flex";

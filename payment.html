@@ -140,6 +140,14 @@
               <span>GST (18%)</span>
               <span id="gstTotal">₹0</span>
             </div>
+            <div class="receipt-item">
+              <span>CGST (9%)</span>
+              <span id="cgstTotal">₹0</span>
+            </div>
+            <div class="receipt-item">
+              <span>SGST (9%)</span>
+              <span id="sgstTotal">₹0</span>
+            </div>
             <div class="receipt-divider"></div>
             <div class="receipt-total">
               <span>Amount to Pay</span>
@@ -194,6 +202,8 @@
                 document.getElementById("subTotal").innerText = "₹" + data.summary.subtotal.toLocaleString();
                 document.getElementById("shipTotal").innerText = "₹" + data.summary.shipping.toLocaleString();
                 document.getElementById("gstTotal").innerText = "₹" + Math.round(data.summary.subtotal * 0.18).toLocaleString();
+                document.getElementById("cgstTotal").innerText = "₹" + Math.round(data.summary.subtotal * 0.09).toLocaleString();
+                document.getElementById("sgstTotal").innerText = "₹" + Math.round(data.summary.subtotal * 0.09).toLocaleString();
                 document.getElementById("finalTotal").innerText = "₹" + data.summary.total.toLocaleString();
                 document.getElementById("finalId").innerText = "#" + orderId.substring(0,8).toUpperCase();
 

@@ -105,6 +105,14 @@
             <span>GST (18%)</span>
             <span id="gstTotal">₹0</span>
           </div>
+          <div class="receipt-item">
+            <span>CGST (9%)</span>
+            <span id="cgstTotal">₹0</span>
+          </div>
+          <div class="receipt-item">
+            <span>SGST (9%)</span>
+            <span id="sgstTotal">₹0</span>
+          </div>
           <div class="receipt-divider"></div>
           <div class="receipt-total">
             <span>Grand Total</span>
@@ -172,10 +180,14 @@
         const sub = parseInt(document.getElementById("subtotal").innerText.replace("₹", "").replace(",", ""));
         const ship = baseShipping + extraCharge;
         const gst = Math.round(sub * 0.18);
+        const cgst = Math.round(sub * 0.09);
+        const sgst = Math.round(sub * 0.09);
         const total = sub + ship + gst;
 
         document.getElementById("shipTotal").innerText = ship === 0 ? "FREE" : "₹" + ship.toLocaleString();
         document.getElementById("gstTotal").innerText = "₹" + gst.toLocaleString();
+        document.getElementById("cgstTotal").innerText = "₹" + cgst.toLocaleString();
+        document.getElementById("sgstTotal").innerText = "₹" + sgst.toLocaleString();
         document.getElementById("finalTotal").innerText = "₹" + total.toLocaleString();
         currentTotal = total;
     }
