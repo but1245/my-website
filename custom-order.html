@@ -228,13 +228,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===== EMAIL VALIDATION ===== */
-  const emailInput = document.getElementById("email");
+  const emailInput = document.getElementById("cust-email");
   const emailError = document.getElementById("emailError");
 
-  emailInput.oninput = () => {
-    const pattern = /^[^\s@]+@[^\s@]+\.(com)$/;
-    emailError.style.display = pattern.test(emailInput.value) ? "none" : "block";
-  };
+  if (emailInput) {
+    emailInput.oninput = () => {
+      const pattern = /^[^\s@]+@[^\s@]+\.(com)$/;
+      emailError.style.display = pattern.test(emailInput.value) ? "none" : "block";
+    };
+  }
 
   /* ===== FILE UPLOAD ===== */
   const uploadBox = document.getElementById("uploadBox");
@@ -291,19 +293,8 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("discount", "20");
   }
 
-  /* ===== SUBMIT ===== */
-  document.getElementById("submitBtn").onclick = () => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-    if (isLoggedIn === "true") {
-      alert("✅ Request Submitted Successfully!");
-    } else {
-      alert("⚠️ Please login first");
-      window.location.href = "login.html";
-    }
-  };
-
-});
+  /* Submission handled by custom-order.js module */
+})
 </script>
 <script src="theme.js"></script>
 </body>
