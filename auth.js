@@ -49,7 +49,9 @@ const getRedirectUrl = () => {
 };
 
 // Record current page as redirect target if not auth page
-if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("signup.html")) {
+if (!window.location.pathname.includes("login.html") && 
+    !window.location.pathname.includes("admin-login.html") &&
+    !window.location.pathname.includes("signup.html")) {
     localStorage.setItem("authRedirect", window.location.href);
 }
 
@@ -312,5 +314,14 @@ onAuthStateChanged(auth, async (user) => {
   const path = window.location.pathname;
   if (user && (path.includes("login.html") || path.includes("signup.html"))) {
     window.location.href = "dashboard.html";
+  }
+  
+  // OWNER REDIRECT: If already logged in as admin, go to admin dashboard from admin-login
+  if (user && path.includes("admin-login.html")) {
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists() && docSnap.data().role === "admin") {
+      window.location.href = "admin-dashboard.html";
+    }
   }
 });

@@ -38,16 +38,18 @@ window.trackOrder = async function() {
 
     if (captchaInput !== captchaText) {
         window.showToast("❌ Incorrect Captcha Code", "error");
-        refreshCaptcha();
+        window.refreshCaptcha();
         return;
     }
+
+    // Clean the input mobile number (keep only last 10 digits for comparison)
+    const cleanMobile = mobile.replace(/\D/g, "").slice(-10);
+
+    console.log("DEBUG: Searching for", { cleanMobile, orderIdInput });
 
     try {
         trackBtn.innerText = "Searching... 🔍";
         trackBtn.disabled = true;
-
-        // Clean the input mobile number (keep only last 10 digits for comparison)
-        const cleanMobile = mobile.replace(/\D/g, "").slice(-10);
 
         // We fetch all orders and filter in JS to be flexible with phone formatting
         const q = query(collection(db, "custom_orders"));
@@ -62,6 +64,7 @@ window.trackOrder = async function() {
 
             // Match both clean mobile and partial ID
             if (dbMobile === cleanMobile && dbId.includes(orderIdInput)) {
+                console.log("DEBUG: Match Found!", doc.id);
                 foundOrder = { id: doc.id, ...data };
             }
         });
@@ -139,14 +142,16 @@ window.trackOrder = async function() {
 };
 
 /* CAPTCHA REFRESH */
-window.refreshCaptcha = function() {
+function refreshCaptcha() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let cap = "";
     for (let i = 0; i < 5; i++) {
         cap += chars[Math.floor(Math.random() * chars.length)] + " ";
     }
-    document.getElementById("captchaText").innerText = cap.trim();
-};
+    const el = document.getElementById("captchaText");
+    if (el) el.innerText = cap.trim();
+}
+window.refreshCaptcha = refreshCaptcha;
 
 // Initialize Captcha
 document.addEventListener("DOMContentLoaded", () => {

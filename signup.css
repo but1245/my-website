@@ -323,61 +323,26 @@ input {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--card-bg); /* card bg same hona chahiye */
+  background: transparent; /* Changed from var(--card-bg) */
   padding: 0 5px;
   color: #999;
   font-size: 14px;
   pointer-events: none;
   transition: 0.3s;
+  z-index: 2;
 }
 
 /* MOVE UP WHEN TYPING */
 .input-box input:focus + label,
-.input-box input:valid + label{
-  top: -8px;
+.input-box input:not(:placeholder-shown) + label {
+  top: -10px;
+  left: 10px;
   font-size: 12px;
   color: #c49b63;
+  background: var(--card-bg); /* Only show background when floating */
+  font-weight: 600;
 }
-/* INPUT BOX */
-.input-box{
-  position: relative;
-  margin: 15px 0;
-  width: 100%;
-}
-
-/* INPUT */
-.input-box input{
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-color);
-  color: var(--text-primary);
-  outline: none;
-  font-size: 14px;
-}
-
-/* LABEL */
-.input-box label{
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--card-bg);   /* match card color */
-  padding: 0 5px;
-  color: #999;
-  font-size: 14px;
-  pointer-events: none;
-  transition: 0.3s;
-}
-
-/* FLOAT EFFECT */
-.input-box input:focus + label,
-.input-box input:valid + label{
-  top: -8px;
-  font-size: 12px;
-  color: #c49b63;
-}
+/* FLOAT EFFECT - Consolidated with above */
 
 /* PASSWORD ICON */
 .password-box i{
@@ -406,28 +371,29 @@ input {
 body {
   padding-top: 250px; /* navbar ki height ke equal */
 }
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  background: var(--bg-color);
-  color: var(--text-color);
-  border: 2px solid var(--border-color);
-  outline: none;
-  transition: 0.3s;
+/* 🔥 CHROME AUTOFILL FIX */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-color) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-/* 🔥 Focus Effect (same as email) */
-input:focus {
-  border-color: #c89b5b; /* golden */
-  box-shadow: 0 0 8px rgba(200, 155, 91, 0.5);
-}
+/* Cleanup final input styles */
 input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  outline: none;
   transition: all 0.3s ease;
 }
 
 input:focus {
-  border-color: #c89b5b;
-  box-shadow: 0 0 10px rgba(200, 155, 91, 0.6);
-  transform: scale(1.02);
+  border-color: #c49b63;
+  box-shadow: 0 0 10px rgba(196, 155, 99, 0.4);
 }

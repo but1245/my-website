@@ -42,7 +42,7 @@ onAuthStateChanged(auth, async (user) => {
         window.showToast("Unauthorized Access! 🔒", "error");
         setTimeout(() => { window.location.href = "dashboard.html"; }, 2000);
     } else {
-         window.location.href = "login.html?redirect=admin-dashboard.html";
+         window.location.href = "admin-login.html?redirect=admin-dashboard.html";
     }
 });
 
