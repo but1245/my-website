@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Pradeep Furniture</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="toast.css">
+    <script src="toast.js"></script>
+    <script>
+        (function () {
+          const theme = localStorage.getItem('theme') || 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- 🔝 NAVBAR -->
+    <header class="navbar">
+      <div class="menu-toggle" onclick="toggleMenu()">
+        ☰
+      </div>
+      <!-- LOGO -->
+      <a href="index.html" class="logo">
+        <img src="images/logo.png" alt="logo">
+      </a>
+  
+      <!-- LINKS -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+  
+          <!-- DROPDOWN -->
+          <li class="dropdown">
+            <a href="#">Furniture Categories ▾</a>
+  
+            <ul class="menu level-1">
+              <li>
+                <a href="#">Living Room ▸</a>
+                <ul class="menu level-2">
+                  <li>
+                    <a href="#">Sofas ▸</a>
+                    <ul class="menu level-3">
+                      <li>
+                        <a href="#">Leather Sofa ▸</a>
+                        <ul class="menu level-4">
+                          <li><a href="#">2 Seater</a></li>
+                          <li><a href="#">3 Seater</a></li>
+                          <li><a href="#">L Shape</a></li>
+                        </ul>
+                      </li>
+                      <li><a href="#">Fabric Sofa</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#">Center Table</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Bedroom</a></li>
+            </ul>
+          </li>
+  
+          <li><a href="custom-order.html" target="_blank">Custom Order</a></li>
+          <li><a href="track.html">Track Order</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+  
+      <!-- RIGHT -->
+      <div class="nav-right">
+        <div class="nav-icon">
+          <a href="wishlist.html">
+            <i class="fa-regular fa-heart"></i>
+          </a>
+          <span id="wishlist-count">0</span>
+        </div>
+  
+        <div class="nav-icon cart-icon">
+          <a href="cart.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <span id="cart-count">0</span>
+        </div>
+  
+        <a href="login.html">
+          <button class="auth-btn">
+            Login <span>/</span> Signup
+          </button>
+        </a>
+        <span id="user-name" style="margin-left:10px;"></span>
+  
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 🏛️ DASHBOARD CONTENT -->
+    <main class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="user-brief">
+                <div class="user-avatar" id="sidebar-avatar">U</div>
+                <h3 id="sidebar-name">Loading...</h3>
+                <p id="sidebar-role">Standard User</p>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="overview"><i class="fa-solid fa-house"></i> Overview</button>
+                <button class="nav-item" data-tab="orders"><i class="fa-solid fa-box"></i> My Orders</button>
+                <button class="nav-item" data-tab="wishlist"><i class="fa-solid fa-heart"></i> Wishlist</button>
+                <button class="nav-item" data-tab="settings"><i class="fa-solid fa-user-gear"></i> Settings</button>
+                <button class="nav-item logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace -->
+        <section class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2 class="welcome-text">Welcome back, <span id="dash-name">Dear User</span>!</h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>0</h3> <p>Active Orders</p></div>
+                    <div class="stat-card"><h3>0</h3> <p>Completed</p></div>
+                    <div class="stat-card"><h3 id="dash-wishlist-count">0</h3> <p>Wishlist Items</p></div>
+                </div>
+
+                <div class="quick-profile card">
+                    <h3>Profile Information</h3>
+                    <div class="info-grid">
+                        <div class="info-row"><span>Full Name:</span> <span id="info-fullname">Loading...</span></div>
+                        <div class="info-row"><span>Email Address:</span> <span id="info-email">Loading...</span></div>
+                        <div class="info-row"><span>Customer Since:</span> <span id="info-since">Loading...</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <h2>My Order History</h2>
+                <div class="orders-list" id="order-history">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>No orders yet. Start shopping!</p>
+                        <a href="index.html" class="btn-primary">Browse Furniture</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wishlist Tab (Quick View) -->
+            <div id="wishlist" class="tab-content">
+                <h2>My Wishlist</h2>
+                <div class="wishlist-grid" id="wishlist-items">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2>Account Settings</h2>
+                <form id="settings-form" class="card">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="settings-firstname">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="settings-lastname">
+                    </div>
+                    <button type="submit" class="save-btn">Update Profile</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- 📞 SUPPORT WIDGET (Same as index) -->
+    <div class="support-widget">
+        <div class="support-options">
+            <a href="tel:+918445553853" class="support-btn phone"><i class="fa-solid fa-phone"></i></a>
+            <a href="mailto:Pradeepfurniture2@gmail.com" class="support-btn email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+        <div class="support-toggle" onclick="toggleSupport()"><i class="fa-solid fa-headset"></i></div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="dashboard.js"></script>
+    <script src="theme.js"></script>
+    <script>
+        function toggleSupport() {
+            document.querySelector('.support-options').classList.toggle('active');
+        }
+
+        // Tab Switching Logic
+        document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-content, .nav-item').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            };
+        });
+    </script>
+</body>
+</html>

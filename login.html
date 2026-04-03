@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="toast.css">
+  <script src="toast.js"></script>
   <script>
     (function () {
       const theme = localStorage.getItem('theme') || 'light';
@@ -134,17 +136,17 @@
         <!-- SOCIAL -->
         <div class="social-login">
 
-          <button class="social-btn">
+          <button class="social-btn" onclick="googleLogin()">
             <i class="fab fa-google"></i>
             Google
           </button>
 
-          <button class="social-btn">
+          <button class="social-btn" onclick="githubLogin()">
             <i class="fab fa-github"></i>
             Github
           </button>
 
-          <button class="social-btn">
+          <button class="social-btn" onclick="facebookLogin()">
             <i class="fab fa-facebook-f"></i>
             Facebook
           </button>
@@ -187,7 +189,7 @@
 
     <script>
       function togglePassword() {
-        const pass = document.getElementById("password");
+        const pass = document.getElementById("login-password");
         pass.type = pass.type === "password" ? "text" : "password";
       }
     </script>

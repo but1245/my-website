@@ -4,13 +4,36 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut 
+  signOut,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
   doc, 
   setDoc, 
-  getDoc 
+  getDoc,
+  query,
+  where,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* USERNAME CHECK HELPER */
+window.checkUsernameAvailability = async function(username) {
+  if (!username) return true;
+  try {
+    const q = query(collection(db, "users"), where("username", "==", username.toLowerCase()));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty; // Returns true if available
+  } catch (error) {
+    console.error("Username check error:", error);
+    return true;
+  }
+};
+import { 
+  googleProvider, 
+  githubProvider, 
+  facebookProvider 
+} from "./firebase.js";
 
 // Helper to get redirection URL
 const getRedirectUrl = () => {
@@ -36,8 +59,20 @@ window.signup = async function() {
     return;
   }
 
+  if(password.length < 8) {
+    window.showToast("Password must be at least 8 characters long! 🔒", "error");
+    return;
+  }
+
   try {
-    // 1. Create user in Firebase Auth
+    // 1. Check if username is already taken
+    const isAvailable = await window.checkUsernameAvailability(username);
+    if (!isAvailable) {
+      window.showToast("Username is already taken! ❌", "error");
+      return;
+    }
+
+    // 2. Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -97,33 +132,83 @@ window.logout = async function() {
   }
 };
 
+/* SOCIAL LOGIN FUNCTIONS */
+const handleSocialLogin = async (provider) => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Check if user already exists in Firestore
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      // If new social user, save basic profile safely
+      const name = user.displayName || "New User";
+      const email = user.email || `user${Math.floor(Math.random() * 1000)}@social.com`;
+      const nameParts = name.split(" ");
+
+      await setDoc(docRef, {
+        firstName: nameParts[0],
+        lastName: nameParts.slice(1).join(" "),
+        username: email.split("@")[0] + Math.floor(Math.random() * 1000),
+        email: email,
+        createdAt: new Date().toISOString(),
+        isSocial: true
+      });
+    }
+
+    window.showToast(`Logged in successfully as ${user.displayName}! 👋`, "success");
+
+    setTimeout(() => {
+      window.location.href = getRedirectUrl();
+    }, 1500);
+
+  } catch (error) {
+    console.error("Social Auth Error:", error);
+    window.showToast(`Login Failed: ${error.message}`, "error");
+  }
+};
+
+window.googleLogin = () => handleSocialLogin(googleProvider);
+window.githubLogin = () => handleSocialLogin(githubProvider);
+window.facebookLogin = () => handleSocialLogin(facebookProvider);
+
 /* MONITOR AUTH STATE */
 onAuthStateChanged(auth, async (user) => {
   const userDisplay = document.getElementById("user-name");
   const authBtn = document.querySelector(".auth-btn");
+  const parentA = authBtn ? authBtn.closest('a') : null;
 
   if (user) {
-    // User is signed in, fetch details from Firestore
+    // User is signed in
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
-      if (userDisplay) userDisplay.innerText = "Hi, " + userData.firstName;
+      if (userDisplay) {
+        userDisplay.innerHTML = `<a href="dashboard.html" class="user-profile-link" style="display:inline-block;">Hi, ${userData.firstName}</a>`;
+        userDisplay.style.display = "inline-block";
+      }
       if (authBtn) {
-        authBtn.innerText = "Logout";
-        authBtn.onclick = window.logout;
-        const parentA = authBtn.closest('a');
-        if (parentA) parentA.href = "javascript:void(0)";
+        authBtn.style.display = "none"; 
       }
     }
   } else {
     // User is signed out
-    if (userDisplay) userDisplay.innerText = "";
+    if (userDisplay) {
+        userDisplay.innerHTML = "";
+        userDisplay.style.display = "none";
+    }
     if (authBtn) {
+      authBtn.style.display = "inline-block"; 
       authBtn.innerText = "Login / Signup";
-      const parentA = authBtn.closest('a');
       if (parentA) parentA.href = "login.html";
     }
   }
+  
+  // Show the nav-right section once auth state is determined to prevent flicker
+  const navRight = document.querySelector(".nav-right");
+  if (navRight) navRight.style.opacity = "1";
 });

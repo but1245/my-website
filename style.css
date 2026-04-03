@@ -116,6 +116,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  opacity: 0; /* Hidden initially to prevent auth flicker */
+  transition: opacity 0.4s ease;
 }
 
 .nav-icon {
@@ -176,11 +178,34 @@ body {
 }
 
 .auth-btn {
+  display: none; /* Hidden by default, shown by JS */
   padding: 6px 14px;
   border-radius: 18px;
   border: 1px solid #bbb;
   background: #f8f8f8;
   cursor: pointer;
+}
+
+.user-profile-link {
+  display: none; /* Hidden by default, shown by JS */
+  text-decoration: none;
+  background: var(--secondary-bg);
+  color: var(--accent-color);
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.user-profile-link:hover {
+  background: var(--accent-color);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(196, 155, 99, 0.3);
 }
 
 /* ================= DROPDOWN ================= */

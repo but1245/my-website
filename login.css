@@ -128,9 +128,10 @@ body {
   flex:1;
   padding:10px;
   border-radius:10px;
-  border:1px solid #ccc;
-  background:#fff;
-  cursor:pointer;
+  border:1px solid var(--border-color);
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+  cursor: pointer;
 
   display:flex;
   align-items:center;

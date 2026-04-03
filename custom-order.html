@@ -40,14 +40,14 @@
     <div class="section-title">Customer Details</div>
 
     <div class="grid">
-      <input class="input name-only" placeholder="Full Name">
-      <input class="input" type="tel" placeholder="Mobile Number">
-      <input type="email" id="email" class="input" placeholder="Email Address">
+      <input class="input name-only" id="cust-name" placeholder="Full Name">
+      <input class="input" id="cust-mobile" type="tel" placeholder="Mobile Number">
+      <input type="email" id="cust-email" class="input" placeholder="Email Address">
       <span id="emailError" style="color:red; font-size:12px; display:none;">
         Please enter a valid email (example@gmail.com)
       </span>
-      <input class="input" placeholder="City / Location">
-      <input class="input full" placeholder="Full Address">
+      <input class="input" id="cust-city" placeholder="City / Location">
+      <input class="input full" id="cust-address" placeholder="Full Address">
     </div>
 
     <!-- FURNITURE -->
@@ -95,9 +95,9 @@
       <input type="text" id="customBox" class="input full" placeholder="Enter Custom Furniture" style="display:none;">
 
       <div class="size">
-        <input class="input" type="number" placeholder="Length">
-        <input class="input" type="number" placeholder="Width">
-        <input class="input" type="number" placeholder="Height">
+        <input class="input" id="dim-length" type="number" placeholder="Length">
+        <input class="input" id="dim-width" type="number" placeholder="Width">
+        <input class="input" id="dim-height" type="number" placeholder="Height">
 
         <div class="unit-dropdown">
           <div class="unit-selected" id="unitSelected">Select Size Unit</div>
@@ -115,7 +115,7 @@
     <!-- MATERIAL -->
     <div style="margin-top:10px;">Material Preference</div>
 
-    <div class="material">
+    <div class="material" id="materialGroup">
       <button type="button">Sheesham Wood</button>
       <button type="button">Teak Wood</button>
       <button type="button">Mango Wood</button>
@@ -130,17 +130,17 @@
 
     <div class="custom-row">
       <div class="custom-left" id="customSection">
-        <input class="input" placeholder="Color / Finish">
-        <input class="input" placeholder="Design Style">
+        <input class="input" id="cust-color" placeholder="Color / Finish">
+        <input class="input" id="cust-style" placeholder="Design Style">
       </div>
 
-      <div class="toggle">
+      <div class="toggle" id="polishToggle">
         <div class="toggle-btn active" data-value="yes">Yes</div>
         <div class="toggle-btn" data-value="no">No</div>
       </div>
     </div>
 
-    <textarea placeholder="Provide details..."></textarea>
+    <textarea id="cust-details" placeholder="Provide details..."></textarea>
 
     <!-- UPLOAD -->
     <div class="upload-box" id="uploadBox">
@@ -159,6 +159,9 @@
 
   </div>
 </div>
+<script src="toast.js"></script>
+<link rel="stylesheet" href="toast.css">
+<script type="module" src="custom-order.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
