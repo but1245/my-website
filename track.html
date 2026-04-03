@@ -156,14 +156,15 @@
           </button>
 
           <!-- STATUS (HIDDEN INITIALLY) -->
-          <div class="status" id="statusBox" style="display:none;">
-
-            <div class="step">Request Accepted</div>
-            <div class="step">Manufacturing</div>
-            <div class="step">Polishing</div>
-            <div class="step">Out for Delivery</div>
-            <div class="step">Delivered</div>
-
+          <div class="status" id="statusBox" style="display:none; flex-direction: column; gap: 8px;">
+            <div class="step">1. Pending Review</div>
+            <div class="step">2. Confirmed</div>
+            <div class="step">3. Designing</div>
+            <div class="step">4. Material Selection</div>
+            <div class="step">5. In Production</div>
+            <div class="step">6. Finishing & QC</div>
+            <div class="step">7. Out for Delivery</div>
+            <div class="step">8. Delivered</div>
           </div>
 
         </div>
@@ -183,74 +184,10 @@
 
     </div>
 
-    <script>
-
-      /* FAKE DATABASE */
-      const orders = {
-        "ORD123": {
-          status: 2,
-          img: "images/bed.jpg"
-        },
-        "ORD456": {
-          status: 4,
-          img: "images/sofa.jpg"
-        }
-      };
-
-      /* TRACK FUNCTION */
-      function trackOrder() {
-
-        const mobile = document.getElementById("mobile").value;
-        const orderId = document.getElementById("orderId").value.toUpperCase();
-        const captcha = document.getElementById("captchaText").innerText;
-
-        const statusBox = document.getElementById("statusBox");
-        const previewBox = document.getElementById("previewBox");
-        const orderImg = document.getElementById("orderImg");
-
-        if (mobile === "" || orderId === "") {
-          alert("⚠️ Please fill all details");
-          return;
-        }
-
-        if (!orders[orderId]) {
-          alert("❌ Order not found");
-          return;
-        }
-
-        /* SHOW UI */
-        statusBox.style.display = "block";
-        previewBox.style.display = "block";
-
-        /* SET IMAGE */
-        orderImg.src = orders[orderId].img;
-
-        /* SET STATUS */
-        const steps = document.querySelectorAll(".step");
-
-        steps.forEach((step, i) => {
-          if (i <= orders[orderId].status) {
-            step.classList.add("active");
-          } else {
-            step.classList.remove("active");
-          }
-        });
-
-      }
-
-      /* CAPTCHA REFRESH */
-      function refreshCaptcha() {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let cap = "";
-
-        for (let i = 0; i < 5; i++) {
-          cap += chars[Math.floor(Math.random() * chars.length)] + " ";
-        }
-
-        document.getElementById("captchaText").innerText = cap.trim();
-      }
-
-    </script>
+    <link rel="stylesheet" href="toast.css">
+    <script src="toast.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="track.js"></script>
     <script>
       function updateCartCountLive() {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
