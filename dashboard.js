@@ -1,12 +1,20 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { 
+    doc, 
+    getDoc, 
+    updateDoc, 
+    collection, 
+    query, 
+    where, 
+    onSnapshot,
+    orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Check authentication
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         console.log("Dashboard: User authenticated", user.uid);
         await loadUserData(user.uid);
+        loadCustomOrders(user.uid); // Start real-time order tracking
         await updateWishlistCount();
     } else {
         // Not logged in, redirect to login
@@ -14,6 +22,87 @@ onAuthStateChanged(auth, async (user) => {
         window.location.href = "login.html";
     }
 });
+
+// Load Custom Orders (Real-time)
+function loadCustomOrders(uid) {
+    const ordersList = document.getElementById("order-history");
+    const activeStat = document.querySelector(".stat-card h3"); // First stat card is active orders
+
+    const q = query(
+        collection(db, "custom_orders"), 
+        where("userId", "==", uid),
+        orderBy("createdAt", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+            ordersList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-box-open"></i>
+                    <p>No custom orders yet. Tell us your dream furniture!</p>
+                    <a href="custom-order.html" class="btn-primary">Start Custom Order</a>
+                </div>
+            `;
+            if (activeStat) activeStat.innerText = "0";
+            return;
+        }
+
+        let ordersHTML = "";
+        let activeCount = 0;
+
+        snapshot.forEach((doc) => {
+            const order = doc.data();
+            const status = order.status || "Pending";
+            if (status !== "Delivered") activeCount++;
+
+            // Map status to progress percentage
+            const progressMap = {
+                "Pending": 20,
+                "Designing": 40,
+                "Material Selection": 60,
+                "Production": 80,
+                "Delivered": 100
+            };
+            const progress = progressMap[status] || 20;
+
+            ordersHTML += `
+                <div class="order-card card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h4>${order.furniture.type}</h4>
+                            <span>ID: #${doc.id.substring(0, 8).toUpperCase()}</span>
+                        </div>
+                        <div class="order-status-badge status-${status.toLowerCase().replace(" ", "-")}">
+                            ${status}
+                        </div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <p><strong>Material:</strong> ${order.preferences.material}</p>
+                        <p><strong>Size:</strong> ${order.furniture.dimensions.length}x${order.furniture.dimensions.width} ${order.furniture.dimensions.unit}</p>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-labels">
+                            <span>Request</span>
+                            <span>Design</span>
+                            <span>Material</span>
+                            <span>Production</span>
+                            <span>Ready</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        ordersList.innerHTML = ordersHTML;
+        if (activeStat) activeStat.innerText = activeCount;
+    });
+}
+
 
 // Load User Data
 async function loadUserData(uid) {

@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword, 
   onAuthStateChanged,
   signOut,
-  signInWithPopup
+  signInWithPopup,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
   doc, 
@@ -32,13 +33,19 @@ window.checkUsernameAvailability = async function(username) {
 import { 
   googleProvider, 
   githubProvider, 
-  facebookProvider 
+  twitterProvider 
 } from "./firebase.js";
 
 // Helper to get redirection URL
 const getRedirectUrl = () => {
+  // 1. Check URL Params (highest priority)
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("redirect")) return params.get("redirect");
+
+  // 2. Check localStorage (was set by another page)
   const url = localStorage.getItem("authRedirect");
-  return url || "index.html";
+  localStorage.removeItem("authRedirect"); // Clear after use
+  return url || "dashboard.html"; // Default to dashboard
 };
 
 // Record current page as redirect target if not auth page
@@ -96,26 +103,59 @@ window.signup = async function() {
     window.showToast("Signup Error: " + error.message, "error");
   }
 };
+/* --- PASS RESET --- */
+window.forgotPassword = async function() {
+  const email = document.getElementById("login-email").value.trim();
+  if (!email) {
+    window.showToast("Please enter your email address first! ✉️", "error");
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    window.showToast("Password reset link sent to your email! 📩", "success");
+  } catch (error) {
+    console.error("Reset Error:", error);
+    window.showToast("Error: " + error.message, "error");
+  }
+};
 
 /* LOGIN FUNCTION */
 window.login = async function() {
-  const email = document.getElementById("login-email").value;
+  const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
+  const loginBtn = document.querySelector(".login-card .btn");
+  const originalBtnText = loginBtn ? loginBtn.innerText : "Login";
 
   if(!email || !password) {
-    window.showToast("Please enter email and password!", "error");
+    window.showToast("Please enter email and password! ⚠️", "error");
     return;
   }
 
   try {
+    if (loginBtn) {
+      loginBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...`;
+      loginBtn.disabled = true;
+    }
+
     await signInWithEmailAndPassword(auth, email, password);
     window.showToast("Login Success! Welcome back 👋", "success");
     
     setTimeout(() => {
-        window.location.href = getRedirectUrl();
-    }, 1500);
+      window.location.href = getRedirectUrl();
+    }, 1200);
+
   } catch (error) {
-    window.showToast("Login Error: " + error.message, "error");
+    console.error("Login Error:", error);
+    let msg = "Invalid Email or Password! ❌";
+    if (error.code === 'auth/user-not-found') msg = "Account not found! ⚠️";
+    if (error.code === 'auth/wrong-password') msg = "Incorrect password! 🔒";
+    
+    window.showToast(msg, "error");
+
+    if (loginBtn) {
+      loginBtn.innerText = originalBtnText;
+      loginBtn.disabled = false;
+    }
   }
 };
 
@@ -133,8 +173,16 @@ window.logout = async function() {
 };
 
 /* SOCIAL LOGIN FUNCTIONS */
-const handleSocialLogin = async (provider) => {
+const handleSocialLogin = async (provider, event) => {
+  const btn = event?.currentTarget;
+  const originalHTML = btn ? btn.innerHTML : "";
+
   try {
+    if (btn) {
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...`;
+      btn.disabled = true;
+    }
+
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
@@ -143,7 +191,6 @@ const handleSocialLogin = async (provider) => {
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
-      // If new social user, save basic profile safely
       const name = user.displayName || "New User";
       const email = user.email || `user${Math.floor(Math.random() * 1000)}@social.com`;
       const nameParts = name.split(" ");
@@ -151,28 +198,43 @@ const handleSocialLogin = async (provider) => {
       await setDoc(docRef, {
         firstName: nameParts[0],
         lastName: nameParts.slice(1).join(" "),
-        username: email.split("@")[0] + Math.floor(Math.random() * 1000),
+        username: (email.split("@")[0] + Math.floor(Math.random() * 1000)).toLowerCase(),
         email: email,
         createdAt: new Date().toISOString(),
         isSocial: true
       });
     }
 
-    window.showToast(`Logged in successfully as ${user.displayName}! 👋`, "success");
+    window.showToast(`Welcome back, ${user.displayName}! 👋`, "success");
 
     setTimeout(() => {
       window.location.href = getRedirectUrl();
-    }, 1500);
+    }, 1200);
 
   } catch (error) {
     console.error("Social Auth Error:", error);
-    window.showToast(`Login Failed: ${error.message}`, "error");
+    let msg = "Social Login Failed! ❌";
+    
+    // Handle specific social errors
+    if (error.code === 'auth/popup-closed-by-user') msg = "Popup closed by user. 🔒";
+    else if (error.code === 'auth/operation-not-allowed') msg = "This method is not enabled in Firebase! 🚫";
+    else if (error.code === 'auth/account-exists-with-different-credential') msg = "Email already linked! ⚠️";
+    else if (error.code === 'auth/unauthorized-domain') msg = "This domain is not allowed. Use Live Server! 🌐";
+    else msg = `Login Failed: ${error.message} (${error.code})`;
+    
+    window.showToast(msg, "error");
+
+    if (btn) {
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
   }
 };
 
-window.googleLogin = () => handleSocialLogin(googleProvider);
-window.githubLogin = () => handleSocialLogin(githubProvider);
-window.facebookLogin = () => handleSocialLogin(facebookProvider);
+window.googleLogin = (e) => handleSocialLogin(googleProvider, e);
+window.githubLogin = (e) => handleSocialLogin(githubProvider, e);
+window.twitterLogin = (e) => handleSocialLogin(twitterProvider, e);
+
 
 /* MONITOR AUTH STATE */
 onAuthStateChanged(auth, async (user) => {
@@ -211,4 +273,10 @@ onAuthStateChanged(auth, async (user) => {
   // Show the nav-right section once auth state is determined to prevent flicker
   const navRight = document.querySelector(".nav-right");
   if (navRight) navRight.style.opacity = "1";
+
+  // Auto-redirect AWAY from login/signup if already logged in
+  const path = window.location.pathname;
+  if (user && (path.includes("login.html") || path.includes("signup.html"))) {
+    window.location.href = "dashboard.html";
+  }
 });

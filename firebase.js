@@ -16,14 +16,14 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// Social Auth Providers
 import { 
   GoogleAuthProvider, 
   GithubAuthProvider, 
-  FacebookAuthProvider 
+  OAuthProvider,
+  TwitterAuthProvider 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 export const googleProvider = new GoogleAuthProvider();
 export const githubProvider = new GithubAuthProvider();
 githubProvider.addScope('user:email');
-export const facebookProvider = new FacebookAuthProvider();
+export const twitterProvider = new TwitterAuthProvider();
