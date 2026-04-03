@@ -23,7 +23,7 @@ window.trackOrder = async function() {
     const mobile = document.getElementById("mobile").value.trim();
     const orderIdInput = document.getElementById("orderId").value.trim().toUpperCase();
     const captchaText = document.getElementById("captchaText").innerText.replace(/\s/g, "");
-    const captchaInput = document.getElementById("captchaInput").value.trim();
+    const captchaInput = document.getElementById("captchaInput").value.trim().toUpperCase();
 
     const statusBox = document.getElementById("statusBox");
     const previewBox = document.getElementById("previewBox");
@@ -46,29 +46,28 @@ window.trackOrder = async function() {
         trackBtn.innerText = "Searching... 🔍";
         trackBtn.disabled = true;
 
-        // 2. Query Firestore by Mobile
-        // We filter by mobile first because it's indexed, then we find the ID match in JS
-        const q = query(collection(db, "custom_orders"), where("customer.mobile", "==", mobile));
+        // Clean the input mobile number (keep only last 10 digits for comparison)
+        const cleanMobile = mobile.replace(/\D/g, "").slice(-10);
+
+        // We fetch all orders and filter in JS to be flexible with phone formatting
+        const q = query(collection(db, "custom_orders"));
         const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-            window.showToast("❌ No orders found for this mobile number", "error");
-            statusBox.style.display = "none";
-            previewBox.style.display = "none";
-            return;
-        }
-
         let foundOrder = null;
+
         querySnapshot.forEach((doc) => {
-            const id = doc.id.toUpperCase();
-            // Check if the input ID matches the start of the Firestore ID
-            if (id.startsWith(orderIdInput)) {
-                foundOrder = { id: doc.id, ...doc.data() };
+            const data = doc.data();
+            const dbMobile = (data.customer?.mobile || "").replace(/\D/g, "").slice(-10);
+            const dbId = doc.id.toUpperCase();
+
+            // Match both clean mobile and partial ID
+            if (dbMobile === cleanMobile && dbId.includes(orderIdInput)) {
+                foundOrder = { id: doc.id, ...data };
             }
         });
 
         if (!foundOrder) {
-            window.showToast("❌ Order ID not found for this mobile number", "error");
+            window.showToast("❌ No matching order found. Check details!", "error");
             statusBox.style.display = "none";
             previewBox.style.display = "none";
             return;
@@ -87,15 +86,45 @@ window.trackOrder = async function() {
             orderImg.src = "images/logo.png"; // Placeholder
         }
 
-        // Update Steps
+        // Update Steps with Dates
         const currentStep = foundOrder.currentStep || 1;
         const steps = document.querySelectorAll(".step");
+        const history = foundOrder.statusHistory || [];
 
-        steps.forEach((step, i) => {
+        steps.forEach((stepEl, i) => {
+            const stepLabel = STEPS_LABELS[i];
+            
+            // Find if this status exists in history
+            const historyEntry = history.find(h => h.status === stepLabel);
+            let dateStr = "";
+
+            if (historyEntry && historyEntry.updatedAt) {
+                const d = new Date(historyEntry.updatedAt);
+                dateStr = d.toLocaleString('en-IN', { 
+                    day: '2-digit', month: 'short', 
+                    hour: '2-digit', minute: '2-digit', hour12: true 
+                });
+            } else if (i === 0 && foundOrder.createdAt) {
+                const d = foundOrder.createdAt.toDate ? foundOrder.createdAt.toDate() : new Date(foundOrder.createdAt);
+                dateStr = d.toLocaleString('en-IN', { 
+                    day: '2-digit', month: 'short', 
+                    hour: '2-digit', minute: '2-digit', hour12: true 
+                });
+            }
+
+            // Update HTML with date if active
+            const title = stepEl.innerText.split("\n")[0]; // Get the "1. Pending..." part
             if (i < currentStep) {
-                step.classList.add("active");
+                stepEl.classList.add("active");
+                stepEl.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>${title}</span>
+                        <span style="font-size: 11px; opacity: 0.7; font-weight: 400;">${dateStr}</span>
+                    </div>
+                `;
             } else {
-                step.classList.remove("active");
+                stepEl.classList.remove("active");
+                stepEl.innerHTML = `<span>${title}</span>`;
             }
         });
 
