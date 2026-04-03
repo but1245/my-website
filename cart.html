@@ -127,10 +127,8 @@
       <!-- RIGHT SIDE -->
       <div class="summary">
 
-        <h3>Order Summary</h3>
-
         <p>Subtotal <span>₹<span id="subtotal" data-value="0">0</span></span></p>
-        <p>Shipping <span>₹<span id="shipping" data-value="100">100</span></span></p>
+        <p>Shipping <span style="font-size: 0.8em; color: var(--text-muted);">Calculated at Checkout</span></p>
         <p>GST (18%) <span>₹<span id="gst" data-value="0">0</span></span></p>
         <p>CGST (9%) <span>₹<span id="cgst" data-value="0">0</span></span></p>
         <div class="coupon-box">
@@ -216,10 +214,33 @@
       container.innerHTML = "";
 
       if (cart.length === 0) {
-        container.innerHTML = "<p class='empty'>Cart is empty 😢</p>";
+        container.innerHTML = `
+          <div class="empty-cart-card">
+            <div class="empty-icon">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <h2>Your Cart is Empty</h2>
+            <p>Looks like you haven't added any premium furniture to your cart yet.</p>
+            <a href="index.html#collections" class="explore-btn">Explore Collections</a>
+          </div>
+        `;
+        // Hide summary if cart is empty
+        const summary = document.querySelector(".summary");
+        if (summary) summary.style.display = "none";
+        
+        // Adjust container for full width empty state
+        const cartContainer = document.querySelector(".cart-container");
+        if (cartContainer) cartContainer.style.display = "block";
+
         updateTotal();
         return;
       }
+
+      // Show summary if items exist
+      const summary = document.querySelector(".summary");
+      if (summary) summary.style.display = "block";
+      const cartContainer = document.querySelector(".cart-container");
+      if (cartContainer) cartContainer.style.display = "flex";
 
       cart.forEach((item, index) => {
 
@@ -272,14 +293,13 @@
       updateCartCount();   // 🔥 ADD THIS LINE
     }
     /* ================= TOTAL ================= */
-    function updateTotal() {
-
+    window.updateTotal = function() {
       let subtotal = 0;
       cart.forEach(item => subtotal += item.price * item.qty);
 
-      let shipping = 100;
+      let shipping = 0;
+      
       let gst = Math.round(subtotal * 0.18);
-
       let total = subtotal + shipping + gst - discountValue;
 
       animateNumber("subtotal", subtotal);

@@ -80,6 +80,10 @@ window.trackOrder = async function() {
         window.showToast("Order Found! Showing status... ✨", "success");
         statusBox.style.display = "flex";
         previewBox.style.display = "block";
+        
+        // Update Order ID display in header if exists
+        const idHeader = document.getElementById("orderId-display");
+        if (idHeader) idHeader.innerText = `#${foundOrder.id.substring(0,8).toUpperCase()}`;
 
         // Set Image (if exists)
         if (foundOrder.imageUrl) {
@@ -115,15 +119,19 @@ window.trackOrder = async function() {
                 });
             }
 
-            // Update HTML with date if active
-            const title = stepEl.innerText.split("\n")[0]; // Get the "1. Pending..." part
+            // Update HTML with date and note if active
+            const title = stepEl.innerText.split("\n")[0];
             if (i < currentStep) {
                 stepEl.classList.add("active");
+                let noteHtml = (historyEntry && historyEntry.note) ? 
+                    `<p class="step-note"><i class="fa-solid fa-comment-dots"></i> ${historyEntry.note}</p>` : "";
+                
                 stepEl.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="step-header">
                         <span>${title}</span>
-                        <span style="font-size: 11px; opacity: 0.7; font-weight: 400;">${dateStr}</span>
+                        <span class="step-time">${dateStr}</span>
                     </div>
+                    ${noteHtml}
                 `;
             } else {
                 stepEl.classList.remove("active");

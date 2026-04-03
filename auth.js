@@ -6,7 +6,8 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithPopup,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  confirmPasswordReset
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
   doc, 
@@ -107,19 +108,63 @@ window.signup = async function() {
   }
 };
 /* --- PASS RESET --- */
-window.forgotPassword = async function() {
-  const email = document.getElementById("login-email").value.trim();
+window.forgotPassword = async function(manualEmail = null) {
+  let email = manualEmail || document.getElementById("login-email")?.value.trim() || document.getElementById("reset-email")?.value.trim();
+  
   if (!email) {
-    window.showToast("Please enter your email address first! ✉️", "error");
-    return;
+    if (!manualEmail) {
+        email = prompt("Enter your registered email address to receive a reset link:");
+        if (!email) return false;
+    } else {
+        window.showToast("Please enter your email! ✉️", "error");
+        return false;
+    }
   }
+
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  if (!emailPattern.test(email)) {
+    window.showToast("Please enter a valid email address! ✉️", "error");
+    return false;
+  }
+
   try {
+    // 1. Manually check if this email exists in our Firestore users collection
+    // This provides better UX so users know if they have an account
+    const q = query(collection(db, "users"), where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      window.showToast("No account found with this email! ⚠️ Check your spelling.", "error");
+      return false;
+    }
+
+    // 2. If it exists, send the reset link
     await sendPasswordResetEmail(auth, email);
-    window.showToast("Password reset link sent to your email! 📩", "success");
+    window.showToast("Success! Check your inbox for the reset link. 📩", "success");
+    return true;
   } catch (error) {
     console.error("Reset Error:", error);
-    window.showToast("Error: " + error.message, "error");
+    let msg = "Failed to send reset email. ❌";
+    window.showToast(msg, "error");
+    return false;
   }
+};
+
+/* --- CONFIRM PASS RESET (Final Step) --- */
+window.confirmPasswordReset = async function(oobCode, newPassword) {
+    try {
+        await confirmPasswordReset(auth, oobCode, newPassword);
+        window.showToast("Password updated successfully! 🎉", "success");
+        return true;
+    } catch (error) {
+        console.error("Confirm Reset Error:", error);
+        let msg = "Failed to reset password.";
+        if (error.code === 'auth/expired-action-code') msg = "Reset link has expired! 🚫";
+        else if (error.code === 'auth/invalid-action-code') msg = "Invalid reset link! ⚠️";
+        
+        window.showToast(msg, "error");
+        return false;
+    }
 };
 
 /* LOGIN FUNCTION */

@@ -157,6 +157,10 @@ window.updateOrderStatus = async function(id) {
     const btn = select.nextElementSibling;
     const originalText = btn.innerText;
 
+    // Ask for a custom note
+    const customNote = prompt(`Add a note for this step (${newStep.label}):`, `Status updated to ${newStep.label}`);
+    if (customNote === null) return; // User cancelled
+
     try {
         btn.innerText = "Wait...";
         btn.disabled = true;
@@ -168,7 +172,7 @@ window.updateOrderStatus = async function(id) {
             progress: newStep.progress,
             statusHistory: arrayUnion({
                 status: newStep.label,
-                note: "Status updated by Owner.",
+                note: customNote,
                 updatedAt: new Date().toISOString()
             })
         });

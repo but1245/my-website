@@ -323,6 +323,95 @@ textarea:focus {
   box-shadow: 0 8px 20px rgba(196, 155, 99, 0.4);
 }
 
+/* ================= SUCCESS CARD ================= */
+.order-success-box {
+  margin-top: 30px;
+  background: rgba(196, 154, 108, 0.05); /* Soft gold tint */
+  border: 2px dashed var(--accent-light);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.success-icon {
+  font-size: 48px;
+  color: #2e7d32;
+  margin-bottom: 15px;
+}
+
+.order-success-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.order-id-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#display-order-id {
+  font-family: monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(196, 155, 99, 0.3);
+}
+
+.redirect-notice {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.home-link {
+  display: inline-block;
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.home-link:hover {
+  text-decoration: underline;
+}
+
 /* RESPONSIVE */
 @media (max-width: 600px) {
   .wrapper {

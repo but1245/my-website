@@ -50,19 +50,23 @@ async function handleAdminLogin() {
             window.showToast("Promoted to Admin! 👑", "info");
         }
 
-        if (userData.role === "admin") {
-            window.showToast("Owner Authenticated! Welcome Dashboard 👑", "success");
+        // 👑 SHOW PREMIUM SUCCESS EXPERIENCE
+        const overlay = document.getElementById("owner-success-overlay");
+        if (overlay) {
+            overlay.style.display = "flex";
             
+            // Animate progress bar
+            const progress = overlay.querySelector(".progress");
+            if (progress) {
+                progress.style.transition = "width 3s ease-in-out";
+                setTimeout(() => { progress.style.width = "100%"; }, 50);
+            }
+            // Redirect after the animation
             setTimeout(() => {
                 window.location.href = "admin-dashboard.html";
-            }, 1500);
+            }, 3200);
         } else {
-            // NOT AN ADMIN - Force logout
-            await signOut(auth);
-            window.showToast("ACCESS DENIED: Unauthorized User! ❌", "error");
-            
-            loginBtn.innerHTML = `Secure Login <i class="fa-solid fa-shield-halved" style="margin-left: 8px;"></i>`;
-            loginBtn.disabled = false;
+            window.location.href = "admin-dashboard.html";
         }
 
     } catch (error) {
@@ -85,3 +89,20 @@ loginBtn.addEventListener("click", handleAdminLogin);
 passInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") handleAdminLogin();
 });
+// Forgot Password Logic
+import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+window.forgotPassword = async function() {
+    let email = emailInput.value.trim();
+    if (!email) {
+        email = prompt("Enter your Owner Email address for reset link:");
+        if (!email) return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        window.showToast("Success! Password reset link sent. 📩", "success");
+    } catch (error) {
+        window.showToast("Error: " + error.message, "error");
+    }
+};

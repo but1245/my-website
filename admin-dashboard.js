@@ -12,6 +12,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 let orderChartInstance = null;
+let trendsChartInstance = null;
+let allUsers = []; 
 
 // Auth Check for Admin
 onAuthStateChanged(auth, async (user) => {
@@ -31,10 +33,19 @@ onAuthStateChanged(auth, async (user) => {
             }
 
             if (role === "admin") {
-                // Load dashboard
-                loadDashboardMetrics();
-                loadRecentOrders();
-                loadRecentUsers();
+                // Load dashboard data safely
+                try {
+                    loadDashboardMetrics();
+                    loadRecentOrders();
+                    loadRecentUsers();
+                    loadAllUsersData();
+                    // Force the overview tab to show
+                    setTimeout(() => {
+                        window.switchTab('overview');
+                    }, 500);
+                } catch (err) {
+                    console.error("Initialization Error:", err);
+                }
                 return;
             }
         }
@@ -48,16 +59,20 @@ onAuthStateChanged(auth, async (user) => {
 
 function loadDashboardMetrics() {
     // 1. Users Count
+    const statUsers = document.getElementById("stat-users");
     onSnapshot(collection(db, "users"), (snapshot) => {
-        document.getElementById("stat-users").innerText = snapshot.size;
+        if (statUsers) statUsers.innerText = snapshot.size;
     }, (error) => {
-        window.showToast("Error loading users: " + error.message, "error");
-        console.error(error);
+        console.error("Error loading users:", error);
     });
 
     // 2. Orders Metrics & Chart
+    const statOrders = document.getElementById("stat-orders");
+    const statPending = document.getElementById("stat-pending");
+    const statDelivered = document.getElementById("stat-delivered");
+
     onSnapshot(collection(db, "custom_orders"), (snapshot) => {
-        document.getElementById("stat-orders").innerText = snapshot.size;
+        if (statOrders) statOrders.innerText = snapshot.size;
         
         let pending = 0;
         let delivered = 0;
@@ -73,13 +88,12 @@ function loadDashboardMetrics() {
             statusCounts[status] = (statusCounts[status] || 0) + 1;
         });
 
-        document.getElementById("stat-pending").innerText = pending;
-        document.getElementById("stat-delivered").innerText = delivered;
+        if (statPending) statPending.innerText = pending;
+        if (statDelivered) statDelivered.innerText = delivered;
         
         renderChart(statusCounts);
     }, (error) => {
-        window.showToast("Error loading orders chart: " + error.message, "error");
-        console.error(error);
+        console.error("Error loading orders chart:", error);
     });
 }
 
@@ -107,6 +121,7 @@ function loadRecentOrders() {
             html += `
                 <tr>
                     <td><strong>${order.furniture.type}</strong></td>
+                    <td><span style="font-family:monospace; color:var(--accent-color);">#${id.substring(0,8).toUpperCase()}</span></td>
                     <td>${order.customer.name}</td>
                     <td>${date}</td>
                     <td><span class="status-pill ${statusClass}">${status}</span></td>
@@ -157,10 +172,15 @@ function loadRecentUsers() {
 }
 
 function renderChart(statusData) {
-    const ctx = document.getElementById('orderStatusChart').getContext('2d');
+    const canvas = document.getElementById('orderStatusChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     
-    const labels = Object.keys(statusData);
-    const data = Object.values(statusData);
+    // Check if Chart is loaded
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js not loaded yet.");
+        return;
+    }
     
     // Dynamic colors based on theme
     const colors = [
@@ -204,4 +224,123 @@ function renderChart(statusData) {
             }
         }
     });
+}
+/* ================= TAB SWITCHER ================= */
+window.switchTab = function(tabId) {
+    // 1. Update Sidebar Links
+    document.querySelectorAll('.tab-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+
+    // 2. Toggle Sections
+    document.querySelectorAll('.tab-content').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    const targetSection = document.getElementById(`${tabId}-section`);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    } else {
+        console.error(`Tab section ${tabId}-section not found!`);
+    }
+
+    // 3. Specific Actions
+    if (tabId === 'analytics') {
+        renderTrendsChart();
+    }
+};
+
+/* ================= ALL USERS (MANAGEMENT) ================= */
+function loadAllUsersData() {
+    onSnapshot(collection(db, "users"), (snapshot) => {
+        allUsers = [];
+        snapshot.forEach(doc => {
+            allUsers.push({ id: doc.id, ...doc.data() });
+        });
+        renderUsersTable(allUsers);
+    });
+}
+
+function renderUsersTable(users) {
+    const listEl = document.getElementById("all-users-list");
+    if (!listEl) return;
+
+    if (users.length === 0) {
+        listEl.innerHTML = `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
+        return;
+    }
+
+    let html = "";
+    users.forEach(user => {
+        const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A";
+        const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "User";
+        const role = user.role === "admin" 
+            ? `<span class="status-pill active" style="background:#ffebee; color:#c62828;">Admin</span>` 
+            : `<span class="status-pill">Customer</span>`;
+
+        html += `
+            <tr>
+                <td><strong>${fullName}</strong></td>
+                <td>${user.email}</td>
+                <td>${role}</td>
+                <td><span class="status-pill active">Verified</span></td>
+                <td>${date}</td>
+            </tr>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+window.searchUsers = function() {
+    const term = document.getElementById("user-search").value.toLowerCase();
+    const filtered = allUsers.filter(u => 
+        (u.firstName + " " + u.lastName).toLowerCase().includes(term) || 
+        u.email.toLowerCase().includes(term)
+    );
+    renderUsersTable(filtered);
+};
+
+/* ================= ADVANCED ANALYTICS ================= */
+function renderTrendsChart() {
+    const ctx = document.getElementById('orderTrendsChart').getContext('2d');
+    
+    // Static dummy data for trends (simulating growth)
+    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const data = [12, 19, 15, 25, 32, 45]; // Orders growth
+
+    if (trendsChartInstance) trendsChartInstance.destroy();
+
+    trendsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Orders',
+                data: data,
+                borderColor: '#c49a6c',
+                backgroundColor: 'rgba(196, 154, 108, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: '#c49a6c'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Update revenue stat
+    const revenue = data.reduce((a, b) => a + b, 0) * 15000; // Average price
+    document.getElementById("stat-revenue").innerText = `₹${revenue.toLocaleString()}`;
+    document.getElementById("stat-growth").innerText = `+${Math.round((data[5]/data[4]-1)*100)}%`;
 }

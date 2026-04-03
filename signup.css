@@ -317,30 +317,32 @@ input {
   outline: none;
 }
 
-/* LABEL INSIDE FIELD */
+/* LABEL INSIDE FIELD (Initial state) */
 .input-box label {
   position: absolute;
-  left: 12px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  background: transparent; /* Changed from var(--card-bg) */
-  padding: 0 5px;
-  color: #999;
+  background: transparent; /* No box inside! ✨ */
+  padding: 0 4px;
+  color: #888;
   font-size: 14px;
   pointer-events: none;
-  transition: 0.3s;
-  z-index: 2;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
-/* MOVE UP WHEN TYPING */
+/* FLOATING STATE (Active/Focus/Filled) */
 .input-box input:focus + label,
-.input-box input:not(:placeholder-shown) + label {
-  top: -10px;
-  left: 10px;
+.input-box input:not(:placeholder-shown) + label,
+.input-box input:-webkit-autofill + label {
+  top: -2px; /* Moves above the border */
+  left: 12px;
   font-size: 12px;
   color: #c49b63;
-  background: var(--card-bg); /* Only show background when floating */
+  background: var(--card-bg); /* Mask the border behind the text! ⚡ */
   font-weight: 600;
+  opacity: 1;
 }
 /* FLOAT EFFECT - Consolidated with above */
 

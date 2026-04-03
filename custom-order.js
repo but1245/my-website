@@ -129,14 +129,32 @@ if (submitBtn) {
                 createdAt: serverTimestamp()
             };
 
-            await addDoc(collection(db, "custom_orders"), orderData);
+            const docRef = await addDoc(collection(db, "custom_orders"), orderData);
+            const orderId = docRef.id;
 
-            window.showToast("Custom Request Submitted Successfully! 🪵✨", "success");
+            //* ================= SUCCESS CARD ================= */
+            const successBox = document.getElementById("order-success-box");
+            if (successBox) {
+                document.getElementById("display-order-id").innerText = `#${orderId.toUpperCase()}`;
+                successBox.style.display = "block";
+                
+                // Keep the ID for copying
+                window.currentOrderId = orderId.toUpperCase();
+                
+                // Hide Submit Button
+                submitBtn.style.display = "none";
+                
+                // Scroll to success box
+                successBox.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            window.showToast(`Order Placed Successfully! 🎉 ID: #${orderId.substring(0, 8).toUpperCase()}`, "success");
             
-            // Optional: Reset Form or Redirect
+            // Redirect after a longer delay so they can note the ID
             setTimeout(() => {
-                window.location.href = "index.html";
-            }, 2500);
+                // If they haven't manually clicked Home, maybe stay on page for better UX
+                console.log("Auto-redirect suppressed for user interaction.");
+            }, 10000);
 
         } catch (error) {
             console.error("Submission Error:", error);
@@ -146,3 +164,20 @@ if (submitBtn) {
         }
     });
 }
+
+/* COPY FUNCTION */
+window.copyOrderId = function() {
+    const idText = window.currentOrderId || document.getElementById("display-order-id").innerText.replace('#', '');
+    navigator.clipboard.writeText(idText).then(() => {
+        window.showToast("Order ID Copied! 📋", "success");
+        const copyBtn = document.getElementById("copyBtn");
+        if (copyBtn) {
+            copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+            setTimeout(() => {
+                copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copy`;
+            }, 2000);
+        }
+    }).catch(err => {
+        console.error("Copy failed:", err);
+    });
+};

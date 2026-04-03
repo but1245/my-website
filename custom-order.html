@@ -157,6 +157,21 @@
 
     <button class="btn" id="submitBtn">Submit Custom Request →</button>
 
+    <!-- 🏷️ ORDER ID SUCCESS CARD -->
+    <div id="order-success-box" class="order-success-box" style="display: none;">
+      <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <h3>Request Submitted!</h3>
+      <p>Your unique Order ID is:</p>
+      <div class="order-id-wrapper">
+        <span id="display-order-id">#A1B2C3D4</span>
+        <button onclick="window.copyOrderId()" class="copy-btn" id="copyBtn">
+          <i class="fa-solid fa-copy"></i> Copy
+        </button>
+      </div>
+      <p class="redirect-notice">Please save this ID for tracking your order status.</p>
+      <a href="index.html" class="home-link">Return to Home</a>
+    </div>
+
   </div>
 </div>
 <script src="toast.js"></script>

@@ -159,6 +159,23 @@ body {
     transform: translateY(0);
 }
 
+.options {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.options a {
+    color: #666;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.options a:hover {
+    color: var(--admin-accent);
+    text-shadow: 0 0 8px rgba(229, 192, 123, 0.4);
+}
+
 .back-link {
     text-align: center;
     margin-top: 30px;
@@ -173,4 +190,89 @@ body {
 
 .back-link a:hover {
     color: var(--admin-accent);
+}
+/* 👑 SUCCESS OVERLAY STYLES */
+.success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(25px);
+    display: none; /* Initially Hidden */
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    text-align: center;
+    animation: overlayFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.success-content {
+    animation: contentScaleUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes contentScaleUp {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.crown-icon {
+    font-size: 80px;
+    color: #c49a6c;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 15px rgba(196, 154, 108, 0.4));
+    animation: crownFloat 2s ease-in-out infinite;
+}
+
+@keyframes crownFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.glow-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #c49a6c, #a67c3b, #c49a6c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.owner-name {
+    font-size: 22px;
+    color: var(--text-muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+}
+
+.loading-bar {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 0 auto 15px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background: #c49a6c;
+    box-shadow: 0 0 10px #c49a6c;
+}
+
+.status-msg {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-style: italic;
 }

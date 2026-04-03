@@ -74,22 +74,67 @@ body {
   background: var(--border-color);
 }
 
-/* INPUT */
+/* INPUT BOX CONTAINER */
+.input-box {
+  position: relative;
+  margin: 15px 0;
+  width: 100%;
+}
+
+/* INPUT FIELD */
 .input {
   width: 100%;
   padding: 14px;
-  margin: 10px 0;
   border-radius: 12px;
   background: var(--bg-color);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   outline: none;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
 .input:focus {
-  border-color: var(--accent-color);
+  border-color: #c49963;
   box-shadow: 0 0 10px rgba(196, 155, 99, 0.4);
+}
+
+/* LABEL (Initial State) */
+.input-box label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  padding: 0 4px;
+  color: #888;
+  font-size: 14px;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+/* FLOATING STATE */
+.input-box .input:focus + label,
+.input-box .input:not(:placeholder-shown) + label,
+.input-box .input:-webkit-autofill + label {
+  top: -2px;
+  left: 12px;
+  font-size: 12px;
+  color: #c49963;
+  background: var(--card-bg); /* Mask the border behind the label ✨ */
+  font-weight: 600;
+}
+
+/* PASSWORD EYE ICON */
+.input-box i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  z-index: 11;
 }
 
 /* 🔥 CHROME AUTOFILL FIX */
@@ -100,19 +145,6 @@ body {
   -webkit-box-shadow: 0 0 0 30px var(--bg-color) inset !important;
   -webkit-text-fill-color: var(--text-primary) !important;
   transition: background-color 5000s ease-in-out 0s;
-}
-
-/* PASSWORD */
-.password-box{
-  position:relative;
-}
-
-.password-box i{
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
 }
 
 /* OPTIONS */

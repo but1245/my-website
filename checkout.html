@@ -123,43 +123,153 @@
 
   <div class="checkout-page">
 
-    <h2>🚚 Checkout</h2>
+    <!-- 🚀 PROGRESS STEPPER -->
+    <div class="checkout-stepper">
+      <div class="step active">
+        <div class="step-icon"><i class="fa-solid fa-address-card"></i></div>
+        <span>Information</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        <span>Shipping</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-icon"><i class="fa-solid fa-credit-card"></i></div>
+        <span>Payment</span>
+      </div>
+    </div>
 
     <div class="checkout-container">
 
-      <!-- LEFT: ADDRESS -->
-      <div class="address-box">
+      <!-- LEFT COLUMN -->
+      <div class="checkout-left">
 
-        <h3>Shipping Address</h3>
+        <!-- 🏢 SHIPPING ADDRESS CARD -->
+        <div class="address-box glass-card">
+          <h3><i class="fa-solid fa-map-location-dot"></i> Shipping Details</h3>
 
-        <input type="text" id="name" placeholder="Full Name">
-        <input type="number" id="phone" placeholder="Mobile Number">
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="text" id="state" placeholder="State">
-        <input type="text" id="city" placeholder="City">
-        <input type="number" id="pincode" placeholder="Pincode">
+          <div class="form-grid">
+            <div class="form-group">
+              <input type="text" id="name" placeholder=" " required>
+              <label for="name">Full Name</label>
+            </div>
+            <div class="form-group">
+              <input type="number" id="phone" placeholder=" " required>
+              <label for="phone">Mobile Number</label>
+            </div>
+          </div>
 
-        <textarea id="address" placeholder="Full Address"></textarea>
+          <div class="form-group">
+            <input type="email" id="email" placeholder=" " required>
+            <label for="email">Email Address</label>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <select id="state" onchange="updateTotal()" required>
+                <option value="" disabled selected hidden></option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Assam">Assam</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Goa">Goa</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+              </select>
+              <label for="state">State</label>
+            </div>
+            <div class="form-group">
+              <input type="text" id="city" placeholder=" " oninput="updateTotal()" required>
+              <label for="city">City</label>
+            </div>
+          </div>
+
+          <div id="distance-container" style="display:none; margin: 15px 0;">
+            <div class="distance-badge">
+              <i class="fa-solid fa-location-crosshairs"></i>
+              <span>Select Your Distance from Agra Office:</span>
+            </div>
+            <select id="distance-tier" onchange="updateTotal()">
+              <option value="under5">Under 5km (Elite Free Delivery) 📍</option>
+              <option value="under50">Under 50km (₹500)</option>
+              <option value="50-200">50km - 200km (₹1,000)</option>
+              <option value="200-1000">200km - 1000km (₹2,500)</option>
+              <option value="over1000">Over 1000km (₹3,500)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <input type="number" id="pincode" placeholder=" " required>
+            <label for="pincode">Pincode</label>
+          </div>
+
+          <div class="form-group">
+            <textarea id="address" placeholder=" " required></textarea>
+            <label for="address">Full Address (House No, Street, Landmark)</label>
+          </div>
+        </div>
+
+        <!-- 📦 ORDER REVIEW CARD -->
+        <div class="order-review glass-card">
+          <h3><i class="fa-solid fa-box-open"></i> Review Order Items</h3>
+          <div id="review-items-list" class="review-list"></div>
+        </div>
 
       </div>
 
-      <!-- RIGHT: SUMMARY -->
-      <div class="summary">
+      <!-- RIGHT COLUMN: SUMMARY -->
+      <div class="checkout-right">
+        <div class="summary glass-card premium-receipt">
+          <h3>Order Summary</h3>
 
-        <h3>Order Summary</h3>
+          <div class="receipt-item">
+            <span>Subtotal</span>
+            <span class="value">₹<span id="subtotal">0</span></span>
+          </div>
+          <div class="receipt-item">
+            <span>Shipping</span>
+            <span class="value" id="shipping-amount">₹0</span>
+          </div>
+          <div class="receipt-item">
+            <span>GST (18%)</span>
+            <span class="value">₹<span id="gst">0</span></span>
+          </div>
 
-        <p>Subtotal <span>₹<span id="subtotal">0</span></span></p>
-        <p>Shipping <span>₹100</span></p>
-        <p>GST <span>₹<span id="gst">0</span></span></p>
+          <div class="receipt-divider"></div>
 
-        <hr>
+          <div class="receipt-total">
+            <span>Grand Total</span>
+            <span class="total-value">₹<span id="total">0</span></span>
+          </div>
 
-        <h4>Total <span>₹<span id="total">0</span></span></h4>
+          <div class="secure-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Secure 256-bit SSL Encrypted Payment</span>
+          </div>
 
-        <button class="place-order" onclick="placeOrder()">
-          Place Order
-        </button>
-
+          <button class="place-order elite-btn" onclick="placeOrder()">
+            Confirm & Place Order <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          
+          <p class="terms-note">By placing your order, you agree to our Terms of Service.</p>
+        </div>
       </div>
 
     </div>
@@ -168,34 +278,127 @@
 
   <script type="module">
 
-    import { coupons } from "./database.js";
+    import { auth, db } from "./firebase.js";
+    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let discountValue = 0;
 
     /* ================= TOTAL ================= */
-    function updateTotal() {
-
+    window.updateTotal = function() {
       let subtotal = 0;
+      cart.forEach(item => { subtotal += item.price * item.qty; });
 
-      cart.forEach(item => {
-        subtotal += item.price * item.qty;
-      });
+      // 🚚 ADVANCE DISTANCE-BASED SHIPPING
+      const city = document.getElementById("city").value.trim().toLowerCase();
+      const state = document.getElementById("state").value.trim();
+      const tierSelect = document.getElementById("distance-tier");
+      const distContainer = document.getElementById("distance-container");
+      
+      let shipping = 0;
+      
+      if (city === "agra" || state === "Uttar Pradesh") {
+          distContainer.style.display = "block";
+          const tier = tierSelect.value;
+          if (tier === "under5") shipping = 0;
+          else if (tier === "under50") shipping = 500;
+          else if (tier === "50-200") shipping = 1000;
+          else if (tier === "200-1000") shipping = 2500;
+          else shipping = 3500;
+      } else if (state) {
+          // National defaults based on state
+          distContainer.style.display = "none";
+          const farStates = ["Kerala", "Tamil Nadu", "Karnataka", "Andhra Pradesh", "Telangana", "Assam", "Manipur", "Meghalaya"];
+          if (farStates.includes(state)) shipping = 3500;
+          else shipping = 2500;
+      } else {
+          distContainer.style.display = "none";
+          shipping = 0;
+      }
 
-      let shipping = 100;
       let gst = Math.round(subtotal * 0.18);
-
       let total = subtotal + shipping + gst - discountValue;
 
       document.getElementById("subtotal").innerText = subtotal;
       document.getElementById("gst").innerText = gst;
       document.getElementById("total").innerText = total;
 
-      let shipEl = document.getElementById("shipping");
+      let shipEl = document.getElementById("shipping-amount");
       if (shipEl) {
-        shipEl.innerText = shipping;
+          if (!state) {
+              shipEl.innerText = "Select State";
+              shipEl.style.fontSize = "12px";
+              shipEl.style.color = "var(--text-muted)";
+          } else {
+              shipEl.innerText = shipping === 0 ? "FREE 📍" : "₹" + shipping;
+              shipEl.style.fontSize = "inherit";
+              shipEl.style.color = "var(--text-primary)";
+          }
       }
     }
+
+    // Attach listeners for real-time calculation
+    document.getElementById("city").addEventListener("input", updateTotal);
+    document.getElementById("state").addEventListener("input", updateTotal);
+
+    /* ================= PLACE ORDER ================= */
+    window.placeOrder = async function() {
+        // 1. Check Login
+        const user = auth.currentUser;
+        if (!user) {
+            window.showToast("Please login to place order! ⚠️", "error");
+            return;
+        }
+
+        // 2. Validate Fields
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const state = document.getElementById("state").value.trim();
+        const fullAddress = document.getElementById("address").value.trim();
+
+        if (!name || !phone || !city || !state || !fullAddress) {
+            window.showToast("Please fill all shipping details! ⚠️", "error");
+            return;
+        }
+
+        try {
+            const btn = document.querySelector(".place-order");
+            btn.innerText = "Processing Order...";
+            btn.disabled = true;
+
+            const subtotal = parseInt(document.getElementById("subtotal").innerText);
+            const shipping = parseInt(document.getElementById("shipping-amount").innerText.replace("₹", "")) || 0;
+            const total = parseInt(document.getElementById("total").innerText);
+
+            const orderData = {
+                userId: user.uid,
+                customer: { name, mobile: phone, email: user.email, city, state, address: fullAddress },
+                furniture: { type: "Cart Order", items: cart },
+                summary: { subtotal, shipping, total },
+                status: "Pending",
+                currentStep: 1,
+                statusHistory: [{ status: "Pending", note: "Order placed from cart.", updatedAt: new Date().toISOString() }],
+                createdAt: serverTimestamp()
+            };
+
+            const docRef = await addDoc(collection(db, "custom_orders"), orderData);
+            
+            // Clear Cart
+            localStorage.removeItem("cart");
+            
+            window.showToast(`Order Placed! ID: #${docRef.id.substring(0,8).toUpperCase()}`, "success");
+            
+            setTimeout(() => {
+                window.location.href = `payment.html?orderId=${docRef.id}`;
+            }, 2500);
+
+        } catch (error) {
+            console.error("Order Error:", error);
+            window.showToast("Failed to place order! ❌", "error");
+            document.querySelector(".place-order").disabled = false;
+        }
+    };
 
     /* ================= APPLY COUPON ================= */
     window.applyCoupon = function () {
@@ -230,8 +433,31 @@
       updateTotal();
     };
 
+    /* ================= RENDER REVIEW ITEMS ================= */
+    function renderReviewItems() {
+        const list = document.getElementById("review-items-list");
+        if (!list) return;
+        
+        if (cart.length === 0) {
+            list.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No items in cart.</p>`;
+            return;
+        }
+
+        list.innerHTML = cart.map(item => `
+            <div class="review-item">
+                <img src="${item.image}" alt="${item.name}">
+                <div class="review-details">
+                    <p class="name">${item.name}</p>
+                    <p class="qty">Qty: ${item.qty} × ₹${item.price.toLocaleString()}</p>
+                </div>
+                <div class="review-price">₹${(item.price * item.qty).toLocaleString()}</div>
+            </div>
+        `).join("");
+    }
+
     /* ================= INIT ================= */
     updateTotal();
+    renderReviewItems();
 
   </script>
   <script>
