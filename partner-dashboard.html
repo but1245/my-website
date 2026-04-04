@@ -188,9 +188,41 @@
             <!-- 🛋️ CATALOG SECTION -->
             <section id="catalog-section" class="tab-content" style="display: none;">
                 <div class="admin-header">
-                    <h1>Exclusive Partner Catalog</h1>
-                    <p>Show these premium designs to your customers for better conversion.</p>
+                    <div>
+                        <h1>My Custom Catalog</h1>
+                        <p>Upload your showroom products for customers and admins to review.</p>
+                    </div>
+                    <button class="btn-primary" onclick="document.getElementById('catalog-upload-form-container').style.display='block'"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Product</button>
                 </div>
+
+                <div class="glass-panel" id="catalog-upload-form-container" style="display: none; margin-bottom: 30px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                        <h2 style="margin:0;"><i class="fa-solid fa-image"></i> Add New Product</h2>
+                        <button onclick="document.getElementById('catalog-upload-form-container').style.display='none'" style="background:transparent; border:none; font-size:20px; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <form id="catalog-upload-form" class="premium-form">
+                        <div class="form-grid">
+                            <div class="form-group" style="grid-column: span 1;">
+                                <label>Product Name</label>
+                                <input type="text" id="cat-name" required placeholder="e.g. Modern Velvet Sofa">
+                            </div>
+                            <div class="form-group" style="grid-column: span 1;">
+                                <label>Estimated Price (₹)</label>
+                                <input type="number" id="cat-price" required placeholder="e.g. 25000">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Product Description (Optional)</label>
+                                <textarea id="cat-desc" rows="2" placeholder="Brief details about material, style, etc."></textarea>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Product Image</label>
+                                <input type="file" id="cat-image" accept="image/*" required style="padding:10px; background:transparent; border:1px dashed var(--accent-color);">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" id="cat-submit-btn" style="margin-top:20px;">Upload to Catalog</button>
+                    </form>
+                </div>
+
                 <div class="catalog-grid" id="partner-catalog-grid">
                     <!-- Dynamic Catalog Content -->
                 </div>

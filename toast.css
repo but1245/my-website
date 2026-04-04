@@ -109,3 +109,94 @@
 [data-theme='light'] .toast-close {
   color: #999;
 }
+
+/* PREMIUM CONFIRM MODAL */
+.confirm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeInOverlay 0.3s forwards;
+}
+
+.confirm-modal {
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  animation: popInModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  color: var(--text-primary, #fff);
+  font-family: inherit;
+}
+
+.confirm-modal-icon {
+  font-size: 50px;
+  color: var(--accent-color, #c49b63);
+  margin-bottom: 15px;
+}
+
+.confirm-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-family: 'Playfair Display', serif;
+}
+
+.confirm-modal-text {
+  font-size: 15px;
+  color: var(--text-muted, #aaa);
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.confirm-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.confirm-btn.cancel {
+  background: transparent;
+  border: 1px solid var(--border-color, rgba(255,255,255,0.2));
+  color: var(--text-primary, #fff);
+}
+
+.confirm-btn.cancel:hover {
+  background: var(--hover-bg, rgba(255,255,255,0.05));
+}
+
+.confirm-btn.approve {
+  background: linear-gradient(135deg, var(--accent-color, #c49b63), #a67c3b);
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(196, 155, 99, 0.3);
+}
+
+.confirm-btn.approve:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(196, 155, 99, 0.4);
+}
+
+@keyframes fadeInOverlay { to { opacity: 1; } }
+@keyframes popInModal { to { transform: scale(1); } }

@@ -88,6 +88,54 @@ if (leadForm) {
     });
 }
 
+// 📸 Catalog Upload
+const catalogForm = document.getElementById('catalog-upload-form');
+if (catalogForm) {
+    catalogForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('cat-submit-btn');
+        const name = document.getElementById('cat-name').value;
+        const price = parseFloat(document.getElementById('cat-price').value);
+        const desc = document.getElementById('cat-desc').value;
+        const fileInput = document.getElementById('cat-image');
+        
+        if (!fileInput.files.length) return;
+
+        btn.textContent = "Uploading...";
+        btn.disabled = true;
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = async function() {
+            try {
+                const base64Image = reader.result;
+                await addDoc(collection(db, "partner_catalogs"), {
+                    partnerId: currentUser.uid,
+                    name: name,
+                    price: price,
+                    description: desc,
+                    image: base64Image,
+                    createdAt: serverTimestamp()
+                });
+
+                window.showToast('Product added to your catalog!', 'success');
+                catalogForm.reset();
+                document.getElementById('catalog-upload-form-container').style.display = 'none';
+            } catch (error) {
+                console.error("Error uploading product: ", error);
+                window.showToast("Upload failed: " + error.message, 'error');
+            } finally {
+                btn.textContent = "Upload to Catalog";
+                btn.disabled = false;
+            }
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
 // 📦 Load Leads
 function loadLeads() {
     const q = query(
@@ -126,18 +174,17 @@ function loadLeads() {
     });
 }
 
-// 🛋️ Load Catalog (Fetched from products collection where isPartnerOnly is true)
+// 🛋️ Load Catalog (Fetched from partner_catalogs collection)
 function loadCatalog() {
     const catalogGrid = document.getElementById('partner-catalog-grid');
     if (!catalogGrid) return;
 
-    // Filter by isPartnerOnly. Can be extended to show all if needed.
-    const q = query(collection(db, "products"), where("isPartnerOnly", "==", true), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "partner_catalogs"), where("partnerId", "==", currentUser.uid), orderBy("createdAt", "desc"));
     
     onSnapshot(q, (snapshot) => {
         let html = '';
         if (snapshot.empty) {
-            catalogGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">No partner-exclusive products available yet.</div>';
+            catalogGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">You have not uploaded any products to your catalog yet.</div>';
             return;
         }
 
@@ -145,15 +192,12 @@ function loadCatalog() {
             const p = doc.data();
             html += `
                 <div class="catalog-card">
-                    <img src="${p.image}" class="catalog-img" alt="${p.name}">
+                    <img src="${p.image}" class="catalog-img" alt="${p.name}" style="height: 250px; object-fit: cover; width: 100%;">
                     <div class="catalog-info">
-                        <span style="font-size:10px; color:var(--accent-color); font-weight:700;">${p.category.toUpperCase()}</span>
+                        <span style="font-size:10px; color:var(--accent-color); font-weight:700;">Showroom Item</span>
                         <h3>${p.name}</h3>
                         <div class="catalog-price">₹${p.price.toLocaleString()}</div>
-                        <div class="catalog-meta">
-                            <span>Exclusive Design</span>
-                            <button class="btn-primary" style="padding: 5px 12px; font-size:12px;" onclick="window.showProductDetails('${doc.id}')">View Details</button>
-                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:5px;">${p.description || "No description provided."}</p>
                     </div>
                 </div>
             `;

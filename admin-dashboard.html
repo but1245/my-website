@@ -31,7 +31,6 @@
         .admin-sidebar {
             width: 260px;
             background: var(--card-bg);
-            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             padding: 0;
@@ -44,7 +43,10 @@
         }
 
         .sidebar-brand {
-            padding: 25px 30px;
+            height: 70px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 15px;
         }
@@ -311,7 +313,7 @@
 <body class="admin-page">
 
     <!-- 🔝 NAVBAR -->
-    <header class="navbar" style="left: 260px; width: calc(100% - 260px);">
+    <header class="navbar" style="left: 260px; width: calc(100% - 260px); height: 70px;">
       <nav>
         <ul class="nav-links">
           <li><a href="dashboard.html">Back to Site</a></li>
@@ -550,12 +552,9 @@
                 </div>
             </section>
 
-        </main>
-    </div>
-
-    <!-- REVIEWS SECTION -->
-    <section id="reviews-section" class="tab-content" style="display:none; padding:40px; margin-left:260px;">
-        <div class="content-header">
+            <!-- REVIEWS SECTION -->
+            <section id="reviews-section" class="tab-content" style="display: none;">
+                <div class="content-header">
             <h1 style="font-family:'Playfair Display'; font-size:36px; margin:0;">Customer Feedback</h1>
             <p style="color:var(--text-muted); margin-bottom:30px;">Moderate and manage all genuine reviews from your store.</p>
         </div>
@@ -578,9 +577,9 @@
         </div>
     </section>
 
-    <!-- PARTNERS SECTION -->
-    <section id="partners-section" class="tab-content" style="display:none; padding:40px; margin-left:260px;">
-        <div class="admin-header">
+            <!-- PARTNERS SECTION -->
+            <section id="partners-section" class="tab-content" style="display: none;">
+                <div class="admin-header">
             <div>
                 <h1>Showroom Partnerships</h1>
                 <p>Manage your showroom partners and their performance.</p>
@@ -668,7 +667,28 @@
                 </table>
             </div>
         </div>
-    </section>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Partner Catalog Modal -->
+    <div id="partnerCatalogModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <div>
+                    <h2 id="catalog-modal-title">Partner's Catalog</h2>
+                    <p style="color:var(--text-muted); font-size:13px;" id="catalog-modal-subtitle">Items uploaded by this partner.</p>
+                </div>
+                <span class="close-btn" onclick="document.getElementById('partnerCatalogModal').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 25px; background:var(--bg-color);">
+                <div class="catalog-grid" id="admin-partner-catalog-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                    <!-- Items rendered via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="toast.js"></script>

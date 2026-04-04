@@ -364,14 +364,14 @@ function loadAllReviews() {
 }
 
 window.deleteReview = async function(id) {
-    if (confirm("Are you sure you want to delete this genuine review?")) {
+    window.showConfirmDialog("Delete Review", "Are you sure you want to delete this genuine review?", async () => {
         try {
             await (await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")).deleteDoc(doc(db, "product_reviews", id));
             window.showToast("Review deleted successfully", "success");
         } catch (err) {
             window.showToast("Delete failed: " + err.message, "error");
         }
-    }
+    });
 };
 
 /* ================= ALL USERS (MANAGEMENT) ================= */
@@ -402,7 +402,7 @@ function renderUsersTable(users) {
             ? `<span class="status-pill active" style="background:#ffebee; color:#c62828;">Admin</span>` 
             : (user.role === "partner" ? `<span class="status-pill active" style="background:#fff8e1; color:#f57f17;">Partner</span>` : `<span class="status-pill">Customer</span>`);
 
-        const actionBtn = (user.role !== "admin" && user.role !== "partner") 
+        const actionBtn = (user.role !== "admin" && user.role !== "partner" && user.isPartnerApplicant) 
             ? `<button onclick="window.promptPartner('${user.id}')" class="btn-primary" style="padding:4px 8px; font-size:11px;">Make Partner</button>` 
             : "";
 
@@ -421,10 +421,15 @@ function renderUsersTable(users) {
 }
 
 window.promptPartner = function(userId) {
-    const sName = prompt("Enter Showroom Name for this partner:", "Pradeep Furniture Partner");
-    if (sName) {
-        window.promoteToPartner(userId, sName);
-    }
+    window.showPromptDialog(
+        "Enter Showroom Name for this partner:",
+        "Pradeep Furniture Partner",
+        (sName) => {
+            if (sName) {
+                window.promoteToPartner(userId, sName);
+            }
+        }
+    );
 };
 
 /* ================= PARTNER MANAGEMENT ================= */
@@ -452,6 +457,7 @@ function renderPartnersTable(partners) {
 
     let html = "";
     partners.forEach(p => {
+        let safeShowroom = (p.showroomName || "Unnamed Showroom").replace(/'/g, "\\'");
         html += `
             <tr>
                 <td><strong>${p.showroomName || "Unnamed Showroom"}</strong><br><small>${p.firstName} ${p.lastName}</small></td>
@@ -459,7 +465,8 @@ function renderPartnersTable(partners) {
                 <td><span class="status-pill active">${p.leadsCount || 0}</span></td>
                 <td>₹${(p.totalEarnings || 0).toLocaleString()}</td>
                 <td>
-                    <div style="display:flex; gap:5px;">
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                        <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:var(--accent-color);" onclick="window.viewPartnerCatalog('${p.id}', '${safeShowroom}')"><i class="fa-solid fa-book-open"></i> Catalog</button>
                         <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:#2e7d32;" onclick="window.payPartnerCommissions('${p.id}')"><i class="fa-solid fa-money-bill-transfer"></i> Payout</button>
                         <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:#d32f2f;" onclick="window.removePartnerRole('${p.id}')">Demote</button>
                     </div>
@@ -478,6 +485,49 @@ window.searchPartners = function() {
         p.email.toLowerCase().includes(term)
     );
     renderPartnersTable(filtered);
+};
+
+window.viewPartnerCatalog = async function(partnerId, showroomName) {
+    const modal = document.getElementById('partnerCatalogModal');
+    const title = document.getElementById('catalog-modal-title');
+    const grid = document.getElementById('admin-partner-catalog-grid');
+    
+    title.innerText = `${showroomName || "Partner"}'s Catalog`;
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:20px;">Loading catalog items...</div>';
+    
+    modal.style.display = 'flex';
+
+    try {
+        const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const q = query(collection(db, "partner_catalogs"), where("partnerId", "==", partnerId));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted); font-size:16px;">This partner has not uploaded any custom products yet.</div>';
+            return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+            const p = doc.data();
+            html += `
+                <div class="catalog-card" style="background:var(--card-bg); border-radius:15px; overflow:hidden; border:1px solid var(--border-color); box-shadow:var(--card-shadow);">
+                    <img src="${p.image}" style="width:100%; height:200px; object-fit:cover;">
+                    <div style="padding:15px;">
+                        <span style="font-size:10px; color:var(--accent-color); font-weight:700; text-transform:uppercase;">Showroom Item</span>
+                        <h3 style="margin:5px 0; font-size:16px; color:var(--text-primary); font-family:'Playfair Display', serif;">${p.name}</h3>
+                        <div style="color:var(--text-primary); font-weight:700; font-size:15px;">₹${(p.price || 0).toLocaleString()}</div>
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:5px;">${p.description || "No description provided."}</p>
+                    </div>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+        
+    } catch (error) {
+        console.error("Error loading partner catalog:", error);
+        grid.innerHTML = `<div style="grid-column: 1/-1; color:red; text-align:center;">Failed to load catalog: ${error.message}</div>`;
+    }
 };
 
 function loadAllPartnerLeads() {
@@ -579,7 +629,7 @@ window.loadPartnerApplications = function() {
 };
 
 window.approvePartner = async function(userId, showroomName) {
-    if (confirm(`Approve ${showroomName} as a verified partner?`)) {
+    window.showConfirmDialog("Approve Partner", `Approve ${showroomName} as a verified partner?`, async () => {
         try {
             const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
             await updateDoc(doc(db, "users", userId), { 
@@ -593,39 +643,47 @@ window.approvePartner = async function(userId, showroomName) {
         } catch (err) {
             window.showToast("Approval failed: " + err.message, "error");
         }
-    }
+    });
 };
 
 window.updateLeadStatus = async function(id, newStatus) {
-    try {
-        const { updateDoc, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-        const leadRef = doc(db, "partner_leads", id);
-        
-        let updateData = { status: newStatus };
+    const executeUpdate = async (amountParams = null) => {
+        try {
+            const { updateDoc, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+            const leadRef = doc(db, "partner_leads", id);
+            
+            let updateData = { status: newStatus };
 
-        // Handle Conversion: Ask for amount
-        if (newStatus === "converted") {
-            const amount = prompt("Enter the Final Sale Amount (₹):", "0");
+            if (amountParams) {
+                updateData.saleAmount = amountParams.saleVal;
+                updateData.commissionAmount = amountParams.commission;
+                updateData.commissionRate = "5%";
+                updateData.paymentStatus = "pending";
+            }
+
+            await updateDoc(leadRef, updateData);
+            window.showToast(`Lead marked as ${newStatus}!`, "success");
+        } catch (err) {
+            window.showToast("Update failed: " + err.message, "error");
+        }
+    };
+
+    // Handle Conversion: Ask for amount
+    if (newStatus === "converted") {
+        window.showPromptDialog("Enter the Final Sale Amount (₹):", "0", (amount) => {
             if (amount === null || isNaN(amount)) return; // Cancelled or invalid
             
             const saleVal = parseFloat(amount);
             const commission = Math.round(saleVal * 0.05); // 5% Commission
-            
-            updateData.saleAmount = saleVal;
-            updateData.commissionAmount = commission;
-            updateData.commissionRate = "5%";
-            updateData.paymentStatus = "pending";
-        }
-
-        await updateDoc(leadRef, updateData);
-        window.showToast(`Lead marked as ${newStatus}!`, "success");
-    } catch (err) {
-        window.showToast("Update failed: " + err.message, "error");
+            executeUpdate({ saleVal, commission });
+        });
+    } else {
+        executeUpdate();
     }
 };
 
 window.payPartnerCommissions = async function(partnerId) {
-    if (confirm("Mark all 'Converted' leads for this partner as 'PAID'?")) {
+    window.showConfirmDialog("Process Payout", "Mark all 'Converted' leads for this partner as 'PAID'?", async () => {
         try {
             const { collection, query, where, getDocs, writeBatch, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
             const q = query(collection(db, "partner_leads"), where("partnerId", "==", partnerId), where("paymentStatus", "==", "pending"));
@@ -645,7 +703,7 @@ window.payPartnerCommissions = async function(partnerId) {
         } catch (err) {
             window.showToast("Payout failed: " + err.message, "error");
         }
-    }
+    });
 };
 
 
@@ -665,7 +723,7 @@ window.promoteToPartner = async function(userId, showroomName = "Pradeep Partner
 };
 
 window.removePartnerRole = async function(userId) {
-    if (confirm("Are you sure you want to remove partner status?")) {
+    window.showConfirmDialog("Demote Partner", "Are you sure you want to remove partner status?", async () => {
         try {
             const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
             await updateDoc(doc(db, "users", userId), { role: "user" });
@@ -673,7 +731,7 @@ window.removePartnerRole = async function(userId) {
         } catch (err) {
             window.showToast("Demotion failed", "error");
         }
-    }
+    });
 };
 
 window.searchUsers = function() {

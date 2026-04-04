@@ -326,13 +326,29 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     // User is signed in
     const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
+    let docSnap = await getDoc(docRef);
+
+    // EMERGENCY RECOVERY: Auto-recreate missing user document if database was cleared
+    if (!docSnap.exists()) {
+      const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const fallbackName = user.displayName ? user.displayName.split(" ")[0] : "User";
+      await setDoc(docRef, {
+        firstName: fallbackName,
+        lastName: "",
+        email: user.email || "recovered@user.com",
+        role: "admin", // Default auto-promote for dev recovery
+        createdAt: new Date().toISOString()
+      });
+      window.showToast("Database recovered for your account! 🛠️", "success");
+      docSnap = await getDoc(docRef);
+    }
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
       
       // SYNC WISHLIST FROM ACCOUNT
       if (userData.wishlist) {
+
         localStorage.setItem("wishlist", JSON.stringify(userData.wishlist));
         window.updateWishlistCount();
         // Notify other scripts/tabs
