@@ -1,0 +1,173 @@
+/* Partner Dashboard Specific Styles */:root {
+    --partner-accent: #c49b63;
+    --partner-bg: var(--bg-color);
+}
+
+.partner-page {
+    background: var(--partner-bg);
+}
+
+.partner-badge {
+    background: linear-gradient(135deg, #c49b63, #a67c3b);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-left: 15px;
+    box-shadow: 0 4px 10px rgba(196, 155, 99, 0.2);
+}
+
+.partner-navbar {
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    background: rgba(var(--bg-color-rgb), 0.8);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Metric Cards Refinement */
+.metric-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(196, 155, 99, 0.05));
+    pointer-events: none;
+}
+
+/* Catalog Grid */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.catalog-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+}
+
+.catalog-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.catalog-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.catalog-info {
+    padding: 20px;
+}
+
+.catalog-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.catalog-price {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.catalog-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Forms */
+.premium-form .form-group {
+    margin-bottom: 20px;
+}
+
+.premium-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.premium-form input, 
+.premium-form select, 
+.premium-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.3s;
+}
+
+.premium-form input:focus, 
+.premium-form select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px var(--accent-light);
+    outline: none;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.tab-content {
+    animation: slideIn 0.4s ease forwards;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 991px) {
+    .admin-sidebar {
+        width: 70px;
+        padding: 15px 0;
+    }
+    .admin-sidebar .nav-text, 
+    .sidebar-brand h2 {
+        display: none;
+    }
+    .admin-main {
+        margin-left: 70px;
+        padding: 20px;
+    }
+    .admin-sidebar .nav-item {
+        justify-content: center;
+        padding: 15px;
+        margin: 5px;
+    }
+    .navbar {
+        left: 70px;
+        width: calc(100% - 70px);
+    }
+}

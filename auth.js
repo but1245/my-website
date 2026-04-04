@@ -38,7 +38,7 @@ import {
 } from "./firebase.js";
 
 // Helper to get redirection URL
-const getRedirectUrl = () => {
+const getRedirectUrl = (role = 'user') => {
   // 1. Check URL Params (highest priority)
   const params = new URLSearchParams(window.location.search);
   if (params.get("redirect")) return params.get("redirect");
@@ -46,7 +46,13 @@ const getRedirectUrl = () => {
   // 2. Check localStorage (was set by another page)
   const url = localStorage.getItem("authRedirect");
   localStorage.removeItem("authRedirect"); // Clear after use
-  return url || "dashboard.html"; // Default to dashboard
+  
+  if (url) return url;
+  
+  // Role-based defaults
+  if (role === 'admin') return "admin-dashboard.html";
+  if (role === 'partner') return "partner-dashboard.html";
+  return "dashboard.html";
 };
 
 // Record current page as redirect target if not auth page
@@ -185,11 +191,18 @@ window.login = async function() {
       loginBtn.disabled = true;
     }
 
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Fetch role for immediate redirection logic
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userData = userDoc.data();
+    const role = userData ? userData.role : 'user';
+
     window.showToast("Login Success! Welcome back 👋", "success");
     
     setTimeout(() => {
-      window.location.href = getRedirectUrl();
+      window.location.href = getRedirectUrl(role);
     }, 1200);
 
   } catch (error) {
@@ -327,7 +340,9 @@ onAuthStateChanged(auth, async (user) => {
       }
 
       if (userDisplay) {
-        userDisplay.innerHTML = `<a href="dashboard.html" class="user-profile-link" style="display:inline-block;">Hi, ${userData.firstName}</a>`;
+        const dashboardLink = userData.role === 'partner' ? 'partner-dashboard.html' : 
+                            (userData.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html');
+        userDisplay.innerHTML = `<a href="${dashboardLink}" class="user-profile-link" style="display:inline-block;">Hi, ${userData.firstName}</a>`;
         userDisplay.style.display = "inline-block";
       }
       if (authBtn) {

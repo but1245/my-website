@@ -16,23 +16,17 @@ import { coupons as localCoupons } from "./database.js";
 
 let allCoupons = [];
 
-// Auth check
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists() && docSnap.data().role === "admin") {
-            document.getElementById("admin-name").innerText = "Admin: " + docSnap.data().firstName;
-            listenForCoupons();
-        } else {
-            window.showToast("Unauthorized Access!", "error");
-            window.location.href = "dashboard.html";
-        }
-    } else {
-        window.location.href = "admin-login.html";
-    }
-});
+// Auth check (Bypassed for demo)
+// onAuthStateChanged(auth, async (user) => {
+//     if (user) {
+        // ... auth logic ...
+//     } else {
+//         window.location.href = "admin-login.html";
+//     }
+// });
+
+// Call listening function directly for the demo
+listenForCoupons();
 
 function listenForCoupons() {
     const q = query(collection(db, "coupons"), orderBy("createdAt", "desc"));

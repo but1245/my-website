@@ -6,6 +6,7 @@ import {
     doc, 
     getDoc,
     query, 
+    where,
     orderBy,
     limit,
     getDocs
@@ -259,6 +260,9 @@ function renderChart(statusData) {
         '#00838f'  // Cyan
     ];
 
+    const labels = Object.keys(statusData || {});
+    const data = Object.values(statusData || {});
+
     if (orderChartInstance) {
         orderChartInstance.destroy();
     }
@@ -317,6 +321,11 @@ window.switchTab = function(tabId) {
     }
     if (tabId === 'reviews') {
         loadAllReviews();
+    }
+    if (tabId === 'partners') {
+        loadAllPartners();
+        loadAllPartnerLeads();
+        loadPartnerApplications();
     }
 };
 
@@ -381,7 +390,7 @@ function renderUsersTable(users) {
     if (!listEl) return;
 
     if (users.length === 0) {
-        listEl.innerHTML = `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
+        listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;">No users found.</td></tr>`;
         return;
     }
 
@@ -389,22 +398,283 @@ function renderUsersTable(users) {
     users.forEach(user => {
         const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A";
         const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "User";
-        const role = user.role === "admin" 
+        const roleStr = user.role === "admin" 
             ? `<span class="status-pill active" style="background:#ffebee; color:#c62828;">Admin</span>` 
-            : `<span class="status-pill">Customer</span>`;
+            : (user.role === "partner" ? `<span class="status-pill active" style="background:#fff8e1; color:#f57f17;">Partner</span>` : `<span class="status-pill">Customer</span>`);
+
+        const actionBtn = (user.role !== "admin" && user.role !== "partner") 
+            ? `<button onclick="window.promptPartner('${user.id}')" class="btn-primary" style="padding:4px 8px; font-size:11px;">Make Partner</button>` 
+            : "";
 
         html += `
             <tr>
                 <td><strong>${fullName}</strong></td>
                 <td>${user.email}</td>
-                <td>${role}</td>
+                <td>${roleStr}</td>
                 <td><span class="status-pill active">Verified</span></td>
                 <td>${date}</td>
+                <td>${actionBtn}</td>
             </tr>
         `;
     });
     listEl.innerHTML = html;
 }
+
+window.promptPartner = function(userId) {
+    const sName = prompt("Enter Showroom Name for this partner:", "Pradeep Furniture Partner");
+    if (sName) {
+        window.promoteToPartner(userId, sName);
+    }
+};
+
+/* ================= PARTNER MANAGEMENT ================= */
+let allPartners = [];
+
+function loadAllPartners() {
+    const q = query(collection(db, "users"), where("role", "==", "partner"));
+    onSnapshot(q, (snapshot) => {
+        allPartners = [];
+        snapshot.forEach(doc => allPartners.push({ id: doc.id, ...doc.data() }));
+        renderPartnersTable(allPartners);
+        const partnersCountEl = document.getElementById('stat-partners-count');
+        if (partnersCountEl) partnersCountEl.innerText = snapshot.size;
+    });
+}
+
+function renderPartnersTable(partners) {
+    const listEl = document.getElementById("all-partners-list");
+    if (!listEl) return;
+
+    if (partners.length === 0) {
+        listEl.innerHTML = `<tr><td colspan="5" style="text-align:center;">No partners assigned yet.</td></tr>`;
+        return;
+    }
+
+    let html = "";
+    partners.forEach(p => {
+        html += `
+            <tr>
+                <td><strong>${p.showroomName || "Unnamed Showroom"}</strong><br><small>${p.firstName} ${p.lastName}</small></td>
+                <td>${p.email}</td>
+                <td><span class="status-pill active">${p.leadsCount || 0}</span></td>
+                <td>₹${(p.totalEarnings || 0).toLocaleString()}</td>
+                <td>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:#2e7d32;" onclick="window.payPartnerCommissions('${p.id}')"><i class="fa-solid fa-money-bill-transfer"></i> Payout</button>
+                        <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:#d32f2f;" onclick="window.removePartnerRole('${p.id}')">Demote</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+window.searchPartners = function() {
+    const term = document.getElementById("partner-search").value.toLowerCase();
+    const filtered = allPartners.filter(p => 
+        (p.showroomName || "").toLowerCase().includes(term) || 
+        (p.firstName + " " + p.lastName).toLowerCase().includes(term) ||
+        p.email.toLowerCase().includes(term)
+    );
+    renderPartnersTable(filtered);
+};
+
+function loadAllPartnerLeads() {
+    const q = query(collection(db, "partner_leads"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const listEl = document.getElementById("admin-all-leads-list");
+        if (!listEl) return;
+
+        const totalLeadsEl = document.getElementById('stat-total-partner-leads');
+        if (totalLeadsEl) totalLeadsEl.innerText = snapshot.size;
+
+        if (snapshot.empty) {
+            listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;">No leads submitted yet.</td></tr>`;
+            return;
+        }
+
+        let html = "";
+        snapshot.forEach(docSnap => {
+            const lead = docSnap.data();
+            const id = docSnap.id;
+            const date = lead.createdAt?.toDate().toLocaleDateString() || "Just now";
+            
+            const partner = allPartners.find(p => p.id === lead.partnerId);
+            const source = partner ? partner.showroomName : "Partner ID: " + lead.partnerId.substring(0,5);
+
+            html += `
+                <tr>
+                    <td><strong>${lead.customerName}</strong><br><small>${lead.customerPhone}</small></td>
+                    <td>${source}</td>
+                    <td>${lead.productInterest}</td>
+                    <td><span class="status-pill ${lead.status}">${lead.status.toUpperCase()}</span></td>
+                    <td>${date}</td>
+                    <td>
+                        <select onchange="window.updateLeadStatus('${id}', this.value)" style="padding:5px; border-radius:5px;">
+                            <option value="pending" ${lead.status==='pending'?'selected':''}>Pending</option>
+                            <option value="contacted" ${lead.status==='contacted'?'selected':''}>Contacted</option>
+                            <option value="converted" ${lead.status==='converted'?'selected':''}>Converted</option>
+                            <option value="cancelled" ${lead.status==='cancelled'?'selected':''}>Cancelled</option>
+                        </select>
+                    </td>
+                </tr>
+            `;
+        });
+        listEl.innerHTML = html;
+    });
+}
+
+// Global functions for admin actions
+window.loadPartnerApplications = function() {
+    // Simplified query to use only one field (avoids index requirement)
+    const q = query(collection(db, "users"), where("isPartnerApplicant", "==", true));
+    
+    onSnapshot(q, (snapshot) => {
+        const listEl = document.getElementById("partner-applications-list");
+        const badgeEl = document.getElementById("partner-badge");
+        if (!listEl) return;
+
+        // Update Sidebar Badge
+        const pendingCount = snapshot.size;
+        console.log("Found pending partner applications:", pendingCount);
+        
+        if (badgeEl) {
+            badgeEl.innerText = pendingCount;
+            badgeEl.style.display = pendingCount > 0 ? "block" : "none";
+        }
+
+        if (snapshot.empty) {
+            listEl.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 40px; color: #777;">
+                <i class="fa-solid fa-folder-open" style="font-size: 32px; display: block; margin-bottom: 10px;"></i>
+                No pending showroom applications found in the database.
+            </td></tr>`;
+            return;
+        }
+
+        let html = "";
+        snapshot.forEach(docSnap => {
+            const app = docSnap.data();
+            const id = docSnap.id;
+            const date = app.createdAt?.toDate ? app.createdAt.toDate().toLocaleDateString() : "Just now";
+
+            html += `
+                <tr>
+                    <td><strong>${app.showroomName}</strong><br><small>${app.firstName} ${app.lastName}</small></td>
+                    <td>${app.email}<br>${app.phone || ""}</td>
+                    <td>${app.city}<br><small>${app.address}</small></td>
+                    <td>${date}</td>
+                    <td>
+                        <button onclick="window.approvePartner('${id}', '${app.showroomName}')" class="btn-primary" style="padding:5px 10px; font-size:12px; background:#2e7d32;">Approve</button>
+                    </td>
+                </tr>
+            `;
+        });
+        listEl.innerHTML = html;
+    }, (error) => {
+        console.error("Partner Apps query failed:", error);
+        const listEl = document.getElementById("partner-applications-list");
+        if (listEl) listEl.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error loading requests: ${error.message}</td></tr>`;
+    });
+};
+
+window.approvePartner = async function(userId, showroomName) {
+    if (confirm(`Approve ${showroomName} as a verified partner?`)) {
+        try {
+            const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+            await updateDoc(doc(db, "users", userId), { 
+                role: "partner",
+                applicationStatus: "approved",
+                isPartnerApplicant: false, // Moved to active partner
+                leadsCount: 0,
+                totalEarnings: 0
+            });
+            window.showToast("Showroom Approved! 🤝 Welcome aboard.", "success");
+        } catch (err) {
+            window.showToast("Approval failed: " + err.message, "error");
+        }
+    }
+};
+
+window.updateLeadStatus = async function(id, newStatus) {
+    try {
+        const { updateDoc, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const leadRef = doc(db, "partner_leads", id);
+        
+        let updateData = { status: newStatus };
+
+        // Handle Conversion: Ask for amount
+        if (newStatus === "converted") {
+            const amount = prompt("Enter the Final Sale Amount (₹):", "0");
+            if (amount === null || isNaN(amount)) return; // Cancelled or invalid
+            
+            const saleVal = parseFloat(amount);
+            const commission = Math.round(saleVal * 0.05); // 5% Commission
+            
+            updateData.saleAmount = saleVal;
+            updateData.commissionAmount = commission;
+            updateData.commissionRate = "5%";
+            updateData.paymentStatus = "pending";
+        }
+
+        await updateDoc(leadRef, updateData);
+        window.showToast(`Lead marked as ${newStatus}!`, "success");
+    } catch (err) {
+        window.showToast("Update failed: " + err.message, "error");
+    }
+};
+
+window.payPartnerCommissions = async function(partnerId) {
+    if (confirm("Mark all 'Converted' leads for this partner as 'PAID'?")) {
+        try {
+            const { collection, query, where, getDocs, writeBatch, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+            const q = query(collection(db, "partner_leads"), where("partnerId", "==", partnerId), where("paymentStatus", "==", "pending"));
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                window.showToast("No pending commissions found.", "info");
+                return;
+            }
+
+            const batch = writeBatch(db);
+            snapshot.forEach(d => {
+                batch.update(doc(db, "partner_leads", d.id), { paymentStatus: "paid" });
+            });
+            await batch.commit();
+            window.showToast("Payout recorded successfully! 💸", "success");
+        } catch (err) {
+            window.showToast("Payout failed: " + err.message, "error");
+        }
+    }
+};
+
+
+window.promoteToPartner = async function(userId, showroomName = "Pradeep Partner") {
+    try {
+        const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        await updateDoc(doc(db, "users", userId), { 
+            role: "partner",
+            showroomName: showroomName,
+            leadsCount: 0,
+            totalEarnings: 0
+        });
+        window.showToast("User promoted to Partner! 🤝", "success");
+    } catch (err) {
+        window.showToast("Promotion failed", "error");
+    }
+};
+
+window.removePartnerRole = async function(userId) {
+    if (confirm("Are you sure you want to remove partner status?")) {
+        try {
+            const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+            await updateDoc(doc(db, "users", userId), { role: "user" });
+            window.showToast("Partner demoted to regular user", "info");
+        } catch (err) {
+            window.showToast("Demotion failed", "error");
+        }
+    }
+};
 
 window.searchUsers = function() {
     const term = document.getElementById("user-search").value.toLowerCase();

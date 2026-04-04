@@ -59,7 +59,10 @@ function renderProducts(products) {
             <div class="admin-card-body">
                 <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">${p.category}</span>
                 <h4>${p.name}</h4>
-                <p class="price">₹${p.price.toLocaleString()}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <p class="price" style="margin:0;">₹${p.price.toLocaleString()}</p>
+                    ${p.isPartnerOnly ? '<span style="background:var(--accent-light); color:var(--accent-color); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:700; border:1px solid var(--accent-light);"><i class="fa-solid fa-handshake"></i> PARTNER</span>' : ''}
+                </div>
                 <p style="font-size:12px; opacity:0.6;">System ID: #PR-${p.id.substring(0,6).toUpperCase()}</p>
             </div>
             <div class="admin-card-footer">
@@ -131,6 +134,7 @@ form.onsubmit = async (e) => {
     const category = document.getElementById("prod-category").value;
     const rating = parseFloat(document.getElementById("prod-rating").value) || 5.0;
     const reviewsCount = parseInt(document.getElementById("prod-reviews").value) || 0;
+    const isPartnerOnly = document.getElementById("prod-partner-only").checked;
     
     try {
         saveBtn.innerText = "Processing...";
@@ -163,6 +167,7 @@ form.onsubmit = async (e) => {
             image: finalImageUrl,
             rating,
             reviewsCount,
+            isPartnerOnly,
             updatedAt: serverTimestamp()
         };
 
@@ -195,6 +200,7 @@ window.openEditModal = (id) => {
     document.getElementById("prod-category").value = p.category;
     document.getElementById("prod-rating").value = p.rating || 5.0;
     document.getElementById("prod-reviews").value = p.reviewsCount || 0;
+    document.getElementById("prod-partner-only").checked = p.isPartnerOnly || false;
     
     imagePreview.src = p.image;
     imagePreview.style.display = "block";

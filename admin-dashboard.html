@@ -353,6 +353,11 @@
             <a href="javascript:void(0)" onclick="switchTab('reviews')" class="nav-item tab-link" id="tab-reviews">
                 <i class="fa-solid fa-comments"></i> <span class="nav-text">Recent Reviews</span>
             </a>
+            <a href="javascript:void(0)" onclick="switchTab('partners')" class="nav-item tab-link" id="tab-partners" style="position:relative;">
+                <i class="fa-solid fa-handshake"></i> 
+                <span class="nav-text">Manage Partners</span>
+                <span id="partner-badge" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%); background:#d32f2f; color:white; font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700;">0</span>
+            </a>
             <div style="flex-grow: 1;"></div>
             <a href="#" class="nav-item" onclick="window.logout()">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="nav-text">Logout</span>
@@ -573,7 +578,100 @@
         </div>
     </section>
 
+    <!-- PARTNERS SECTION -->
+    <section id="partners-section" class="tab-content" style="display:none; padding:40px; margin-left:260px;">
+        <div class="admin-header">
+            <div>
+                <h1>Showroom Partnerships</h1>
+                <p>Manage your showroom partners and their performance.</p>
+            </div>
+            <div class="search-box-premium">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="partner-search" placeholder="Search partners..." oninput="searchPartners()">
+            </div>
+        </div>
+
+        <div class="metric-grid" style="margin-left:0; width:100%;">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-handshake"></i></div>
+                <div class="metric-info">
+                    <h3 id="stat-partners-count">0</h3>
+                    <p>Active Partners</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#e3f2fd; color:#1e88e5;"><i class="fa-solid fa-bullhorn"></i></div>
+                <div class="metric-info">
+                    <h3 id="stat-total-partner-leads">0</h3>
+                    <p>Partner Leads</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <h2><i class="fa-solid fa-users-gear" style="color:var(--accent-color);"></i> Partner Management</h2>
+            <div style="overflow-x: auto;">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Partner / Showroom</th>
+                            <th>Email</th>
+                            <th>Leads</th>
+                            <th>Earnings</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-partners-list">
+                        <tr><td colspan="5" style="text-align:center;">Loading partners...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-top:40px;">
+            <h2><i class="fa-solid fa-file-signature" style="color:var(--accent-color);"></i> Pending Partner Applications</h2>
+            <div style="overflow-x: auto;">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Showroom / Applicant</th>
+                            <th>Email & Contact</th>
+                            <th>City & Address</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="partner-applications-list">
+                        <tr><td colspan="5" style="text-align:center;">Loading applications...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-top:40px;">
+            <h2><i class="fa-solid fa-list-check" style="color:var(--accent-color);"></i> All Partner Leads</h2>
+            <div style="overflow-x: auto;">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Showroom Source</th>
+                            <th>Product</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-all-leads-list">
+                        <tr><td colspan="6" style="text-align:center;">Loading leads...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <!-- Scripts -->
+    <script src="toast.js"></script>
     <script type="module" src="firebase.js"></script>
     <script type="module" src="auth.js"></script>
     <script type="module" src="admin-dashboard.js"></script>
