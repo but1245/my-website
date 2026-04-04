@@ -56,8 +56,10 @@
             <a href="javascript:void(0)" onclick="switchTab('overview')" class="nav-item tab-link active" id="tab-overview">
                 <i class="fa-solid fa-gauge-high"></i> <span class="nav-text">Dashboard</span>
             </a>
-            <a href="javascript:void(0)" onclick="switchTab('leads')" class="nav-item tab-link" id="tab-leads">
-                <i class="fa-solid fa-user-tag"></i> <span class="nav-text">My Leads</span>
+            <a href="javascript:void(0)" onclick="switchTab('leads')" class="nav-item tab-link" id="tab-leads" style="position:relative;">
+                <i class="fa-solid fa-user-tag"></i> 
+                <span class="nav-text">My Leads</span>
+                <span id="sidebar-leads-count" style="display:none; position:absolute; right:15px; background:var(--accent-color); color:white; font-size:10px; padding:2px 7px; border-radius:10px; font-weight:700;">0</span>
             </a>
             <a href="javascript:void(0)" onclick="switchTab('catalog')" class="nav-item tab-link" id="tab-catalog">
                 <i class="fa-solid fa-couch"></i> <span class="nav-text">Premium Catalog</span>

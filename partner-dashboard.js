@@ -1,7 +1,6 @@
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
-    auth, 
-    db, 
-    onAuthStateChanged, 
     doc, 
     getDoc, 
     setDoc, 
@@ -14,7 +13,7 @@ import {
     limit, 
     onSnapshot,
     serverTimestamp
-} from './firebase.js';
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 let currentUser = null;
 
@@ -48,6 +47,9 @@ function setupDashboard(userData) {
     document.getElementById('prof-email').value = userData.email;
     document.getElementById('prof-phone').value = userData.phone || '';
     document.getElementById('prof-address').value = userData.address || '';
+    
+    // Explicitly initialize the default tab
+    window.switchTab('overview');
 }
 
 // 📋 Tab Switching
@@ -155,14 +157,40 @@ function loadLeads() {
         snapshot.forEach((doc) => {
             const data = doc.data();
             const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Just now';
-            const statusClass = `status-pill ${data.status}`;
+            
+            // Status Update Logic
+            const updatedAt = data.statusUpdatedAt ? data.statusUpdatedAt.toDate() : null;
+            let statusTimeStr = "";
+            let isNewUpdate = false;
+
+            if (updatedAt) {
+                const now = new Date();
+                const diffMs = now - updatedAt;
+                const diffMins = Math.floor(diffMs / 60000);
+                
+                if (diffMins < 60) statusTimeStr = `${diffMins}m ago`;
+                else if (diffMins < 1440) statusTimeStr = `${Math.floor(diffMins/60)}h ago`;
+                else statusTimeStr = updatedAt.toLocaleDateString();
+
+                // Show "Just In" badge if updated in last 30 mins
+                if (diffMins < 30) isNewUpdate = true;
+            }
+
+            const statusClass = `status-pill ${data.status.toLowerCase()}`;
+            const badge = isNewUpdate ? `<span class="new-update-badge">JUST IN</span>` : '';
             
             leadsHtml += `
                 <tr>
                     <td>${data.customerName}</td>
                     <td>${data.productInterest}</td>
-                    <td><span class="${statusClass}">${data.status.toUpperCase()}</span></td>
-                    <td>${date}</td>
+                    <td>
+                        <span class="${statusClass}">${data.status.toUpperCase()}</span>
+                        ${badge}
+                    </td>
+                    <td>
+                        <div style="font-size:13px;">${date}</div>
+                        <div style="font-size:10px; color:var(--accent-color); font-weight:600;">${statusTimeStr ? `Update: ${statusTimeStr}` : ''}</div>
+                    </td>
                 </tr>
             `;
             count++;
@@ -171,6 +199,13 @@ function loadLeads() {
         if (recentLeadsList) recentLeadsList.innerHTML = leadsHtml || '<tr><td colspan="4" style="text-align:center;">No leads yet.</td></tr>';
         if (allLeadsList) allLeadsList.innerHTML = leadsHtml || '<tr><td colspan="5" style="text-align:center;">No leads yet.</td></tr>';
         if (totalLeadsEl) totalLeadsEl.textContent = count;
+
+        // Sidebar Badge Sync
+        const sidebarCountEl = document.getElementById('sidebar-leads-count');
+        if (sidebarCountEl) {
+            sidebarCountEl.textContent = count;
+            sidebarCountEl.style.display = count > 0 ? "block" : "none";
+        }
     });
 }
 
@@ -218,6 +253,7 @@ function loadEarnings() {
         let total = 0;
         let pending = 0;
         let paid = 0;
+        let convertedCount = 0; // Added count for converted leads
         let tableHtml = '';
 
         snapshot.forEach((doc) => {
@@ -228,6 +264,7 @@ function loadEarnings() {
             total += commission;
             if (status === 'pending') pending += commission;
             if (status === 'paid') paid += commission;
+            convertedCount++; // Increment count per lead in this snapshot
 
             tableHtml += `
                 <tr>
@@ -239,6 +276,9 @@ function loadEarnings() {
                 </tr>
             `;
         });
+
+        const convertedEl = document.getElementById('stat-converted');
+        if (convertedEl) convertedEl.textContent = convertedCount;
 
         document.getElementById('stat-earnings').textContent = `₹${total.toLocaleString()}`;
         document.getElementById('earnings-pending').textContent = `₹${pending.toLocaleString()}`;

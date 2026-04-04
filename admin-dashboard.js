@@ -15,7 +15,7 @@ import {
 let orderChartInstance = null;
 let trendsChartInstance = null;
 let allUsers = []; 
-
+let payoutsByPartner = {}; // New global for per-partner calculation
 // Auth Check for Admin
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -458,12 +458,14 @@ function renderPartnersTable(partners) {
     let html = "";
     partners.forEach(p => {
         let safeShowroom = (p.showroomName || "Unnamed Showroom").replace(/'/g, "\\'");
+        const paidPayout = payoutsByPartner[p.id] || 0;
         html += `
             <tr>
                 <td><strong>${p.showroomName || "Unnamed Showroom"}</strong><br><small>${p.firstName} ${p.lastName}</small></td>
                 <td>${p.email}</td>
                 <td><span class="status-pill active">${p.leadsCount || 0}</span></td>
                 <td>₹${(p.totalEarnings || 0).toLocaleString()}</td>
+                <td style="color:#2e7d32; font-weight:700;">₹${paidPayout.toLocaleString()}</td>
                 <td>
                     <div style="display:flex; gap:5px; flex-wrap:wrap;">
                         <button class="btn-primary" style="padding:5px 10px; font-size:12px; background:var(--accent-color);" onclick="window.viewPartnerCatalog('${p.id}', '${safeShowroom}')"><i class="fa-solid fa-book-open"></i> Catalog</button>
@@ -511,13 +513,17 @@ window.viewPartnerCatalog = async function(partnerId, showroomName) {
         snapshot.forEach(doc => {
             const p = doc.data();
             html += `
-                <div class="catalog-card" style="background:var(--card-bg); border-radius:15px; overflow:hidden; border:1px solid var(--border-color); box-shadow:var(--card-shadow);">
-                    <img src="${p.image}" style="width:100%; height:200px; object-fit:cover;">
-                    <div style="padding:15px;">
-                        <span style="font-size:10px; color:var(--accent-color); font-weight:700; text-transform:uppercase;">Showroom Item</span>
-                        <h3 style="margin:5px 0; font-size:16px; color:var(--text-primary); font-family:'Playfair Display', serif;">${p.name}</h3>
-                        <div style="color:var(--text-primary); font-weight:700; font-size:15px;">₹${(p.price || 0).toLocaleString()}</div>
-                        <p style="font-size:12px; color:var(--text-muted); margin-top:5px;">${p.description || "No description provided."}</p>
+                <div class="admin-catalog-card">
+                    <img src="${p.image}" class="admin-catalog-img" alt="${p.name}">
+                    <div class="admin-catalog-info">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span style="font-size:10px; color:var(--accent-color); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Showroom Item</span>
+                                <h3>${p.name}</h3>
+                            </div>
+                            <div class="admin-catalog-price">₹${(p.price || 0).toLocaleString()}</div>
+                        </div>
+                        <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-top:5px;">${p.description || "No description provided."}</p>
                     </div>
                 </div>
             `;
@@ -537,19 +543,41 @@ function loadAllPartnerLeads() {
         if (!listEl) return;
 
         const totalLeadsEl = document.getElementById('stat-total-partner-leads');
+        const revenueEl = document.getElementById('stat-partner-revenue');
+        const payoutsEl = document.getElementById('stat-partner-payouts');
+        
         if (totalLeadsEl) totalLeadsEl.innerText = snapshot.size;
 
         if (snapshot.empty) {
             listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;">No leads submitted yet.</td></tr>`;
+            if (revenueEl) revenueEl.innerText = "₹0";
+            if (payoutsEl) payoutsEl.innerText = "₹0";
             return;
         }
 
-        let html = "";
+        let totalSales = 0;
+        let totalPayouts = 0;
+        payoutsByPartner = {}; // Reset for fresh calculation
+
         snapshot.forEach(docSnap => {
             const lead = docSnap.data();
             const id = docSnap.id;
             const date = lead.createdAt?.toDate().toLocaleDateString() || "Just now";
             
+            // Financial calculations
+            if (lead.status === "converted" || lead.status === "paid") {
+                totalSales += (lead.saleAmount || 0);
+            }
+            if (lead.paymentStatus === "paid") {
+                const commission = (lead.commissionAmount || 0);
+                totalPayouts += commission;
+                
+                // Track per partner
+                if (lead.partnerId) {
+                    payoutsByPartner[lead.partnerId] = (payoutsByPartner[lead.partnerId] || 0) + commission;
+                }
+            }
+
             const partner = allPartners.find(p => p.id === lead.partnerId);
             const source = partner ? partner.showroomName : "Partner ID: " + lead.partnerId.substring(0,5);
 
@@ -571,6 +599,13 @@ function loadAllPartnerLeads() {
                 </tr>
             `;
         });
+        
+        if (revenueEl) revenueEl.innerText = `₹${totalSales.toLocaleString()}`;
+        if (payoutsEl) payoutsEl.innerText = `₹${totalPayouts.toLocaleString()}`;
+        
+        // Refresh partner table with new payout data
+        if (allPartners.length > 0) renderPartnersTable(allPartners);
+        
         listEl.innerHTML = html;
     });
 }
@@ -649,10 +684,13 @@ window.approvePartner = async function(userId, showroomName) {
 window.updateLeadStatus = async function(id, newStatus) {
     const executeUpdate = async (amountParams = null) => {
         try {
-            const { updateDoc, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+            const { updateDoc, doc, getDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
             const leadRef = doc(db, "partner_leads", id);
             
-            let updateData = { status: newStatus };
+            let updateData = { 
+                status: newStatus,
+                statusUpdatedAt: serverTimestamp() 
+            };
 
             if (amountParams) {
                 updateData.saleAmount = amountParams.saleVal;

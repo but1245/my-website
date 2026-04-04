@@ -239,7 +239,7 @@
 .admin-main {
     margin-left: 260px;
     flex: 1;
-    padding: 40px;
+    padding: 100px 40px 40px 40px;
 }
 
 .admin-header {
@@ -322,3 +322,33 @@
     margin-bottom: 40px;
 }
 
+.status-pill {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pill.pending { background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); }
+.status-pill.contacted { background: rgba(196, 155, 99, 0.15); color: #c49b63; border: 1px solid rgba(196, 155, 99, 0.3); }
+.status-pill.converted { background: rgba(46, 125, 50, 0.15); color: #2e7d32; border: 1px solid rgba(46, 125, 50, 0.3); }
+.status-pill.cancelled { background: rgba(211, 47, 47, 0.15); color: #d32f2f; border: 1px solid rgba(211, 47, 47, 0.3); }
+
+.new-update-badge {
+    background: #c49b63;
+    color: white;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
