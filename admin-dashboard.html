@@ -350,6 +350,9 @@
             <a href="javascript:void(0)" onclick="switchTab('analytics')" class="nav-item tab-link" id="tab-analytics">
                 <i class="fa-solid fa-chart-line"></i> <span class="nav-text">Analytics</span>
             </a>
+            <a href="javascript:void(0)" onclick="switchTab('reviews')" class="nav-item tab-link" id="tab-reviews">
+                <i class="fa-solid fa-comments"></i> <span class="nav-text">Recent Reviews</span>
+            </a>
             <div style="flex-grow: 1;"></div>
             <a href="#" class="nav-item" onclick="window.logout()">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="nav-text">Logout</span>
@@ -544,6 +547,31 @@
 
         </main>
     </div>
+
+    <!-- REVIEWS SECTION -->
+    <section id="reviews-section" class="tab-content" style="display:none; padding:40px; margin-left:260px;">
+        <div class="content-header">
+            <h1 style="font-family:'Playfair Display'; font-size:36px; margin:0;">Customer Feedback</h1>
+            <p style="color:var(--text-muted); margin-bottom:30px;">Moderate and manage all genuine reviews from your store.</p>
+        </div>
+
+        <div class="glass-panel" style="padding:0;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="all-reviews-list">
+                    <!-- Dynamic Reviews -->
+                </tbody>
+            </table>
+        </div>
+    </section>
 
     <!-- Scripts -->
     <script type="module" src="firebase.js"></script>

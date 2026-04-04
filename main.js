@@ -66,9 +66,9 @@ window.renderProducts = function () {
 
     container.innerHTML += `
     <div class="product-card">
-      <div class="card-img">
+      <div class="card-img" onclick="location.href='product-detail.html?id=${item.id}'" style="cursor:pointer;">
         <img src="${item.image}" alt="" class="product-img">
-        <div class="wishlist ${likedClass}" onclick="toggleWishlist(this, '${item.name}', ${item.price}, '${item.image}')">
+        <div class="wishlist ${likedClass}" onclick="event.stopPropagation(); toggleWishlist(this, '${item.name}', ${item.price}, '${item.image}')">
           <i class="${heartIconClass} fa-heart"></i>
         </div>
       </div>
@@ -76,13 +76,13 @@ window.renderProducts = function () {
       <div class="card-content">
         <div class="card-header-info">
           <span class="product-id">ID: #PF-${item.id ? item.id.toString().substring(0,6).toUpperCase() : 'NEW'}</span>
-          <div class="rating">
+          <div class="rating" onclick="location.href='product-detail.html?id=${item.id}'" style="cursor:pointer;">
             ${getRatingStars(item.rating)}
             <span class="review-text">${item.reviewsCount || 0}</span>
           </div>
         </div>
         
-        <h3>${item.name}</h3>
+        <h3 onclick="location.href='product-detail.html?id=${item.id}'" style="cursor:pointer;">${item.name}</h3>
         <p class="price">₹${item.price.toLocaleString()}</p>
 
         <div class="card-buttons">
@@ -91,6 +91,10 @@ window.renderProducts = function () {
             Customize
           </button>
         </div>
+        
+        <a href="product-detail.html?id=${item.id}" style="display:block; text-align:center; margin-top:15px; font-size:12px; font-weight:600; color:var(--accent-color); text-decoration:none;">
+            <i class="fa-solid fa-comments"></i> Read Genuine Reviews
+        </a>
       </div>
     </div>
     `;

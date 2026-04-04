@@ -315,6 +315,54 @@ window.switchTab = function(tabId) {
     if (tabId === 'analytics') {
         renderTrendsChart();
     }
+    if (tabId === 'reviews') {
+        loadAllReviews();
+    }
+};
+
+/* ================= REVIEW MODERATION ================= */
+function loadAllReviews() {
+    const listEl = document.getElementById("all-reviews-list");
+    if (!listEl) return;
+
+    onSnapshot(collection(db, "product_reviews"), (snapshot) => {
+        if (snapshot.empty) {
+            listEl.innerHTML = `<tr><td colspan="5" style="text-align:center;">No reviews yet.</td></tr>`;
+            return;
+        }
+
+        let html = "";
+        snapshot.forEach((docSnap) => {
+            const r = docSnap.data();
+            const id = docSnap.id;
+            
+            html += `
+                <tr>
+                    <td><strong>${r.userName || "Customer"}</strong></td>
+                    <td style="font-family:monospace; font-size:12px;">#${r.productId?.substring(0,8).toUpperCase() || "N/A"}</td>
+                    <td style="color:#fbc02d;">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</td>
+                    <td style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.comment}</td>
+                    <td>
+                        <button onclick="window.deleteReview('${id}')" style="background:none; border:none; color:#d32f2f; cursor:pointer; font-size:18px;">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        listEl.innerHTML = html;
+    });
+}
+
+window.deleteReview = async function(id) {
+    if (confirm("Are you sure you want to delete this genuine review?")) {
+        try {
+            await (await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")).deleteDoc(doc(db, "product_reviews", id));
+            window.showToast("Review deleted successfully", "success");
+        } catch (err) {
+            window.showToast("Delete failed: " + err.message, "error");
+        }
+    }
 };
 
 /* ================= ALL USERS (MANAGEMENT) ================= */
