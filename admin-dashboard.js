@@ -15,7 +15,10 @@ import {
 let orderChartInstance = null;
 let trendsChartInstance = null;
 let allUsers = []; 
-let payoutsByPartner = {}; // New global for per-partner calculation
+let payoutsByPartner = {}; 
+let leadsByPartner = {}; // New global for per-partner lead count
+let earningsByPartner = {}; // New global for per-partner earnings
+let productLookupCache = {}; // Cache for product names and images
 // Auth Check for Admin
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -330,9 +333,16 @@ window.switchTab = function(tabId) {
 };
 
 /* ================= REVIEW MODERATION ================= */
-function loadAllReviews() {
+async function loadAllReviews() {
     const listEl = document.getElementById("all-reviews-list");
     if (!listEl) return;
+
+    // Prefetch catalogs to populate the cache
+    const catalogSnap = await getDocs(collection(db, "partner_catalogs"));
+    catalogSnap.forEach(d => {
+        const p = d.data();
+        productLookupCache[d.id] = { name: p.name, image: p.image };
+    });
 
     onSnapshot(collection(db, "product_reviews"), (snapshot) => {
         if (snapshot.empty) {
@@ -344,11 +354,19 @@ function loadAllReviews() {
         snapshot.forEach((docSnap) => {
             const r = docSnap.data();
             const id = docSnap.id;
+            const pid = r.productId;
             
+            // Get from cache or fallback to ID
+            const prodInfo = productLookupCache[pid] || { name: "Order #" + (pid?.substring(0,8).toUpperCase() || "N/A"), image: null };
+            const imgHtml = prodInfo.image ? `<img src="${prodInfo.image}" style="width:30px; height:30px; border-radius:4px; object-fit:cover; margin-right:10px;">` : `<div style="width:30px; height:30px; background:#eee; border-radius:4px; display:inline-block; margin-right:10px; vertical-align:middle; text-align:center; line-height:30px; font-size:10px;">📦</div>`;
+
             html += `
                 <tr>
                     <td><strong>${r.userName || "Customer"}</strong></td>
-                    <td style="font-family:monospace; font-size:12px;">#${r.productId?.substring(0,8).toUpperCase() || "N/A"}</td>
+                    <td style="display:flex; align-items:center;">
+                        ${imgHtml}
+                        <div style="font-size:13px; font-weight:600;">${prodInfo.name}</div>
+                    </td>
                     <td style="color:#fbc02d;">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</td>
                     <td style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.comment}</td>
                     <td>
@@ -459,12 +477,15 @@ function renderPartnersTable(partners) {
     partners.forEach(p => {
         let safeShowroom = (p.showroomName || "Unnamed Showroom").replace(/'/g, "\\'");
         const paidPayout = payoutsByPartner[p.id] || 0;
+        const leadCount = leadsByPartner[p.id] || 0;
+        const totalEarned = earningsByPartner[p.id] || 0;
+
         html += `
             <tr>
                 <td><strong>${p.showroomName || "Unnamed Showroom"}</strong><br><small>${p.firstName} ${p.lastName}</small></td>
                 <td>${p.email}</td>
-                <td><span class="status-pill active">${p.leadsCount || 0}</span></td>
-                <td>₹${(p.totalEarnings || 0).toLocaleString()}</td>
+                <td><span class="status-pill active">${leadCount}</span></td>
+                <td>₹${totalEarned.toLocaleString()}</td>
                 <td style="color:#2e7d32; font-weight:700;">₹${paidPayout.toLocaleString()}</td>
                 <td>
                     <div style="display:flex; gap:5px; flex-wrap:wrap;">
@@ -537,7 +558,9 @@ window.viewPartnerCatalog = async function(partnerId, showroomName) {
 };
 
 function loadAllPartnerLeads() {
-    const q = query(collection(db, "partner_leads"), orderBy("createdAt", "desc"));
+    // Removed orderBy to avoid index issues with custom fields
+    const q = query(collection(db, "partner_leads"));
+    
     onSnapshot(q, (snapshot) => {
         const listEl = document.getElementById("admin-all-leads-list");
         if (!listEl) return;
@@ -545,6 +568,7 @@ function loadAllPartnerLeads() {
         const totalLeadsEl = document.getElementById('stat-total-partner-leads');
         const revenueEl = document.getElementById('stat-partner-revenue');
         const payoutsEl = document.getElementById('stat-partner-payouts');
+        const cancelledEl = document.getElementById('stat-partner-cancelled');
         
         if (totalLeadsEl) totalLeadsEl.innerText = snapshot.size;
 
@@ -552,41 +576,68 @@ function loadAllPartnerLeads() {
             listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;">No leads submitted yet.</td></tr>`;
             if (revenueEl) revenueEl.innerText = "₹0";
             if (payoutsEl) payoutsEl.innerText = "₹0";
+            if (cancelledEl) cancelledEl.innerText = "0";
             return;
         }
 
+        let allLeads = [];
+        snapshot.forEach(docSnap => {
+            allLeads.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        // Sort in-memory to avoid potential index errors 
+        allLeads.sort((a, b) => {
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+        });
+
+        let html = "";
         let totalSales = 0;
         let totalPayouts = 0;
-        payoutsByPartner = {}; // Reset for fresh calculation
+        let totalCancelled = 0;
+        
+        // Reset per-partner maps for fresh calculation
+        payoutsByPartner = {}; 
+        leadsByPartner = {};
+        earningsByPartner = {};
 
-        snapshot.forEach(docSnap => {
-            const lead = docSnap.data();
-            const id = docSnap.id;
-            const date = lead.createdAt?.toDate().toLocaleDateString() || "Just now";
+        allLeads.forEach(lead => {
+            const id = lead.id;
+            const date = lead.createdAt?.toDate ? lead.createdAt.toDate().toLocaleDateString() : "Just now";
+            const comm = lead.commissionAmount || 0;
+            const sale = lead.saleAmount || 0;
+            const pid = lead.partnerId;
             
-            // Financial calculations
+            // Financial calculations for platform
             if (lead.status === "converted" || lead.status === "paid") {
-                totalSales += (lead.saleAmount || 0);
+                totalSales += sale;
             }
             if (lead.paymentStatus === "paid") {
-                const commission = (lead.commissionAmount || 0);
-                totalPayouts += commission;
-                
-                // Track per partner
-                if (lead.partnerId) {
-                    payoutsByPartner[lead.partnerId] = (payoutsByPartner[lead.partnerId] || 0) + commission;
+                totalPayouts += comm;
+            }
+            if (lead.status === "cancelled") {
+                totalCancelled++;
+            }
+
+            // Per-partner calculations
+            if (pid) {
+                leadsByPartner[pid] = (leadsByPartner[pid] || 0) + 1;
+                earningsByPartner[pid] = (earningsByPartner[pid] || 0) + comm;
+                if (lead.paymentStatus === "paid") {
+                    payoutsByPartner[pid] = (payoutsByPartner[pid] || 0) + comm;
                 }
             }
 
-            const partner = allPartners.find(p => p.id === lead.partnerId);
-            const source = partner ? partner.showroomName : "Partner ID: " + lead.partnerId.substring(0,5);
+            const partner = allPartners.find(p => p.id === pid);
+            const source = partner ? partner.showroomName : "Partner ID: " + pid.substring(0,5);
 
             html += `
                 <tr>
                     <td><strong>${lead.customerName}</strong><br><small>${lead.customerPhone}</small></td>
                     <td>${source}</td>
                     <td>${lead.productInterest}</td>
-                    <td><span class="status-pill ${lead.status}">${lead.status.toUpperCase()}</span></td>
+                    <td><span class="status-pill ${(lead.status || 'pending').toLowerCase()}">${(lead.status || 'PENDING').toUpperCase()}</span></td>
                     <td>${date}</td>
                     <td>
                         <select onchange="window.updateLeadStatus('${id}', this.value)" style="padding:5px; border-radius:5px;">
@@ -602,6 +653,7 @@ function loadAllPartnerLeads() {
         
         if (revenueEl) revenueEl.innerText = `₹${totalSales.toLocaleString()}`;
         if (payoutsEl) payoutsEl.innerText = `₹${totalPayouts.toLocaleString()}`;
+        if (cancelledEl) cancelledEl.innerText = totalCancelled;
         
         // Refresh partner table with new payout data
         if (allPartners.length > 0) renderPartnersTable(allPartners);

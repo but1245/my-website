@@ -142,8 +142,7 @@ if (catalogForm) {
 function loadLeads() {
     const q = query(
         collection(db, "partner_leads"), 
-        where("partnerId", "==", currentUser.uid),
-        orderBy("createdAt", "desc")
+        where("partnerId", "==", currentUser.uid)
     );
 
     onSnapshot(q, (snapshot) => {
@@ -151,15 +150,29 @@ function loadLeads() {
         const allLeadsList = document.getElementById('all-leads-list');
         const totalLeadsEl = document.getElementById('stat-total-leads');
         
-        let leadsHtml = '';
-        let count = 0;
+        let allLeads = [];
+        snapshot.forEach(d => {
+            const data = d.data();
+            allLeads.push({ id: d.id, ...data });
+        });
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Just now';
+        // Sort in-memory to avoid 'Index Required' error
+        allLeads.sort((a, b) => {
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+        });
+
+        let leadsHtml = '';
+        let recentLeadsHtml = ''; // New for limiting to 10
+        let count = 0;
+        let cancelledCount = 0; 
+
+        allLeads.forEach((data, index) => {
+            if (data.status === 'cancelled') cancelledCount++;
             
-            // Status Update Logic
-            const updatedAt = data.statusUpdatedAt ? data.statusUpdatedAt.toDate() : null;
+            const date = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString() : 'Just now';
+            const updatedAt = data.statusUpdatedAt?.toDate ? data.statusUpdatedAt.toDate() : null;
             let statusTimeStr = "";
             let isNewUpdate = false;
 
@@ -167,24 +180,23 @@ function loadLeads() {
                 const now = new Date();
                 const diffMs = now - updatedAt;
                 const diffMins = Math.floor(diffMs / 60000);
-                
                 if (diffMins < 60) statusTimeStr = `${diffMins}m ago`;
                 else if (diffMins < 1440) statusTimeStr = `${Math.floor(diffMins/60)}h ago`;
                 else statusTimeStr = updatedAt.toLocaleDateString();
-
-                // Show "Just In" badge if updated in last 30 mins
                 if (diffMins < 30) isNewUpdate = true;
             }
 
-            const statusClass = `status-pill ${data.status.toLowerCase()}`;
+            const currentStatus = data.status || "pending";
+            const statusClass = `status-pill ${currentStatus.toLowerCase()}`;
             const badge = isNewUpdate ? `<span class="new-update-badge">JUST IN</span>` : '';
             
-            leadsHtml += `
+            const rowHtml = `
                 <tr>
-                    <td>${data.customerName}</td>
+                    <td><strong>${data.customerName}</strong></td>
+                    <td>${data.customerPhone || 'N/A'}</td>
                     <td>${data.productInterest}</td>
                     <td>
-                        <span class="${statusClass}">${data.status.toUpperCase()}</span>
+                        <span class="${statusClass}">${currentStatus.toUpperCase()}</span>
                         ${badge}
                     </td>
                     <td>
@@ -193,12 +205,18 @@ function loadLeads() {
                     </td>
                 </tr>
             `;
+
+            leadsHtml += rowHtml;
+            if (index < 10) recentLeadsHtml += rowHtml; // Only first 10 for overview
             count++;
         });
 
-        if (recentLeadsList) recentLeadsList.innerHTML = leadsHtml || '<tr><td colspan="4" style="text-align:center;">No leads yet.</td></tr>';
+        if (recentLeadsList) recentLeadsList.innerHTML = recentLeadsHtml || '<tr><td colspan="4" style="text-align:center;">No recent leads.</td></tr>';
         if (allLeadsList) allLeadsList.innerHTML = leadsHtml || '<tr><td colspan="5" style="text-align:center;">No leads yet.</td></tr>';
         if (totalLeadsEl) totalLeadsEl.textContent = count;
+
+        const cancelledEl = document.getElementById('stat-cancelled');
+        if (cancelledEl) cancelledEl.textContent = cancelledCount;
 
         // Sidebar Badge Sync
         const sidebarCountEl = document.getElementById('sidebar-leads-count');
